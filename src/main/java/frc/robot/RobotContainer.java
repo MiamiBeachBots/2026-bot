@@ -37,8 +37,8 @@ public class RobotContainer {
 
                 // 2. Drive
                 drivebase.drive(
-                    new Translation2d(yVelocity * drivebase.maximumSpeed, xVelocity * drivebase.maximumSpeed), 
-                    rotation * drivebase.getSwerveDrive().getMaximumAngularVelocity(), 
+                    new Translation2d(yVelocity * drivebase.maximumSpeed, xVelocity * drivebase.maximumSpeed),
+                    rotation * Math.PI,
                     true // Field Relative (True = Standard, False = Robot Oriented)
                 );
             },
