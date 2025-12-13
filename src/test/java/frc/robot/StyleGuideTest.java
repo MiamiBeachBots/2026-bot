@@ -225,16 +225,23 @@ public class StyleGuideTest {
     
     for (Path file : javaFiles) {
       String content = readFile(file);
-      // Remove all Javadoc comments (using (?s) for DOTALL mode to match multiline)
-      String contentNoJavadoc = content.replaceAll("(?s)/\\*\\*.*?\\*/", "");
       
-      // Check for public classes without Javadoc
+      // Find all public class declarations
       Pattern publicClassPattern = Pattern.compile("^\\s*public\\s+(?:final\\s+)?(?:abstract\\s+)?class\\s+([A-Za-z0-9_]+)", Pattern.MULTILINE);
-      Matcher matcher = publicClassPattern.matcher(contentNoJavadoc);
+      Matcher matcher = publicClassPattern.matcher(content);
       
-      if (matcher.find()) {
+      while (matcher.find()) {
         String className = matcher.group(1);
-        violations.add(file.toString() + ": Public class '" + className + "' is missing Javadoc");
+        int classStart = matcher.start();
+        
+        // Look backwards from the class declaration to find if there's a Javadoc comment
+        String beforeClass = content.substring(0, classStart);
+        
+        // Check if there's a Javadoc comment immediately before (allowing whitespace)
+        // Pattern: /** ... */ followed by optional whitespace, then the class
+        if (!beforeClass.matches("(?s).*?/\\*\\*.*?\\*/\\s*$")) {
+          violations.add(file.toString() + ": Public class '" + className + "' is missing Javadoc");
+        }
       }
     }
     
