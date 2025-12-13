@@ -22,7 +22,7 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
 
   // The Controller (Port 0 is usually the first USB controller plugged in)
-  final CommandXboxController driverXbox = new CommandXboxController(0);
+  private final CommandXboxController driverXbox = new CommandXboxController(0);
 
   public RobotContainer() {
     configureBindings();
