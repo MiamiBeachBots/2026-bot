@@ -113,11 +113,18 @@ Test the code without a physical robot:
 
 ### Testing
 
-Run unit tests (when available):
+Run unit tests:
 
 ```bash
 ./gradlew test
 ```
+
+The test suite includes:
+- **StyleGuideTest** - Validates that code follows the team's [Style Guide](styleguide.md):
+  - Naming conventions (PascalCase, camelCase, SCREAMING_SNAKE_CASE)
+  - No wildcard imports
+  - Proper indentation (2 spaces, no tabs)
+  - Javadoc documentation on public classes
 
 ## CAN Bus Map
 
