@@ -1,6 +1,6 @@
 # 2026-bot
 
-> *"Aut viam inveniam aut faciam."* — I'll either find a way or make one.
+# *Aut viam inveniam aut faciam.*
 
 **Team:** Miami Beach Bots (FRC Team 2026)  
 **Season:** 2025-2026
