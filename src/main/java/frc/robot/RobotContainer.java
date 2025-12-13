@@ -9,6 +9,12 @@ import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
 import edu.wpi.first.wpilibj.Filesystem;
 
+/**
+ * The RobotContainer class is responsible for instantiating and configuring
+ * all robot subsystems, setting up controller bindings, and managing the
+ * default and autonomous commands. This class serves as the central hub
+ * for organizing the robot's command-based structure.
+ */
 public class RobotContainer {
 
   // The Subsystem
