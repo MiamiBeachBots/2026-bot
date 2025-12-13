@@ -25,8 +25,8 @@
 
 
 ## Code Quality Checklist
-- [ ] My code follows the [style guide](../styleguide.md)
-- [ ] My commits follow the [commit guide](../commitguide.md)
+- [ ] My code follows the [style guide](styleguide.md)
+- [ ] My commits follow the [commit guide](commitguide.md)
 - [ ] I have commented complex or non-obvious code
 - [ ] I have updated relevant documentation
 - [ ] I have not introduced new compiler warnings
