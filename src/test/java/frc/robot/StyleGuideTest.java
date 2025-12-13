@@ -3,7 +3,6 @@ package frc.robot;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -141,8 +140,8 @@ public class StyleGuideTest {
     
     for (Path file : javaFiles) {
       String content = readFile(file);
-      // Remove comments to avoid false positives
-      String contentNoComments = content.replaceAll("//.*", "").replaceAll("/\\*.*?\\*/", "");
+      // Remove comments to avoid false positives (using (?s) for DOTALL mode)
+      String contentNoComments = content.replaceAll("//.*", "").replaceAll("(?s)/\\*.*?\\*/", "");
       Matcher matcher = methodPattern.matcher(contentNoComments);
       
       while (matcher.find()) {
@@ -169,9 +168,9 @@ public class StyleGuideTest {
     List<Path> javaFiles = getAllJavaFiles();
     List<String> violations = new ArrayList<>();
     
-    // Match constants: public/private static final TYPE NAME = value;
+    // Match constants: static final TYPE NAME = value;
     Pattern constantPattern = Pattern.compile(
-        "^\\s*(?:public|private)?\\s+static\\s+final\\s+[A-Za-z<>\\[\\]0-9_,\\s]+\\s+([A-Z_][A-Z0-9_]*)\\s*=",
+        "^\\s*(?:(?:public|private)\\s+)?static\\s+final\\s+[A-Za-z<>\\[\\]0-9_,\\s]+\\s+([A-Z_][A-Z0-9_]*)\\s*=",
         Pattern.MULTILINE
     );
     Pattern screamingSnakePattern = Pattern.compile("^[A-Z][A-Z0-9_]*$");
@@ -226,8 +225,8 @@ public class StyleGuideTest {
     
     for (Path file : javaFiles) {
       String content = readFile(file);
-      // Remove all Javadoc comments
-      String contentNoJavadoc = content.replaceAll("/\\*\\*.*?\\*/", "");
+      // Remove all Javadoc comments (using (?s) for DOTALL mode to match multiline)
+      String contentNoJavadoc = content.replaceAll("(?s)/\\*\\*.*?\\*/", "");
       
       // Check for public classes without Javadoc
       Pattern publicClassPattern = Pattern.compile("^\\s*public\\s+(?:final\\s+)?(?:abstract\\s+)?class\\s+([A-Za-z0-9_]+)", Pattern.MULTILINE);
@@ -259,8 +258,8 @@ public class StyleGuideTest {
     
     for (Path file : javaFiles) {
       String content = readFile(file);
-      // Remove comments to avoid false positives
-      String contentNoComments = content.replaceAll("//.*", "").replaceAll("/\\*.*?\\*/", "");
+      // Remove comments to avoid false positives (using (?s) for DOTALL mode)
+      String contentNoComments = content.replaceAll("//.*", "").replaceAll("(?s)/\\*.*?\\*/", "");
       Matcher matcher = fieldPattern.matcher(contentNoComments);
       
       while (matcher.find()) {
