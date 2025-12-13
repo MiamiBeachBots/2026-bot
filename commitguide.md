@@ -18,6 +18,12 @@ We use a simplified Conventional Commits format:
 | `[Docs]` | Documentation changes only | `[Docs] Update wiring diagram` |
 | `[Chore]` | Build, deps, or tool updates | `[Chore] Update Phoenix6 to v25.0.0` |
 | `[Test]` | Adding or fixing tests | `[Test] Add unit tests for shooter` |
+| `[Perf]` | Performance improvements | `[Perf] Optimize path planning algorithm` |
+| `[Style]` | Formatting, whitespace, naming | `[Style] Format DriveSubsystem.java` |
+| `[Build]` | Build system or dependency changes | `[Build] Update Gradle to 8.5` |
+| `[CI]` | CI/CD configuration changes | `[CI] Add automated testing workflow` |
+| `[Revert]` | Reverting a previous commit | `[Revert] Undo turret control changes` |
+| `[Config]` | Robot or YAGSL configuration files | `[Config] Update swerve module offsets` |
 
 ## Writing the Description
 
@@ -74,6 +80,12 @@ manual control if no tags are visible.
 [Chore] Update YAGSL to latest version
 [Chore] Add REVLib vendor dependency
 [Test] Add trajectory following unit tests
+[Perf] Reduce loop cycle time in autonomous
+[Style] Apply standard formatting to all subsystems
+[Build] Migrate to Gradle 8.5
+[CI] Add deploy-on-push workflow
+[Revert] Undo experimental arm kinematics
+[Config] Update Phoenix tuner CAN IDs
 ```
 
 ## Atomic Commits
