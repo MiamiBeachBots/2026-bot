@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.*;
@@ -23,6 +24,7 @@ public class SwerveSubsystemTest {
 
   @Test
   public void testGetSwerveDriveNotNull() {
+    assumeTrue(RobotBase.isReal(), "Skipping SwerveDrive null check in simulation mode");
     try {
       SwerveSubsystem subsystem = new SwerveSubsystem();
       assertNotNull(subsystem.getSwerveDrive(), "SwerveDrive instance should not be null");
