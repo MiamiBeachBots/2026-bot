@@ -2,6 +2,7 @@ package frc.robot;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.*;
 
 /**
  * Unit tests for the RobotContainer class.
@@ -16,7 +17,7 @@ public class RobotContainerTest {
     } catch (Exception e) {
       // If hardware initialization fails in test environment, skip the test
       // This is expected when running tests without physical hardware or simulation
-      assertTrue(true, "Test skipped due to hardware initialization requirements");
+      assumeTrue(false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
     }
   }
 }
