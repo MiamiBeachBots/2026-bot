@@ -5,7 +5,7 @@
 **Team:** Miami Beach Bots (FRC Team 2026)  
 **Season:** 2025-2026
 
-## 📊 Project Status
+## Project Status
 
 **Current State:** Pre-Alpha / In Development
 
@@ -14,7 +14,7 @@
 - ⚠️ Swerve base untested
 - ⏳ Major subsystems pending implementation
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -51,7 +51,7 @@ This project uses the following vendor libraries (automatically managed via `ven
 - **ThriftyLib** - Encoder support
 - **Maple-Sim** - Simulation utilities
 
-## 🔨 Build & Deploy
+## Build & Deploy
 
 ### Building the Code
 
@@ -77,7 +77,7 @@ Test the code without a physical robot:
 ./gradlew simulateJava
 ```
 
-## 🗺️ Project Structure
+## Project Structure
 
 ```
 2026-bot/
@@ -91,13 +91,13 @@ Test the code without a physical robot:
 └── README.md                   # This file
 ```
 
-## 📚 Documentation
+## Documentation
 
 - **[Contributing Guide](Contribguide.md)** - How to contribute to this project
 - **[Style Guide](styleguide.md)** - Code formatting and naming conventions
 - **[Commit Guide](commitguide.md)** - Git commit message standards
 
-## 🛠️ Development
+## Development
 
 ### Setting Up Your Environment
 
@@ -119,11 +119,11 @@ Run unit tests (when available):
 ./gradlew test
 ```
 
-## 🗺️ CAN Bus Map
+## CAN Bus Map
 
 > **TODO:** Hardware configuration pending
 
-## 📋 Roadmap & TODO
+## Roadmap & TODO
 
 - [ ] **Hardware Integration**
   - [ ] Verify swerve module CAN IDs and configurations
@@ -146,19 +146,19 @@ Run unit tests (when available):
   - [ ] Document electrical connections
   - [ ] Add subsystem documentation
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please read our [Contributing Guide](Contribguide.md) and [Style Guide](styleguide.md) before submitting pull requests.
 
-## 👥 Team
+## Team
 
 **Miami Beach Bots** - FRC Team 2026  
 Miami Beach, Florida
 
 ---
 
-*Built with ☕ and ⚙️ by Miami Beach Bots*
+*Built by Miami Beach Bots*
