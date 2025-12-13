@@ -128,4 +128,4 @@ context for complex changes. Wrap at 72 characters.
 
 ---
 
-*"A well-crafted commit message is a love letter to your future self."* 
+*"A well-crafted commit message is a love letter to your future self."*
