@@ -7,7 +7,7 @@ YAGSL configuration is present.
 Major subsystems are pending implementation.
  Prerequisites & Installation
 Required Software
-Java JDK 17 
+Java JDK 17
 WPILib 2025
 Vendor Dependencies:
 Phoenix 6 (CTRE)
@@ -32,8 +32,8 @@ Ensure you are connected to the robot radio (Wi-Fi or Ethernet).
 
 CAN Bus Map
 TODO
-Roadmap & TODO
-everything
+**Roadmap & TODO
+[ ] everything
 [ ] Hardware Integration
 [ ] Autonomous
 [ ] Vision & Coprocessor
