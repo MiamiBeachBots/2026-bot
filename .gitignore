@@ -1,0 +1,77 @@
+# Compiled Class Files
+*.class
+
+# Log Files
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Virtual Machine Crash Logs
+hs_err_pid*
+
+# Gradle
+.gradle/
+build/
+/bin/
+
+# VS Code / WPILib
+.wpilib/
+.classpath
+.project
+.settings/
+.factorypath
+# Ignore local VS Code settings to prevent path conflicts between Linux/Windows
+.vscode/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.metadata/
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Simulation / Dashboard saves
+*.ds
+
+# JSON Rules: Ignore dashboard saves, but KEEP config files
+*.json
+!vendordeps/*.json
+!src/main/deploy/**/*.json
+!src/main/deploy/*.json
+
+# Python (Coprocessor)
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+#The AI TOLD ME TO PUT PYTHON
