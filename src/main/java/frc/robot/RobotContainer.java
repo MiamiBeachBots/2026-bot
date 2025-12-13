@@ -24,6 +24,13 @@ public class RobotContainer {
   // The Controller (Port 0 is usually the first USB controller plugged in)
   private final CommandXboxController driverXbox = new CommandXboxController(0);
 
+  /**
+   * Constructs a new RobotContainer.
+   * <p>
+   * This constructor initializes the robot's subsystems and configures controller bindings
+   * by calling {@link #configureBindings()}. This setup ensures that the drivebase subsystem
+   * and controller commands are properly initialized before the robot starts operating.
+   */
   public RobotContainer() {
     configureBindings();
   }
