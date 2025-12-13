@@ -254,7 +254,8 @@ public class StyleGuideTest {
         "^\\s*(?:public|private|protected)?\\s*(?:static\\s+)?(?:final\\s+)?(?!class|interface)[A-Za-z<>\\[\\]0-9_,\\s]+\\s+([a-z][a-zA-Z0-9_]*)\\s*[;=]",
         Pattern.MULTILINE
     );
-    Pattern camelCasePattern = Pattern.compile("^[a-z][a-zA-Z0-9]*$");
+    // Allow camelCase or m_camelCase (WPILib convention for member variables)
+    Pattern camelCasePattern = Pattern.compile("^[a-z][a-zA-Z0-9]*$|^m_[a-z][a-zA-Z0-9]*$");
     
     for (Path file : javaFiles) {
       String content = readFile(file);
@@ -269,7 +270,7 @@ public class StyleGuideTest {
           continue;
         }
         if (!camelCasePattern.matcher(varName).matches()) {
-          violations.add(file.toString() + ": Variable '" + varName + "' does not follow camelCase");
+          violations.add(file.toString() + ": Variable '" + varName + "' does not follow camelCase (or m_camelCase for members)");
         }
       }
     }

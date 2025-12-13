@@ -8,6 +8,13 @@ import java.io.File;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 
+/**
+ * Swerve drive subsystem using YAGSL (Yet Another Generic Swerve Library).
+ * <p>
+ * This subsystem manages the swerve drive base, providing methods for driving
+ * and updating odometry. It uses JSON configuration files to define the
+ * hardware configuration.
+ */
 public class SwerveSubsystem extends SubsystemBase {
 
   // The heavy lifting object from YAGSL
