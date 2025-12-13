@@ -12,6 +12,7 @@ import swervelib.parser.SwerveParser;
 public class SwerveSubsystem extends SubsystemBase {
 
   // The heavy lifting object from YAGSL
+  // Note: This is null during simulation/testing when RobotBase.isReal() returns false
   private SwerveDrive swerveDrive;
 
   // Maximum speed in Meters/Second. Adjust this to your specific robot gearing/safety needs.
