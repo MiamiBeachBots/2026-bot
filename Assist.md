@@ -61,7 +61,6 @@ Environment:
 - Java Version: 17
 - OS: Windows 11
 ```
-```
 
 ### 💬 Reporting Other Issues
 
