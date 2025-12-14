@@ -79,4 +79,4 @@ Please use direct email sparingly and prefer GitHub issues when possible, as iss
 
 ---
 
-*For contribution guidelines, see [Contribguide.md](Contribguide.md)*
+*For contribution guidelines, see [Contributing Guide](Contribguide.md)*
