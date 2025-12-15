@@ -526,12 +526,14 @@ For urgent matters, private concerns, or questions that don't fit GitHub Issues,
 Make your issues easier to read by using markdown formatting:
 
 **Code blocks:**
-\`\`\`java
+````
+```java
 // Use triple backticks for code
 public void periodic() {
   swerve.drive(xSpeed, ySpeed, rot);
 }
-\`\`\`
+```
+````
 
 **Inline code:**
 Use single backticks for `variable names`, `file names`, or `commands`
@@ -542,8 +544,8 @@ Use single backticks for `variable names`, `file names`, or `commands`
 - [ ] Checkboxes for task lists
 
 **Bold and italic:**
-- **Bold** for emphasis using `**text**`
-- *Italic* for lighter emphasis using `*text*`
+- Use `**text**` for **Bold** emphasis
+- Use `*text*` for *Italic* emphasis
 
 **Links:**
 [Link text](https://example.com)
