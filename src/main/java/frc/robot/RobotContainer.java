@@ -2,9 +2,13 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.SwerveSubsystem;
 import java.io.File;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -36,17 +40,33 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    drivebase.setDriverJoystickPort(driverXbox.getHID().getPort());
+
     // DEFAULT COMMAND: The "Idle" state of the robot.
     // If no other button is pressed, do this.
     drivebase.setDefaultCommand(
         // We create a "RunCommand" (runs repeatedly)
         Commands.run(
             () -> {
-                // 1. Get Joystick Inputs (Inverted because Y is up-negative in computer graphics)
-                // MathUtil.applyDeadband ignores tiny drift when the stick is centered
-                double yVelocity = -MathUtil.applyDeadband(driverXbox.getLeftY(), 0.1); 
-                double xVelocity = -MathUtil.applyDeadband(driverXbox.getLeftX(), 0.1); 
-                double rotation  = -MathUtil.applyDeadband(driverXbox.getRightX(), 0.1);
+                boolean hasJoystick = DriverStation.isJoystickConnected(driverXbox.getHID().getPort());
+
+                // 1. Get driver inputs (or demo inputs in sim without a joystick)
+                // MathUtil.applyDeadband ignores tiny drift when the stick is centered.
+                double yVelocity;
+                double xVelocity;
+                double rotation;
+
+                if (RobotBase.isSimulation() && !hasJoystick) {
+                  double t = Timer.getFPGATimestamp();
+                  yVelocity = 0.35;
+                  xVelocity = 0.15 * Math.sin(t);
+                  rotation = 0.15;
+                } else {
+                  // Inverted because Y is up-negative in computer graphics
+                  yVelocity = -MathUtil.applyDeadband(driverXbox.getLeftY(), 0.1);
+                  xVelocity = -MathUtil.applyDeadband(driverXbox.getLeftX(), 0.1);
+                  rotation = -MathUtil.applyDeadband(driverXbox.getRightX(), 0.1);
+                }
 
                 // 2. Drive
                 drivebase.drive(
@@ -60,9 +80,8 @@ public class RobotContainer {
     );
 
     // Map "Back" button to zero the gyro (reset field orientation)
-    if (drivebase.getSwerveDrive() != null) {
-      driverXbox.back().onTrue(Commands.runOnce(drivebase.getSwerveDrive()::zeroGyro, drivebase));
-    }
+    new Trigger(() -> DriverStation.isJoystickConnected(driverXbox.getHID().getPort()) && driverXbox.getHID().getBackButton())
+        .onTrue(Commands.runOnce(drivebase::zeroGyro, drivebase));
   }
 
   /**

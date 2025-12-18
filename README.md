@@ -81,6 +81,23 @@ Test the code without a physical robot:
 ./gradlew simulateJava
 ```
 
+### Viewing Simulation in AdvantageScope
+
+This project publishes swerve telemetry over NetworkTables for live visualization.
+
+1. Start sim: `./gradlew simulateJava`
+2. In the sim GUI, click **Enable** (Teleop).
+3. Open AdvantageScope and connect to NetworkTables at `localhost` (NT4).
+4. For 3D: open the **3D Field** tab, then drag `/Swerve/Pose3d` (or `/Swerve/Pose3dArray`) into the **Poses** list. If you only see axes, right-click the new pose and change the object type/model to a robot.
+5. Quick sanity check: graph `/Swerve/Pose/X` and `/Swerve/Pose/Y` — they should change when the robot moves.
+6. If you don’t have a controller connected, sim will auto-drive in a slow curve (see `/Swerve/DemoDriveActive`).
+7. For module vectors: open the **Swerve** tab and add `/Swerve/ModuleStates`, `/Swerve/RobotSpeeds`, and `/Swerve/Heading`.
+8. To confirm sim-only behavior: check `/Swerve/IsSimulation` and `/Swerve/SimOdometryActive` (both should be false on a real roboRIO).
+
+Troubleshooting:
+- If `/Swerve/*` topics don’t appear, check the sim console for `NT: Listening on ...` and make sure you don’t have another robot program already using port `5810` (“address already in use”).
+- If pose is static, make sure the robot is **Enabled** and confirm `/Swerve/DemoDriveActive` or `/Swerve/JoystickConnected`.
+
 ## Project Structure
 
 ```
