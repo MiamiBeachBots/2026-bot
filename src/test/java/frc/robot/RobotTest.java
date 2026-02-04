@@ -1,12 +1,11 @@
 package frc.robot;
 
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.*;
 
-/**
- * Unit tests for the Robot class.
- */
+import org.junit.jupiter.api.Test;
+
+/** Unit tests for the Robot class. */
 public class RobotTest {
 
   @Test
@@ -17,7 +16,8 @@ public class RobotTest {
     } catch (Exception e) {
       // If hardware initialization fails in test environment, skip the test
       // This is expected when running tests without physical hardware or simulation
-      assumeTrue(false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
+      assumeTrue(
+          false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
     }
   }
 
@@ -29,7 +29,8 @@ public class RobotTest {
     } catch (Exception e) {
       // If hardware initialization fails in test environment, skip the test
       // This is expected when running tests without physical hardware or simulation
-      assumeTrue(false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
+      assumeTrue(
+          false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
     }
   }
 
@@ -42,7 +43,8 @@ public class RobotTest {
     } catch (Exception e) {
       // If hardware initialization fails in test environment, skip the test
       // This is expected when running tests without physical hardware or simulation
-      assumeTrue(false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
+      assumeTrue(
+          false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
     }
   }
 
@@ -51,11 +53,13 @@ public class RobotTest {
     try {
       Robot robot = new Robot();
       robot.robotInit();
-      assertDoesNotThrow(() -> robot.autonomousInit(), "autonomousInit should not throw exceptions");
+      assertDoesNotThrow(
+          () -> robot.autonomousInit(), "autonomousInit should not throw exceptions");
     } catch (Exception e) {
       // If hardware initialization fails in test environment, skip the test
       // This is expected when running tests without physical hardware or simulation
-      assumeTrue(false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
+      assumeTrue(
+          false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
     }
   }
 
@@ -68,7 +72,8 @@ public class RobotTest {
     } catch (Exception e) {
       // If hardware initialization fails in test environment, skip the test
       // This is expected when running tests without physical hardware or simulation
-      assumeTrue(false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
+      assumeTrue(
+          false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
     }
   }
 }

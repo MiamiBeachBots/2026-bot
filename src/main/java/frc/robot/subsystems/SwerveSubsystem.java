@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -30,12 +29,13 @@ public class SwerveSubsystem extends SubsystemBase {
       try {
         // Configure the Telemetry to be less spammy (optional)
         // SwerveTelemetry.verbosity = SwerveTelemetry.TelemetryVerbosity.LOW;
-        
+
         // Load the JSON configuration
         this.swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
 
       } catch (Exception e) {
-        throw new RuntimeException("CRITICAL: YAGSL Failed to load. Check JSON paths. \n" + e.getMessage());
+        throw new RuntimeException(
+            "CRITICAL: YAGSL Failed to load. Check JSON paths. \n" + e.getMessage());
       }
     }
     SmartDashboard.putData("Field", m_field);
@@ -48,8 +48,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
   /**
    * The primary drive method.
-   * @param translation  The X/Y translation vector (forward/strafe)
-   * @param rotation     The Z rotation value
+   *
+   * @param translation The X/Y translation vector (forward/strafe)
+   * @param rotation The Z rotation value
    * @param fieldRelative True for field-oriented control (standard), False for robot-oriented
    */
   public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
@@ -60,7 +61,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This updates the odometry (robot position on field). 
+    // This updates the odometry (robot position on field).
     // ABSOLUTELY REQUIRED for the robot to know where it is.
     if (swerveDrive != null) {
       swerveDrive.updateOdometry();
@@ -79,7 +80,7 @@ public class SwerveSubsystem extends SubsystemBase {
       m_field.setRobotPose(new Pose2d());
     }
   }
-  
+
   // Helper to get the drive object if needed for advanced features (PathPlanner)
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;

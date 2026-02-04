@@ -1,13 +1,12 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.RobotBase;
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.*;
 
-/**
- * Unit tests for the SwerveSubsystem class.
- */
+import edu.wpi.first.wpilibj.RobotBase;
+import org.junit.jupiter.api.Test;
+
+/** Unit tests for the SwerveSubsystem class. */
 public class SwerveSubsystemTest {
 
   @Test
@@ -18,7 +17,8 @@ public class SwerveSubsystemTest {
     } catch (Exception e) {
       // If hardware initialization fails in test environment, skip the test
       // This is expected when running tests without physical hardware or simulation
-      assumeTrue(false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
+      assumeTrue(
+          false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
     }
   }
 
@@ -31,7 +31,8 @@ public class SwerveSubsystemTest {
     } catch (Exception e) {
       // If hardware initialization fails in test environment, skip the test
       // This is expected when running tests without physical hardware or simulation
-      assumeTrue(false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
+      assumeTrue(
+          false, "Test skipped due to hardware initialization requirements: " + e.getMessage());
     }
   }
 }
