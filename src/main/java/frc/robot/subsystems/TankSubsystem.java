@@ -32,7 +32,7 @@ public class TankSubsystem extends SubsystemBase {
     followerConfig.follow(rightFront);
     rightRear.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    // FUCK inversion
+    //inversion
     SparkMaxConfig rightLeaderConfig = new SparkMaxConfig();
     rightLeaderConfig.inverted(true);
     rightFront.configure(rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -62,7 +62,7 @@ public class TankSubsystem extends SubsystemBase {
 //I think i like index too much the videos are just so cool and the fighter jets are so epic
   @Override
   public void simulationPeriodic() {
-    // FUCK physics
+    // physics moment
     m_driveSim.setInputs(leftFront.get() * 12, rightFront.get() * 12);
     m_driveSim.update(0.02);
 

@@ -8,7 +8,7 @@ import frc.robot.subsystems.TankSubsystem;
 
 public class RobotContainer {
 
-  // fuck swerve (im so calm now)
+  // swerve (im so calm now)
   private final TankSubsystem drivebase = new TankSubsystem();
 
   private final CommandXboxController driverXbox = new CommandXboxController(0);
