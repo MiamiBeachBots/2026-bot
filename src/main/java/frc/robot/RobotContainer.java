@@ -22,7 +22,7 @@ public class RobotContainer {
         Commands.run(
             () -> {
                 double speed = -MathUtil.applyDeadband(driverXbox.getLeftY(), 0.1); 
-                double rotation = -MathUtil.applyDeadband(driverXbox.getRightX(), 0.1);
+                double rotation = -MathUtil.applyDeadband(driverXbox.getLeftX(), 0.1);
 
                 drivebase.drive(speed, rotation);
             },
