@@ -182,4 +182,4 @@ We are grateful for the generous support of our sponsors:
 
 ---
 
-*Built by Miami Beach Bots*
+*Built by Miami Beach Bots, mainly by Zack Fernandez*
