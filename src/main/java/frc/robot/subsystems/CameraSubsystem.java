@@ -37,6 +37,8 @@ public class CameraSubsystem extends SubsystemBase {
 
   private final PhotonPoseEstimator poseCamera1PoseEstimator;
   private final PhotonPoseEstimator poseCamera2PoseEstimator;
+  private PoseStrategy fallbackStrategy;
+  private Pose3d lastPose;
 
   // Simulation Config
   // A vision system sim labelled as "pose and targeting" in NetworkTables
@@ -71,17 +73,10 @@ public class CameraSubsystem extends SubsystemBase {
     targetingCamera1 = new PhotonCamera(CameraConstants.TARGETING_CAMERA1.NAME);
 
     poseCamera1PoseEstimator =
-        new PhotonPoseEstimator(
-            aprilTagFieldLayout,
-            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-            CameraConstants.POSE_CAMERA1.LOCATION);
+        new PhotonPoseEstimator(aprilTagFieldLayout, CameraConstants.POSE_CAMERA1.LOCATION);
     poseCamera2PoseEstimator =
-        new PhotonPoseEstimator(
-            aprilTagFieldLayout,
-            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-            CameraConstants.POSE_CAMERA2.LOCATION);
-    poseCamera1PoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    poseCamera2PoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        new PhotonPoseEstimator(aprilTagFieldLayout, CameraConstants.POSE_CAMERA2.LOCATION);
+    fallbackStrategy = PoseStrategy.LOWEST_AMBIGUITY;
 
     if (Robot.isSimulation()) {
       simulationInit();
@@ -153,27 +148,37 @@ public class CameraSubsystem extends SubsystemBase {
    */
   private void updateGlobalPose(
       PhotonCamera camera, PhotonPoseEstimator poseEstimator, String cameraName) {
-    for (var result : camera.getAllUnreadResults())
+    for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
       if (result.hasTargets() && result.getBestTarget().getPoseAmbiguity() < 0.025) {
-        Optional<EstimatedRobotPose> curPose = poseEstimator.update(result);
+        Optional<EstimatedRobotPose> curPose = poseEstimator.estimateCoprocMultiTagPose(result);
+        if (curPose.isEmpty())
+          curPose =
+              switch (fallbackStrategy) { // Add extra cases if fallbackStrategy gets extended to support other estimation methods.
+                case LOWEST_AMBIGUITY -> poseEstimator.estimateLowestAmbiguityPose(result);
+                case CLOSEST_TO_LAST_POSE -> poseEstimator.estimateClosestToReferencePose(
+                    result, lastPose);
+                default -> curPose;
+              };
+
         if (curPose.isPresent()) {
+          Pose3d estimatedPose = curPose.get().estimatedPose;
           if (!multiModeUsed
               || curPose.get().strategy == PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR) {
             m_driveSubsystem.updateVisionPose(
-                curPose.get().estimatedPose.toPose2d(),
+                estimatedPose.toPose2d(),
                 curPose.get().timestampSeconds,
                 cameraName,
                 cameraPoseEnabled);
+
             if (curPose.get().strategy == PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR) {
               multiModeUsed = true;
-              poseCamera1PoseEstimator.setMultiTagFallbackStrategy(
-                  PoseStrategy.CLOSEST_TO_LAST_POSE);
-              poseCamera2PoseEstimator.setMultiTagFallbackStrategy(
-                  PoseStrategy.CLOSEST_TO_LAST_POSE);
+              fallbackStrategy = PoseStrategy.CLOSEST_TO_LAST_POSE;
             }
           }
+          lastPose = estimatedPose;
         }
       }
+    }
   }
 
   @Override
