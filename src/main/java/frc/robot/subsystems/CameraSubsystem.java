@@ -153,7 +153,8 @@ public class CameraSubsystem extends SubsystemBase {
         Optional<EstimatedRobotPose> curPose = poseEstimator.estimateCoprocMultiTagPose(result);
         if (curPose.isEmpty())
           curPose =
-              switch (fallbackStrategy) { // Add extra cases if fallbackStrategy gets extended to support other estimation methods.
+              switch (fallbackStrategy) { // Add extra cases if fallbackStrategy gets extended to
+                  // support other estimation methods.
                 case LOWEST_AMBIGUITY -> poseEstimator.estimateLowestAmbiguityPose(result);
                 case CLOSEST_TO_LAST_POSE -> poseEstimator.estimateClosestToReferencePose(
                     result, lastPose);
