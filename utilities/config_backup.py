@@ -19,6 +19,7 @@ except ImportError:
 
 TEAM_NUMBER = 2026  # Change if team number differs
 SERVER_IP = f"10.{TEAM_NUMBER // 100}.{TEAM_NUMBER % 100}.2"
+BACKUP_DIR = os.path.join(os.path.dirname(__file__), "pid_config_backups")
 
 # Values we explicitly do NOT want to backup because they are live telemetry, not configuration
 IGNORED_ENDINGS = [
@@ -70,7 +71,9 @@ def backup_config(table):
     # Generate timestamped filename
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"config_backup_{timestamp}.json"
-    filepath = os.path.join(os.path.dirname(__file__), filename)
+    
+    os.makedirs(BACKUP_DIR, exist_ok=True)
+    filepath = os.path.join(BACKUP_DIR, filename)
     
     with open(filepath, 'w') as f:
         json.dump(config_data, f, indent=4)
@@ -80,7 +83,7 @@ def backup_config(table):
 
 def restore_config(table, filename):
     """Reads a JSON backup file and pushes all variables back into NetworkTables."""
-    filepath = os.path.join(os.path.dirname(__file__), filename)
+    filepath = os.path.join(BACKUP_DIR, filename)
     
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"File not found: {filename}")
@@ -122,8 +125,9 @@ def launch_gui():
     
     # Refresh function to grab latest json files
     def get_backup_files():
-        os.chdir(os.path.dirname(os.path.abspath(__file__)))
-        files = glob.glob("config_backup_*.json")
+        os.makedirs(BACKUP_DIR, exist_ok=True)
+        search_pattern = os.path.join(BACKUP_DIR, "config_backup_*.json")
+        files = [os.path.basename(f) for f in glob.glob(search_pattern)]
         return sorted(files, reverse=True) # Newest first
 
     # Setup connection state
