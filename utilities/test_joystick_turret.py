@@ -34,17 +34,18 @@ running = True
 print("Starting Turret Joystick Tester window. Press Ctrl+C in terminal or close window to exit.")
 
 # Define custom labels for the Turret/Fire setup
+# Pygame is 0-indexed. Physical button N usually maps to index N-1.
 CUSTOM_LABELS = {
     "axis_0": "Turret Turn Axis (X)",
     "axis_1": "Fire Motor Speed (Y)",
-    "btn_1": "Fire Trigger",
-    "btn_2": "AutoAim Toggle",
-    "btn_6": "Preset 1",
-    "btn_7": "Preset 2",
-    "btn_8": "Preset 3",
-    "btn_9": "Preset 4",
-    "btn_10": "Preset 5",
-    "btn_11": "Preset 6"
+    "btn_0": "Fire Trigger",
+    "btn_1": "AutoAim Toggle",
+    "btn_5": "Preset 1",
+    "btn_6": "Preset 2",
+    "btn_7": "Preset 3",
+    "btn_8": "Preset 4",
+    "btn_9": "Preset 5",
+    "btn_10": "Preset 6"
 }
 
 while running:
@@ -108,9 +109,7 @@ while running:
         btns_text = "   "
         for b in range(joy.get_numbuttons()):
             val = joy.get_button(b)
-            # 1-indexed for the dictionary lookup since flight sticks often list button 1 as index 0, 
-            # but Pygame uses 0-based indexing. Assuming standard pygame 0-based here:
-            # Let's check user's code: m_operatorButton2 -> 2. Pygame matches index.
+            # Fetch custom zero-based label
             label = CUSTOM_LABELS.get(f"btn_{b}", str(b))
             
             if val:
