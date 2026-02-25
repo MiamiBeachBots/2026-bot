@@ -1,15 +1,16 @@
 package frc.robot.subsystems;
-//https://www.youtube.com/watch?v=RLLJRB7Kglo BE ALL THAT YOU CAN BE
 
+// https://www.youtube.com/watch?v=RLLJRB7Kglo BE ALL THAT YOU CAN BE
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkBase.PersistMode;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class TankSubsystem extends SubsystemBase {
 
@@ -24,18 +25,21 @@ public class TankSubsystem extends SubsystemBase {
 
   public TankSubsystem() {
     SparkMaxConfig followerConfig = new SparkMaxConfig();
-    
+
     // Configure followers
     followerConfig.follow(leftFront);
-    leftRear.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftRear.configure(
+        followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     followerConfig.follow(rightFront);
-    rightRear.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightRear.configure(
+        followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    //inversion
+    // inversion
     SparkMaxConfig rightLeaderConfig = new SparkMaxConfig();
     rightLeaderConfig.inverted(true);
-    rightFront.configure(rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightFront.configure(
+        rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     drive = new DifferentialDrive(leftFront, rightFront);
     SmartDashboard.putData("Field", m_field);
@@ -46,20 +50,21 @@ public class TankSubsystem extends SubsystemBase {
   }
 
   // Simulation stuff
-  private final edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim m_driveSim = new edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim(
-      edu.wpi.first.math.system.plant.DCMotor.getNEO(2),       // 2 NEOs per side
-      7.29,                                                    // 7.29:1 gearing
-      7.5,                                                     // 7.5 kg mass related (J)
-      60.0,                                                    // Mass
-      edu.wpi.first.math.util.Units.inchesToMeters(2),         // 2" radius wheels
-      edu.wpi.first.math.util.Units.inchesToMeters(20),        // track width
-      null                                                     // Measurement noise
-  );
+  private final edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim m_driveSim =
+      new edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim(
+          edu.wpi.first.math.system.plant.DCMotor.getNEO(2), // 2 NEOs per side
+          7.29, // 7.29:1 gearing
+          7.5, // 7.5 kg mass related (J)
+          60.0, // Mass
+          edu.wpi.first.math.util.Units.inchesToMeters(2), // 2" radius wheels
+          edu.wpi.first.math.util.Units.inchesToMeters(20), // track width
+          null // Measurement noise
+          );
 
   @Override
-  public void periodic() {
-  }
-//I think i like index too much the videos are just so cool and the fighter jets are so epic
+  public void periodic() {}
+
+  // I think i like index too much the videos are just so cool and the fighter jets are so epic
   @Override
   public void simulationPeriodic() {
     // physics moment
