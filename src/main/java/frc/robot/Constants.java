@@ -37,6 +37,10 @@ public final class Constants {
     /// Lifter Motors
     public static final int MOTOR_LIFTER_LEFT_ID = -1;
     public static final int MOTOR_LIFTER_RIGHT_ID = -1;
+
+    /// Turret and Fire Subsystems
+    public static final int MOTOR_TURRET_ID = -1;
+    public static final int MOTOR_FIRE_ID = -1;
   }
 
   // Is simulation
