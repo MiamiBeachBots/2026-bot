@@ -38,6 +38,8 @@ print("Starting Turret Joystick Tester window. Press Ctrl+C in terminal or close
 CUSTOM_LABELS = {
     "axis_0": "Turret Turn Axis (X)",
     "axis_1": "Fire Motor Speed (Y)",
+    "axis_2": "Intake Speed Slider (Throttle)",
+    "axis_3": "Intake Speed Slider (Throttle)",
     "btn_0": "Fire Trigger",
     "btn_1": "AutoAim Toggle",
     "btn_5": "Preset 1",
@@ -45,7 +47,8 @@ CUSTOM_LABELS = {
     "btn_7": "Preset 3",
     "btn_8": "Preset 4",
     "btn_9": "Preset 5",
-    "btn_10": "Preset 6"
+    "btn_10": "Preset 6",
+    "btn_11": "Intake Unjam (2sec)"
 }
 
 while running:

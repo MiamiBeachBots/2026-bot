@@ -41,6 +41,9 @@ public final class Constants {
     /// Turret and Fire Subsystems
     public static final int MOTOR_TURRET_ID = -1;
     public static final int MOTOR_FIRE_ID = -1;
+
+    /// Intake Subsystem
+    public static final int MOTOR_INTAKE_ID = -1;
   }
 
   // Is simulation

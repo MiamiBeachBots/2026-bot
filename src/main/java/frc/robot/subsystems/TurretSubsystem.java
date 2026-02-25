@@ -26,9 +26,8 @@ public class TurretSubsystem extends SubsystemBase {
     m_turretMotor = new SparkMax(CANConstants.MOTOR_TURRET_ID, MotorType.kBrushless);
     m_config = new SparkMaxConfig();
 
-    // Safety Limits (nuke needed)
+    // Electrical Safety Limit (Prevents the motor from pulling too many amps and burning out)
     m_config.smartCurrentLimit(40);
-
     // Setup PID
     m_config.closedLoop.pid(kP, kI, kD);
     m_config.closedLoop.outputRange(-0.5, 0.5); // Limit output speed for safety during testing

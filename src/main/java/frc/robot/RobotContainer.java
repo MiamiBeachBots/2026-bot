@@ -18,11 +18,14 @@ import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.FireCommand;
 import frc.robot.commands.FlywheelCommand;
+import frc.robot.commands.IntakeSliderCommand;
 import frc.robot.commands.SetTurretPositionCommand;
+import frc.robot.commands.UnjamIntakeCommand;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FireControlSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -48,6 +51,7 @@ public class RobotContainer {
 
   private final TurretSubsystem m_turretSubsystem = new TurretSubsystem();
   private final FireControlSubsystem m_fireSubsystem = new FireControlSubsystem();
+  private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
 
   // Initialize Commands
   private final DefaultDrive m_defaultDrive =
@@ -71,6 +75,7 @@ public class RobotContainer {
   private JoystickButton m_operatorButton9;
   private JoystickButton m_operatorButton10;
   private JoystickButton m_operatorButton11;
+  private JoystickButton m_operatorButton12;
 
   // Init For Autonomous
   private LoggedDashboardChooser<String> autoDashboardChooser =
@@ -118,6 +123,7 @@ public class RobotContainer {
     m_operatorButton9 = new JoystickButton(m_flightstick, 9);
     m_operatorButton10 = new JoystickButton(m_flightstick, 10);
     m_operatorButton11 = new JoystickButton(m_flightstick, 11);
+    m_operatorButton12 = new JoystickButton(m_flightstick, 12);
   }
 
   private void bindCommands() {
@@ -148,6 +154,14 @@ public class RobotContainer {
     m_operatorButton9.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.25));
     m_operatorButton10.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.5));
     m_operatorButton11.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.75));
+
+    // Intake System
+    // Bind fuzzy slider (Flightstick Throttle axis) to automatically control the Intake.
+    m_intakeSubsystem.setDefaultCommand(
+        new IntakeSliderCommand(m_intakeSubsystem, () -> m_flightstick.getThrottle()));
+
+    // Emergency Unjam (Button 12)
+    m_operatorButton12.onTrue(new UnjamIntakeCommand(m_intakeSubsystem));
 
     // TODO: Make Swerve code follow proper command-based structure
     /*
