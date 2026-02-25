@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FireControlSubsystem;
@@ -40,7 +41,9 @@ public class FireCommand extends Command {
   @Override
   public void execute() {
     // Math.abs to ensure positive velocity based on Y-axis
-    double speed = Math.abs(m_speedSupplier.getAsDouble());
+    double rawSpeed = Math.abs(m_speedSupplier.getAsDouble());
+    // Apply a deadband to ignore slightly noisy inputs, then clamp between 0 and 1
+    double speed = MathUtil.clamp(MathUtil.applyDeadband(rawSpeed, 0.1), 0.0, 1.0);
     m_fireSubsystem.fire(speed);
   }
 

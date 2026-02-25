@@ -9,9 +9,9 @@
 
 **Current State:** Pre-Alpha / In Development
 
-- ✅ Swerve drive base initialized with YAGSL
+- ✅ Tank drive base initialized
 - ✅ Basic project structure and dependencies configured
-- ⚠️ Swerve base untested
+- ⚠️ Tank base untested
 - ⏳ Major subsystems pending implementation
 
 ## Quick Start
@@ -28,12 +28,12 @@ Ensure you have the following installed before setting up the project:
 
 1. **Fork and clone the repository:**
 
-   First, fork the repository on GitHub by clicking the "Fork" button at [https://github.com/MiamiBeachBots/2026-bot](https://github.com/MiamiBeachBots/2026-bot).
+   First, fork the repository on GitHub by clicking the "Fork" button at [https://github.com/Thalia-the-nerd/2026-bot-workin](https://github.com/Thalia-the-nerd/2026-bot-workin).
 
    Then clone your fork (replace `YOUR_USERNAME` with your GitHub username):
    ```bash
-   git clone https://github.com/YOUR_USERNAME/2026-bot.git
-   cd 2026-bot
+   git clone https://github.com/YOUR_USERNAME/2026-bot-workin.git
+   cd 2026-bot-workin
    ```
 
 2. **Build the project:**
@@ -50,7 +50,6 @@ This project uses the following vendor libraries (automatically managed via `ven
 - **Phoenix 5** (CTRE) - Legacy CTRE devices
 - **REVLib** (REV Robotics) - Spark MAX motor controllers
 - **ReduxLib** - Additional utilities
-- **YAGSL** (Yet Another Generic Swerve Library) - Swerve drive framework
 - **Studica** - Additional hardware support
 - **ThriftyLib** - Encoder support
 - **Maple-Sim** - Simulation utilities
@@ -89,7 +88,7 @@ Test the code without a physical robot:
 │   ├── Robot.java              # Main robot class
 │   ├── RobotContainer.java     # Command and subsystem initialization
 │   └── subsystems/             # Robot subsystems
-├── src/main/deploy/            # Configuration files (YAGSL configs, etc.)
+├── src/main/deploy/            # Configuration files
 ├── vendordeps/                 # Vendor dependency JSON files
 ├── build.gradle                # Gradle build configuration
 └── README.md                   # This file
@@ -126,16 +125,26 @@ Run unit tests (when available):
 
 ## CAN Bus Map
 
-> **TODO:** Hardware configuration pending
+| Device | CAN ID | CAN Bus | Notes |
+|---|---|---|---|
+| RoboRIO 2.0 | N/A | `rio` | Main Controller |
+| Pigeon 2.0 / NavX | 0 | `rio` | Gyroscope |
+| Power Distribution Panel (PDP) | 1 | `rio` | Power Distribution |
+| Left Drive Leader | 2 | `rio` | SparkMax |
+| Left Drive Follower | 3 | `rio` | SparkMax |
+| Right Drive Leader | 4 | `rio` | SparkMax |
+| Right Drive Follower | 5 | `rio` | SparkMax |
+| Turret Rotation | 6 | `rio` | SparkMax |
+| Master Fire Control | 7 | `rio` | SparkMax |
 
 ## Roadmap & TODO
 
 - [ ] **Hardware Integration**
-  - [ ] Verify swerve module CAN IDs and configurations
+  - [ ] Verify tank drive motor CAN IDs and configurations
   - [ ] Test individual drive motors
-  - [ ] Calibrate module offsets
+  - [ ] Verify encoder directions
 - [ ] **Subsystems**
-  - [ ] Complete swerve drive testing
+  - [ ] Complete tank drive testing
   - [ ] Implement additional mechanisms (TBD based on game)
 - [ ] **Autonomous**
   - [ ] Configure PathPlanner
