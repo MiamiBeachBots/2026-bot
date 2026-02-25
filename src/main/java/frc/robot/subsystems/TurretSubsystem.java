@@ -1,14 +1,14 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANConstants;
 
 public class TurretSubsystem extends SubsystemBase {
@@ -25,7 +25,7 @@ public class TurretSubsystem extends SubsystemBase {
   public TurretSubsystem() {
     m_turretMotor = new SparkMax(CANConstants.MOTOR_TURRET_ID, MotorType.kBrushless);
     m_config = new SparkMaxConfig();
-    
+
     // Safety Limits (nuke needed)
     m_config.smartCurrentLimit(40);
 
@@ -33,7 +33,8 @@ public class TurretSubsystem extends SubsystemBase {
     m_config.closedLoop.pid(kP, kI, kD);
     m_config.closedLoop.outputRange(-0.5, 0.5); // Limit output speed for safety during testing
 
-    m_turretMotor.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_turretMotor.configure(
+        m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_pidController = m_turretMotor.getClosedLoopController();
     m_encoder = m_turretMotor.getEncoder();
@@ -47,7 +48,7 @@ public class TurretSubsystem extends SubsystemBase {
   public void setTurretSpeed(double speed) {
     // Add simple range just in case controller has drift
     if (Math.abs(speed) < 0.1) {
-        speed = 0;
+      speed = 0;
     }
     m_pidController.setReference(speed, SparkMax.ControlType.kDutyCycle);
   }
@@ -87,6 +88,6 @@ public class TurretSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    // Basic simulation logic if needed. 
+    // Basic simulation logic if needed.
   }
 }

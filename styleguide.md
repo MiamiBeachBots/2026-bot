@@ -11,7 +11,7 @@ We follow standard Java naming conventions. **Consistency is critical** for read
 ### Classes and Interfaces
 * **Format:** `PascalCase`
 * **Examples:**
-  * `TankSubsystem`
+  * `SwerveSubsystem`
   * `RobotContainer`
   * `ArmPositionState` (enum)
   * `AutoCommandFactory`
@@ -158,7 +158,7 @@ src/main/java/frc/robot/
 │   ├── TeleopDrive.java
 │   └── AutoAlign.java
 └── subsystems/             # Subsystem classes
-    ├── TankSubsystem.java
+    ├── SwerveSubsystem.java
     ├── ArmSubsystem.java
     └── IntakeSubsystem.java
 ```
@@ -217,9 +217,9 @@ double xVelocity = -MathUtil.applyDeadband(controller.getLeftX(), 0.1);
 
 ```java
 try {
-  tankDrive = new DifferentialDrive(leftMotor, rightMotor);
+  swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed);
 } catch (Exception e) {
-  throw new RuntimeException("CRITICAL: Drive failed to load.\n" + e.getMessage());
+  throw new RuntimeException("CRITICAL: YAGSL failed to load. Check JSON paths.\n" + e.getMessage());
 }
 ```
 
@@ -251,6 +251,7 @@ double radiansPerSecond = Units.degreesToRadians(180);
 ## 7. Additional Resources
 
 * [WPILib Documentation](https://docs.wpilib.org/)
+* [YAGSL Wiki](https://github.com/BroncBotz3481/YAGSL)
 * [Contributing Guide](Contribguide.md)
 
 ---
