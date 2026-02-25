@@ -22,6 +22,7 @@ import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.FireControlSubsystem;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.commands.FireCommand;
+import frc.robot.commands.AutoAimCommand;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -62,6 +63,7 @@ public class RobotContainer {
   private Trigger m_driverDefaultButton;
   // Init joystick buttons
   private JoystickButton m_operatorDefaultButton;
+  private JoystickButton m_operatorButton2;
 
   // Init For Autonomous
   private LoggedDashboardChooser<String> autoDashboardChooser =
@@ -102,6 +104,7 @@ public class RobotContainer {
     // Joystick Buttons
     m_operatorDefaultButton =
         new JoystickButton(m_flightstick, Constants.JOYSTICK_DEFAULT_BUTTON); //
+    m_operatorButton2 = new JoystickButton(m_flightstick, 2);
   }
 
   private void bindCommands() {
@@ -120,6 +123,11 @@ public class RobotContainer {
     // Fire Control Command (Bind to Trigger / Button 1 of flight stick)
     m_operatorDefaultButton.onTrue(
         new FireCommand(m_fireSubsystem, () -> m_flightstick.getY(), m_operatorDefaultButton)
+    );
+
+    // Auto Aim Command (Bind to Button 2 of flight stick to toggle)
+    m_operatorButton2.toggleOnTrue(
+        new AutoAimCommand(m_turretSubsystem)
     );
 
     // TODO: Make Swerve code follow proper command-based structure
