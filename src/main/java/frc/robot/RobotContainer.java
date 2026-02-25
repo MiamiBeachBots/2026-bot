@@ -17,12 +17,13 @@ import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.FlywheelCommand;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.FireControlSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
-import frc.robot.subsystems.FireControlSubsystem;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.commands.FireCommand;
 import frc.robot.commands.AutoAimCommand;
+import frc.robot.commands.SetTurretPositionCommand;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -64,6 +65,12 @@ public class RobotContainer {
   // Init joystick buttons
   private JoystickButton m_operatorDefaultButton;
   private JoystickButton m_operatorButton2;
+  private JoystickButton m_operatorButton6;
+  private JoystickButton m_operatorButton7;
+  private JoystickButton m_operatorButton8;
+  private JoystickButton m_operatorButton9;
+  private JoystickButton m_operatorButton10;
+  private JoystickButton m_operatorButton11;
 
   // Init For Autonomous
   private LoggedDashboardChooser<String> autoDashboardChooser =
@@ -105,6 +112,12 @@ public class RobotContainer {
     m_operatorDefaultButton =
         new JoystickButton(m_flightstick, Constants.JOYSTICK_DEFAULT_BUTTON); //
     m_operatorButton2 = new JoystickButton(m_flightstick, 2);
+    m_operatorButton6 = new JoystickButton(m_flightstick, 6);
+    m_operatorButton7 = new JoystickButton(m_flightstick, 7);
+    m_operatorButton8 = new JoystickButton(m_flightstick, 8);
+    m_operatorButton9 = new JoystickButton(m_flightstick, 9);
+    m_operatorButton10 = new JoystickButton(m_flightstick, 10);
+    m_operatorButton11 = new JoystickButton(m_flightstick, 11);
   }
 
   private void bindCommands() {
@@ -129,6 +142,15 @@ public class RobotContainer {
     m_operatorButton2.toggleOnTrue(
         new AutoAimCommand(m_turretSubsystem)
     );
+
+    // Turret Preset Orientations (Buttons 6 - 11)
+    // Values are placeholders for raw motor rotations until gear ratio is determined.
+    m_operatorButton6.onTrue(new SetTurretPositionCommand(m_turretSubsystem, -0.5));
+    m_operatorButton7.onTrue(new SetTurretPositionCommand(m_turretSubsystem, -0.25));
+    m_operatorButton8.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.0));
+    m_operatorButton9.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.25));
+    m_operatorButton10.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.5));
+    m_operatorButton11.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.75));
 
     // TODO: Make Swerve code follow proper command-based structure
     /*
