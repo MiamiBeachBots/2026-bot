@@ -18,6 +18,10 @@ import frc.robot.commands.FlywheelCommand;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.FireControlSubsystem;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.commands.FireCommand;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -39,6 +43,9 @@ public class RobotContainer {
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem(m_driveSubsystem);
   private final FlywheelSubsystem m_shooterSubsytem = new FlywheelSubsystem();
+
+  private final TurretSubsystem m_turretSubsystem = new TurretSubsystem();
+  private final FireControlSubsystem m_fireSubsystem = new FireControlSubsystem();
 
   // Initialize Commands
   private final DefaultDrive m_defaultDrive =
@@ -104,6 +111,16 @@ public class RobotContainer {
     // Joystick Bindings
     m_operatorDefaultButton.whileTrue(
         new InstantCommand(() -> m_shooterState.setQueuedMode(ShooterModes.DEFAULT)));
+
+    // Turret Default Command (Bind to X-axis of flight stick)
+    m_turretSubsystem.setDefaultCommand(
+        new RunCommand(() -> m_turretSubsystem.setTurretSpeed(m_flightstick.getX()), m_turretSubsystem)
+    );
+
+    // Fire Control Command (Bind to Trigger / Button 1 of flight stick)
+    m_operatorDefaultButton.onTrue(
+        new FireCommand(m_fireSubsystem, () -> m_flightstick.getY(), m_operatorDefaultButton)
+    );
 
     // TODO: Make Swerve code follow proper command-based structure
     /*
