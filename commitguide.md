@@ -23,7 +23,7 @@ We use a simplified Conventional Commits format:
 | `[Build]` | Build system or dependency changes | `[Build] Update Gradle to 8.5` |
 | `[CI]` | CI/CD configuration changes | `[CI] Add automated testing workflow` |
 | `[Revert]` | Reverting a previous commit | `[Revert] Undo turret control changes` |
-| `[Config]` | Robot or YAGSL configuration files | `[Config] Update swerve module offsets` |
+| `[Config]` | Robot configuration files | `[Config] Update tank track width` |
 
 ## Writing the Description
 
@@ -68,10 +68,10 @@ manual control if no tags are visible.
 ## Examples
 
 ```
-[Feat] Add swerve drive kinematics
+[Feat] Add tank drive kinematics
 [Feat] Implement intake subsystem
 [Feat] Create 3-piece auto routine
-[Fix] Correct module angle offsets
+[Fix] Correct drive motor inversions
 [Fix] Resolve brownout during arm extension
 [Refactor] Move magic numbers to Constants.java
 [Refactor] Consolidate PID tuning methods

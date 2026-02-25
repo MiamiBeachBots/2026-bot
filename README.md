@@ -9,9 +9,9 @@
 
 **Current State:** Pre-Alpha / In Development
 
-- ✅ Swerve drive base initialized with YAGSL
+- ✅ Tank drive base initialized
 - ✅ Basic project structure and dependencies configured
-- ⚠️ Swerve base untested
+- ⚠️ Tank base untested
 - ⏳ Major subsystems pending implementation
 
 ## Quick Start
@@ -50,7 +50,6 @@ This project uses the following vendor libraries (automatically managed via `ven
 - **Phoenix 5** (CTRE) - Legacy CTRE devices
 - **REVLib** (REV Robotics) - Spark MAX motor controllers
 - **ReduxLib** - Additional utilities
-- **YAGSL** (Yet Another Generic Swerve Library) - Swerve drive framework
 - **Studica** - Additional hardware support
 - **ThriftyLib** - Encoder support
 - **Maple-Sim** - Simulation utilities
@@ -89,7 +88,7 @@ Test the code without a physical robot:
 │   ├── Robot.java              # Main robot class
 │   ├── RobotContainer.java     # Command and subsystem initialization
 │   └── subsystems/             # Robot subsystems
-├── src/main/deploy/            # Configuration files (YAGSL configs, etc.)
+├── src/main/deploy/            # Configuration files
 ├── vendordeps/                 # Vendor dependency JSON files
 ├── build.gradle                # Gradle build configuration
 └── README.md                   # This file
@@ -131,11 +130,11 @@ Run unit tests (when available):
 ## Roadmap & TODO
 
 - [ ] **Hardware Integration**
-  - [ ] Verify swerve module CAN IDs and configurations
+  - [ ] Verify tank drive motor CAN IDs and configurations
   - [ ] Test individual drive motors
-  - [ ] Calibrate module offsets
+  - [ ] Verify encoder directions
 - [ ] **Subsystems**
-  - [ ] Complete swerve drive testing
+  - [ ] Complete tank drive testing
   - [ ] Implement additional mechanisms (TBD based on game)
 - [ ] **Autonomous**
   - [ ] Configure PathPlanner

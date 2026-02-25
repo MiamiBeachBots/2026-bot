@@ -19,7 +19,7 @@ If you've encountered a bug, crash, compilation error, or unexpected behavior in
 3. **Click "New Issue"** and provide the following information:
 
    - **Title:** A clear, concise summary of the problem
-     Example: `[Bug] Swerve module fails to initialize on boot`
+     Example: `[Bug] Tank drive fails to initialize on boot`
 
    - **Description:** Include detailed information:
      - Steps to reproduce the error
@@ -39,7 +39,7 @@ Title: [Bug] Robot code crashes on startup with NullPointerException
 
 Description:
 When deploying the robot code to the RoboRIO, the code crashes immediately
-after initialization with a NullPointerException in SwerveSubsystem.java.
+after initialization with a NullPointerException in TankSubsystem.java.
 
 Steps to Reproduce:
 1. Deploy code using `./gradlew deploy`
@@ -52,8 +52,8 @@ Robot should initialize all subsystems successfully.
 Actual Behavior:
 Code crashes with:
 ```
-java.lang.NullPointerException: Cannot invoke SwerveModule.getPosition() because "this.module" is null
-  at frc.robot.subsystems.SwerveSubsystem.periodic(SwerveSubsystem.java:45)
+java.lang.NullPointerException: Cannot invoke RelativeEncoder.getPosition() because "this.encoder" is null
+  at frc.robot.subsystems.TankSubsystem.periodic(TankSubsystem.java:45)
 ```
 
 Environment:
@@ -86,11 +86,11 @@ For non-code-related matters such as documentation improvements, feature request
 **Example Issue for Other Matters:**
 
 ```
-Title: [Docs] Add instructions for calibrating swerve module offsets
+Title: [Docs] Add instructions for calibrating tank drive encoders
 
 Description:
-The current documentation doesn't explain how to calibrate the swerve module
-absolute encoder offsets. This would be helpful for new team members working
+The current documentation doesn't explain how to verify the tank drive
+encoders and track width. This would be helpful for new team members working
 on the drive system.
 
 Suggested Content:
