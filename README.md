@@ -28,12 +28,12 @@ Ensure you have the following installed before setting up the project:
 
 1. **Fork and clone the repository:**
 
-   First, fork the repository on GitHub by clicking the "Fork" button at [https://github.com/MiamiBeachBots/2026-bot](https://github.com/MiamiBeachBots/2026-bot).
+   First, fork the repository on GitHub by clicking the "Fork" button at [https://github.com/Thalia-the-nerd/2026-bot-workin](https://github.com/Thalia-the-nerd/2026-bot-workin).
 
    Then clone your fork (replace `YOUR_USERNAME` with your GitHub username):
    ```bash
-   git clone https://github.com/YOUR_USERNAME/2026-bot.git
-   cd 2026-bot
+   git clone https://github.com/YOUR_USERNAME/2026-bot-workin.git
+   cd 2026-bot-workin
    ```
 
 2. **Build the project:**
@@ -125,7 +125,17 @@ Run unit tests (when available):
 
 ## CAN Bus Map
 
-> **TODO:** Hardware configuration pending
+| Device | CAN ID | CAN Bus | Notes |
+|---|---|---|---|
+| RoboRIO 2.0 | N/A | `rio` | Main Controller |
+| Pigeon 2.0 / NavX | 0 | `rio` | Gyroscope |
+| Power Distribution Panel (PDP) | 1 | `rio` | Power Distribution |
+| Left Drive Leader | 2 | `rio` | SparkMax |
+| Left Drive Follower | 3 | `rio` | SparkMax |
+| Right Drive Leader | 4 | `rio` | SparkMax |
+| Right Drive Follower | 5 | `rio` | SparkMax |
+| Turret Rotation | 6 | `rio` | SparkMax |
+| Master Fire Control | 7 | `rio` | SparkMax |
 
 ## Roadmap & TODO
 

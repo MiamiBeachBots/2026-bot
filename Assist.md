@@ -11,7 +11,7 @@ GitHub Issues is our primary method for tracking bugs, feature requests, and gen
 If you've encountered a bug, crash, compilation error, or unexpected behavior in the code:
 
 1. **Navigate to the Issues tab:**
-   Go to [https://github.com/MiamiBeachBots/2026-bot/issues](https://github.com/MiamiBeachBots/2026-bot/issues)
+   Go to [https://github.com/Thalia-the-nerd/2026-bot-workin/issues](https://github.com/Thalia-the-nerd/2026-bot-workin/issues)
 
 2. **Check for existing issues:**
    Before creating a new issue, search to see if someone has already reported the same problem.
@@ -67,7 +67,7 @@ Environment:
 For non-code-related matters such as documentation improvements, feature requests, organizational questions, or general discussions:
 
 1. **Navigate to the Issues tab:**
-   Go to [https://github.com/MiamiBeachBots/2026-bot/issues](https://github.com/MiamiBeachBots/2026-bot/issues)
+   Go to [https://github.com/Thalia-the-nerd/2026-bot-workin/issues](https://github.com/Thalia-the-nerd/2026-bot-workin/issues)
 
 2. **Click "New Issue"** and provide:
 

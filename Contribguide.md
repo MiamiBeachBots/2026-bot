@@ -8,17 +8,17 @@ Thank you for your interest in contributing to the 2026-bot project! This guide 
 
 **Important:** Do not commit directly to the main repository. Instead, fork the repository and work on your fork.
 
-1. **Fork the repository** by clicking the "Fork" button at the top of the [2026-bot repository](https://github.com/MiamiBeachBots/2026-bot) page on GitHub.
+1. **Fork the repository** by clicking the "Fork" button at the top of the [2026-bot repository](https://github.com/Thalia-the-nerd/2026-bot-workin) page on GitHub.
 
 2. **Clone your fork** (replace `YOUR_USERNAME` with your GitHub username):
    ```bash
-   git clone https://github.com/YOUR_USERNAME/2026-bot.git
-   cd 2026-bot
+   git clone https://github.com/YOUR_USERNAME/2026-bot-workin.git
+   cd 2026-bot-workin
    ```
 
 3. **Add the upstream repository** to keep your fork in sync:
    ```bash
-   git remote add upstream https://github.com/MiamiBeachBots/2026-bot.git
+   git remote add upstream https://github.com/Thalia-the-nerd/2026-bot-workin.git
    ```
 
 4. **Verify your remotes:**
@@ -95,7 +95,7 @@ git commit -m "[Fix] Correct inverted motor direction"
    ```bash
    git push origin feat/shooter-control
    ```
-2. Go to the [main 2026-bot repository](https://github.com/MiamiBeachBots/2026-bot) on GitHub.
+2. Go to the [main 2026-bot repository](https://github.com/Thalia-the-nerd/2026-bot-workin) on GitHub.
 3. You should see a prompt to "Compare & pull request" for your recently pushed branch.
 4. Click the button and create a Pull Request from your fork to the main repository.
 5. Provide a clear description of your changes.
