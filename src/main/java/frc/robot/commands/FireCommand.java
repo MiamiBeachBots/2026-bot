@@ -16,8 +16,8 @@ public class FireCommand extends Command {
   private final double m_minimumFireTimeSeconds = 2.0;
 
   /**
-   * Creates a new FireCommand that runs for at least 2 seconds, and continues to run as long
-   * as the trigger is held. The speed is determined by the absolute value of the provided double supplier.
+   * Creates a new FireCommand that runs for at least 2 seconds, and continues to run as long as the
+   * trigger is held. The speed is determined by the absolute value of the provided double supplier.
    */
   public FireCommand(
       FireControlSubsystem fireSubsystem,

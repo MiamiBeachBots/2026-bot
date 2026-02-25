@@ -7,23 +7,23 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.ShooterState.ShooterModes;
 import frc.robot.commands.AimCommand;
+import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.DefaultDrive;
+import frc.robot.commands.FireCommand;
 import frc.robot.commands.FlywheelCommand;
+import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FireControlSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.commands.FireCommand;
-import frc.robot.commands.AutoAimCommand;
-import frc.robot.commands.SetTurretPositionCommand;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -130,18 +130,15 @@ public class RobotContainer {
 
     // Turret Default Command (Bind to X-axis of flight stick)
     m_turretSubsystem.setDefaultCommand(
-        new RunCommand(() -> m_turretSubsystem.setTurretSpeed(m_flightstick.getX()), m_turretSubsystem)
-    );
+        new RunCommand(
+            () -> m_turretSubsystem.setTurretSpeed(m_flightstick.getX()), m_turretSubsystem));
 
     // Fire Control Command (Bind to Trigger / Button 1 of flight stick)
     m_operatorDefaultButton.onTrue(
-        new FireCommand(m_fireSubsystem, () -> m_flightstick.getY(), m_operatorDefaultButton)
-    );
+        new FireCommand(m_fireSubsystem, () -> m_flightstick.getY(), m_operatorDefaultButton));
 
     // Auto Aim Command (Bind to Button 2 of flight stick to toggle)
-    m_operatorButton2.toggleOnTrue(
-        new AutoAimCommand(m_turretSubsystem)
-    );
+    m_operatorButton2.toggleOnTrue(new AutoAimCommand(m_turretSubsystem));
 
     // Turret Preset Orientations (Buttons 6 - 11)
     // Values are placeholders for raw motor rotations until gear ratio is determined.

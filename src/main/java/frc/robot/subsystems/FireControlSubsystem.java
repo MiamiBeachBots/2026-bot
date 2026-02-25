@@ -1,12 +1,12 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANConstants;
 
 public class FireControlSubsystem extends SubsystemBase {
@@ -16,7 +16,7 @@ public class FireControlSubsystem extends SubsystemBase {
   public FireControlSubsystem() {
     m_fireMotor = new SparkMax(CANConstants.MOTOR_FIRE_ID, MotorType.kBrushless);
     m_config = new SparkMaxConfig();
-    
+
     // Safety Limits
     m_config.smartCurrentLimit(40);
 
@@ -45,6 +45,6 @@ public class FireControlSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    // Basic simulation logic if needed. 
+    // Basic simulation logic if needed.
   }
 }
