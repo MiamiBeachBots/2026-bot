@@ -31,7 +31,7 @@ Thank you for your interest in contributing to the 2026-bot project! This guide 
 
 ### Install Dependencies
 
-This project uses YAGSL for swerve drive control. Run the following command to download all required libraries (Phoenix 6, REVLib, YAGSL):
+This project uses DifferentialDrive for tank drive control. Run the following command to download all required libraries (Phoenix 6, REVLib):
 
 ```bash
 ./gradlew build

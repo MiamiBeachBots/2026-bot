@@ -7,17 +7,26 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.ShooterState.ShooterModes;
 import frc.robot.commands.AimCommand;
+import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.DefaultDrive;
+import frc.robot.commands.FireCommand;
 import frc.robot.commands.FlywheelCommand;
+import frc.robot.commands.IntakeSliderCommand;
+import frc.robot.commands.SetTurretPositionCommand;
+import frc.robot.commands.UnjamIntakeCommand;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.FireControlSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -40,6 +49,10 @@ public class RobotContainer {
   private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem(m_driveSubsystem);
   private final FlywheelSubsystem m_shooterSubsytem = new FlywheelSubsystem();
 
+  private final TurretSubsystem m_turretSubsystem = new TurretSubsystem();
+  private final FireControlSubsystem m_fireSubsystem = new FireControlSubsystem();
+  private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+
   // Initialize Commands
   private final DefaultDrive m_defaultDrive =
       new DefaultDrive(
@@ -55,6 +68,14 @@ public class RobotContainer {
   private Trigger m_driverDefaultButton;
   // Init joystick buttons
   private JoystickButton m_operatorDefaultButton;
+  private JoystickButton m_operatorButton2;
+  private JoystickButton m_operatorButton6;
+  private JoystickButton m_operatorButton7;
+  private JoystickButton m_operatorButton8;
+  private JoystickButton m_operatorButton9;
+  private JoystickButton m_operatorButton10;
+  private JoystickButton m_operatorButton11;
+  private JoystickButton m_operatorButton12;
 
   // Init For Autonomous
   private LoggedDashboardChooser<String> autoDashboardChooser =
@@ -95,6 +116,14 @@ public class RobotContainer {
     // Joystick Buttons
     m_operatorDefaultButton =
         new JoystickButton(m_flightstick, Constants.JOYSTICK_DEFAULT_BUTTON); //
+    m_operatorButton2 = new JoystickButton(m_flightstick, 2);
+    m_operatorButton6 = new JoystickButton(m_flightstick, 6);
+    m_operatorButton7 = new JoystickButton(m_flightstick, 7);
+    m_operatorButton8 = new JoystickButton(m_flightstick, 8);
+    m_operatorButton9 = new JoystickButton(m_flightstick, 9);
+    m_operatorButton10 = new JoystickButton(m_flightstick, 10);
+    m_operatorButton11 = new JoystickButton(m_flightstick, 11);
+    m_operatorButton12 = new JoystickButton(m_flightstick, 12);
   }
 
   private void bindCommands() {
@@ -104,6 +133,35 @@ public class RobotContainer {
     // Joystick Bindings
     m_operatorDefaultButton.whileTrue(
         new InstantCommand(() -> m_shooterState.setQueuedMode(ShooterModes.DEFAULT)));
+
+    // Turret Default Command (Bind to X-axis of flight stick)
+    m_turretSubsystem.setDefaultCommand(
+        new RunCommand(
+            () -> m_turretSubsystem.setTurretSpeed(m_flightstick.getX()), m_turretSubsystem));
+
+    // Fire Control Command (Bind to Trigger / Button 1 of flight stick)
+    m_operatorDefaultButton.onTrue(
+        new FireCommand(m_fireSubsystem, () -> m_flightstick.getY(), m_operatorDefaultButton));
+
+    // Auto Aim Command (Bind to Button 2 of flight stick to toggle)
+    m_operatorButton2.toggleOnTrue(new AutoAimCommand(m_turretSubsystem));
+
+    // Turret Preset Orientations (Buttons 6 - 11)
+    // Values are placeholders for raw motor rotations until gear ratio is determined.
+    m_operatorButton6.onTrue(new SetTurretPositionCommand(m_turretSubsystem, -0.5));
+    m_operatorButton7.onTrue(new SetTurretPositionCommand(m_turretSubsystem, -0.25));
+    m_operatorButton8.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.0));
+    m_operatorButton9.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.25));
+    m_operatorButton10.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.5));
+    m_operatorButton11.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.75));
+
+    // Intake System
+    // Bind fuzzy slider (Flightstick Throttle axis) to automatically control the Intake.
+    m_intakeSubsystem.setDefaultCommand(
+        new IntakeSliderCommand(m_intakeSubsystem, () -> m_flightstick.getThrottle()));
+
+    // Emergency Unjam (Button 12)
+    m_operatorButton12.onTrue(new UnjamIntakeCommand(m_intakeSubsystem));
 
     // TODO: Make Swerve code follow proper command-based structure
     /*
