@@ -220,14 +220,15 @@ public class DriveSubsystem extends SubsystemBase {
 
     final PPLTVController m_driveController = new PPLTVController(0.02);
     // Setup Base AutoBuilder (Autonomous)
-    AutoBuilder.configure(
-        this::getPose, // Pose2d supplier
-        this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
-        this::getSpeeds, // A method for getting the chassis' current speed and direction
-        this::setSpeeds, // A consumer that takes the desired chassis speed and direction
-        m_driveController, // PPLTVController is the built in path following controller for
-        // differential drive trains
-        DriveConstants.autoConfig, // AutoConfig
+    if (DriveConstants.autoConfig != null) {
+      AutoBuilder.configure(
+          this::getPose, // Pose2d supplier
+          this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
+          this::getSpeeds, // A method for getting the chassis' current speed and direction
+          this::setSpeeds, // A consumer that takes the desired chassis speed and direction
+          m_driveController, // PPLTVController is the built in path following controller for
+          // differential drive trains
+          DriveConstants.autoConfig, // AutoConfig
         () -> {
           // Boolean supplier that controls when the path will be mirrored for the red alliance
           // This will flip the path being followed to the red side of the field.
@@ -241,6 +242,9 @@ public class DriveSubsystem extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
         );
+    } else {
+        System.err.println("WARNING: PathPlanner autoConfig is null! AutoBuilder was NOT configured.");
+    }
 
     SmartDashboard.putData("Field", field); // add field to dashboard
 
