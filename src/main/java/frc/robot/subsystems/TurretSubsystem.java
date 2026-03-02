@@ -11,6 +11,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANConstants;
 
+// Sim Imports
+import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.sim.SparkRelativeEncoderSim;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+
 public class TurretSubsystem extends SubsystemBase {
   private final SparkMax m_turretMotor;
   private final SparkMaxConfig m_config;
@@ -21,6 +28,11 @@ public class TurretSubsystem extends SubsystemBase {
   private final double kP = 0.1;
   private final double kI = 0.0;
   private final double kD = 0.0;
+  
+  // Sim Objects
+  private final SparkMaxSim m_turretSim;
+  private final SparkRelativeEncoderSim m_encoderSim;
+  private final SingleJointedArmSim m_physicsSim;
 
   public TurretSubsystem() {
     m_turretMotor = new SparkMax(CANConstants.MOTOR_TURRET_ID, MotorType.kBrushless);
@@ -37,6 +49,20 @@ public class TurretSubsystem extends SubsystemBase {
 
     m_pidController = m_turretMotor.getClosedLoopController();
     m_encoder = m_turretMotor.getEncoder();
+    
+    // Configure Simulation
+    m_turretSim = new SparkMaxSim(m_turretMotor, DCMotor.getNEO(1));
+    m_encoderSim = new SparkRelativeEncoderSim(m_turretMotor);
+    // Physics sim: gravity disabled for horizontal turret. Range: -360 to 360 degrees
+    m_physicsSim = new SingleJointedArmSim(
+        DCMotor.getNEO(1), 
+        10.0, // Gear Ratio
+        0.5, // Moment of Inertia
+        1.0, // Mass
+        -Math.PI * 2, 
+        Math.PI * 2, 
+        false, 
+        0.0);
   }
 
   /**
@@ -87,6 +113,14 @@ public class TurretSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    // Basic simulation logic if needed.
+    // Set simulator inputs
+    m_physicsSim.setInput(m_turretSim.getAppliedOutput() * RobotController.getBatteryVoltage());
+    m_physicsSim.update(0.02);
+    
+    // Update Spark Max simulated sensors
+    m_encoderSim.setPosition(m_physicsSim.getAngleRads() / (2 * Math.PI) * 10.0); // Gear ratio 10
+    
+    // Broadcast for Python App
+    SmartDashboard.putNumber("Sim_TurretAngle", Math.toDegrees(m_physicsSim.getAngleRads()));
   }
 }
