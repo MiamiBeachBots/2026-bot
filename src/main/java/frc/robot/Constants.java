@@ -23,21 +23,6 @@ public final class Constants {
     public static final int MOTOR_FRONT_LEFT_ID = 3;
     public static final int MOTOR_BACK_LEFT_ID = 4;
 
-    /// Elevator Motors
-    public static final int MOTOR_ELEVATOR_LEFT_ID = 5;
-    public static final int MOTOR_ELEVATOR_RIGHT_ID = 6;
-
-    /// Arm Motors
-    public static final int MOTOR_ARM_MAIN_ID = 7;
-
-    /// Shooter Motors
-    public static final int MOTOR_SHOOTER_LEFT_ID = 8;
-    public static final int MOTOR_SHOOTER_RIGHT_ID = 9;
-
-    /// Lifter Motors
-    public static final int MOTOR_LIFTER_LEFT_ID = 10;
-    public static final int MOTOR_LIFTER_RIGHT_ID = 11;
-
     /// Turret and Fire Subsystems
     public static final int MOTOR_TURRET_ID = 12;
     public static final int MOTOR_FIRE_ID = 13;

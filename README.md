@@ -173,7 +173,9 @@ Test the code without a physical robot:
 ## CAN Bus Map
 
 > [!NOTE]
-> The hardware wiring and CAN maps have now been completed! The full CAN map is listed below. All motors are REV Spark Maxes.
+> This is what we will be doing
+> [!ALERT]
+> CAN is currently not working but the can ids are being set
 
 | CAN ID | Subsystem | Device/Motor Name | Type |
 |:---|:---|:---|:---|
@@ -181,13 +183,6 @@ Test the code without a physical robot:
 | 2  | DriveTrain | Back Right Motor | NEO Brushless |
 | 3  | DriveTrain | Front Left Motor | NEO Brushless |
 | 4  | DriveTrain | Back Left Motor | NEO Brushless |
-| 5  | Elevator | Left Elevator Motor | NEO Brushless |
-| 6  | Elevator | Right Elevator Motor | NEO Brushless |
-| 7  | Arm | Main Pivot Arm Motor | NEO Brushless |
-| 8  | Shooter | Left Flywheel | NEO Brushless |
-| 9  | Shooter | Right Flywheel | NEO Brushless |
-| 10 | Lifter | Left Climber | NEO Brushless |
-| 11 | Lifter | Right Climber | NEO Brushless |
 | 12 | Turret | Turret Rotation Motor | NEO 550 |
 | 13 | FireControl | Fire Kicker Motor | NEO 550 |
 | 14 | Intake | Intake Roller Motor | NEO 550 |
@@ -196,7 +191,7 @@ Test the code without a physical robot:
 
 ---
 
-## Roadmap & TODO
+## Roadmap \& TODO
 
 * [x] **Hardware Integration**
   * [x] Verify tank drive motor CAN IDs and configurations

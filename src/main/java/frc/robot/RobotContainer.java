@@ -12,19 +12,16 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.ShooterState.ShooterModes;
 import frc.robot.commands.AimCommand;
 import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.FireCommand;
-import frc.robot.commands.FlywheelCommand;
 import frc.robot.commands.IntakeSliderCommand;
 import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.UnjamIntakeCommand;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FireControlSubsystem;
-import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -35,8 +32,6 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  * serves as the central hub for organizing the robot's command-based structure.
  */
 public class RobotContainer {
-  // Initialize state-based system to pass data between commands
-  private final ShooterState m_shooterState = new ShooterState();
   // The Controller (Port 0 is usually the first USB controller plugged in)
   private final CommandXboxController m_controller1 =
       new CommandXboxController(Constants.CONTROLLER_USB_INDEX);
@@ -47,7 +42,6 @@ public class RobotContainer {
   // File(Filesystem.getDeployDirectory(), "swerve"));
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem(m_driveSubsystem);
-  private final FlywheelSubsystem m_shooterSubsytem = new FlywheelSubsystem();
 
   private final TurretSubsystem m_turretSubsystem = new TurretSubsystem();
   private final FireControlSubsystem m_fireSubsystem = new FireControlSubsystem();
@@ -56,11 +50,11 @@ public class RobotContainer {
   // Initialize Commands
   private final DefaultDrive m_defaultDrive =
       new DefaultDrive(
-          m_driveSubsystem, m_shooterState, this::getControllerLeftY, this::getControllerRightY, () -> m_controller1.getHID().getLeftBumper());
-  private final AimCommand m_aimCommand =
-      new AimCommand(m_driveSubsystem, m_cameraSubsystem, m_shooterState);
-  private final FlywheelCommand m_shooterCommand =
-      new FlywheelCommand(m_shooterSubsytem, m_shooterState);
+          m_driveSubsystem,
+          this::getControllerLeftY,
+          this::getControllerRightY,
+          () -> m_controller1.getHID().getLeftBumper());
+  private final AimCommand m_aimCommand = new AimCommand(m_driveSubsystem, m_cameraSubsystem);
 
   // Init controller buttons
   private Trigger m_toggleBrakeButton;
@@ -128,21 +122,24 @@ public class RobotContainer {
 
   private void bindCommands() {
     // Controller Bindings
-    m_switchQueuedButton.whileTrue(new InstantCommand(() -> m_shooterState.switchModes()));
     m_toggleBrakeButton.onTrue(new InstantCommand(() -> m_driveSubsystem.SwitchBrakemode()));
-    
+
     // Intake
-    m_toggleIntakeButton.toggleOnTrue(new RunCommand(() -> m_intakeSubsystem.setIntakeSpeed(1.0), m_intakeSubsystem));
-    m_controller1.leftTrigger().whileTrue(new RunCommand(() -> m_intakeSubsystem.setIntakeSpeed(-1.0), m_intakeSubsystem));
-    
+    m_toggleIntakeButton.toggleOnTrue(
+        new RunCommand(() -> m_intakeSubsystem.setIntakeSpeed(1.0), m_intakeSubsystem));
+    m_controller1
+        .leftTrigger()
+        .whileTrue(new RunCommand(() -> m_intakeSubsystem.setIntakeSpeed(-1.0), m_intakeSubsystem));
+
     // Fire Override
-    m_controller1.rightTrigger().whileTrue(new RunCommand(() -> m_fireSubsystem.fire(1.0), m_fireSubsystem));
-    
+    m_controller1
+        .rightTrigger()
+        .whileTrue(new RunCommand(() -> m_fireSubsystem.fire(1.0), m_fireSubsystem));
+
     // Default Drive
     m_driveSubsystem.setDefaultCommand(m_defaultDrive);
     // Joystick Bindings
-    m_operatorDefaultButton.whileTrue(
-        new InstantCommand(() -> m_shooterState.setQueuedMode(ShooterModes.DEFAULT)));
+    // (Removed queued shooter mode override)
 
     // Turret Default Command (Bind to X-axis of flight stick)
     m_turretSubsystem.setDefaultCommand(
@@ -153,10 +150,6 @@ public class RobotContainer {
     // Run at full speed (1.0) while trigger is held, rather than mapped to Y axis.
     m_operatorDefaultButton.whileTrue(
         new FireCommand(m_fireSubsystem, () -> 1.0, m_operatorDefaultButton));
-        
-    // Shooter / Flywheel (Bind to Y-axis of flight stick so pushing forward spins up the shooter)
-    m_shooterSubsytem.setDefaultCommand(
-        new RunCommand(() -> m_shooterSubsytem.SpinShooter(m_flightstick.getY()), m_shooterSubsytem));
 
     // Auto Aim Command (Bind to Button 2 of flight stick to toggle)
     m_operatorButton2.toggleOnTrue(new AutoAimCommand(m_turretSubsystem, m_cameraSubsystem));
@@ -220,10 +213,7 @@ public class RobotContainer {
     // pathGroup.get(0)));
     NamedCommands.registerCommand(
         "BrakeCommand", new InstantCommand(() -> m_driveSubsystem.SetBrakemode()));
-    NamedCommands.registerCommand("ShooterCommand", m_shooterCommand);
     NamedCommands.registerCommand("AimCommand", m_aimCommand);
-    NamedCommands.registerCommand(
-        "SwitchQueuedCommand", new InstantCommand(() -> m_shooterState.switchModes()));
   }
 
   private void bindDriveSysIDCommands() {
@@ -281,6 +271,5 @@ public class RobotContainer {
 
   public void periodic() {
     // This method will be called once per scheduler run (Only for inter subsystem state updating)
-    m_shooterState.StatePeriodic();
   }
 }

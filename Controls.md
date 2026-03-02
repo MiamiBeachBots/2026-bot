@@ -20,7 +20,7 @@ This document serves as the master reference for all controller mappings and dri
 | Input | Action | Description |
 |:---|:---|:---|
 | **X-Axis** | Turret Manual Control | Manually rotates the Turret left and right. |
-| **Y-Axis** | Flywheel Speed | Pushing the stick forward spins up the Flywheel shooter. |
+| **Y-Axis** | *Unassigned* | Reserved for future mechanisms. |
 | **Throttle Slider** | Intake Speed | Automatically scales the intake motor speed. |
 | **Trigger (Top)** | Fire Weapon | Activates feeder/kicker motor full speed to launch the ball. |
 | **Button 2** | Toggle Auto Aim | Activates auto-aim mode for targeting. |

@@ -229,21 +229,22 @@ public class DriveSubsystem extends SubsystemBase {
           m_driveController, // PPLTVController is the built in path following controller for
           // differential drive trains
           DriveConstants.autoConfig, // AutoConfig
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        },
-        this // Reference to this subsystem to set requirements
-        );
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+          },
+          this // Reference to this subsystem to set requirements
+          );
     } else {
-        System.err.println("WARNING: PathPlanner autoConfig is null! AutoBuilder was NOT configured.");
+      System.err.println(
+          "WARNING: PathPlanner autoConfig is null! AutoBuilder was NOT configured.");
     }
 
     SmartDashboard.putData("Field", field); // add field to dashboard

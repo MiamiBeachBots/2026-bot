@@ -4,7 +4,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.ShooterState;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.utils.HelperFunctions;
 import java.util.function.DoubleSupplier;
@@ -12,7 +11,6 @@ import java.util.function.DoubleSupplier;
 /** The default drive command that uses the drive subsystem. */
 public class DefaultDrive extends Command {
   private final DriveSubsystem m_driveSubsystem;
-  private final ShooterState m_shooterState;
   private final DoubleSupplier m_left_y; // this gives us the left y axis for current controller
   private final DoubleSupplier m_right_y; // this gives us the right y axis for current controller
   private final java.util.function.BooleanSupplier m_precision_mode; // Precision Mode Toggle
@@ -28,12 +26,10 @@ public class DefaultDrive extends Command {
    */
   public DefaultDrive(
       DriveSubsystem d_subsystem,
-      ShooterState shooterState,
       DoubleSupplier xbox_left_y,
       DoubleSupplier xbox_right_y,
       java.util.function.BooleanSupplier precision_mode) {
     m_driveSubsystem = d_subsystem;
-    m_shooterState = shooterState;
     m_left_y = xbox_left_y;
     m_right_y = xbox_right_y;
     m_precision_mode = precision_mode;
@@ -52,15 +48,15 @@ public class DefaultDrive extends Command {
     m_driveSubsystem.setReducedSpeed(false);
     if (!HelperFunctions.inDeadzone(m_left_y.getAsDouble(), Constants.CONTROLLER_DEAD_ZONE)
         || !HelperFunctions.inDeadzone(m_right_y.getAsDouble(), Constants.CONTROLLER_DEAD_ZONE)) {
-      
+
       double speedMultiplier = m_precision_mode.getAsBoolean() ? 0.3 : 1.0;
-      
+
       this.m_driveSubsystem.tankDrive(
           Constants.MAX_SPEED * m_left_y.getAsDouble() * speedMultiplier,
           Constants.MAX_SPEED * m_right_y.getAsDouble() * speedMultiplier);
     } else {
-        // Must explicitly stop if within deadzone or else motors will coast at last value
-        this.m_driveSubsystem.tankDrive(0, 0);
+      // Must explicitly stop if within deadzone or else motors will coast at last value
+      this.m_driveSubsystem.tankDrive(0, 0);
     }
   }
 
