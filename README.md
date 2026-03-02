@@ -223,7 +223,7 @@ We are extremely grateful for the generous support of our sponsors. Their contri
 
 </div>
 
-> [!NOTE]  
+> [!NOTE]
 > If you are interested in sponsoring our team, please reach out to our team administration!
 
 <div align="center">
