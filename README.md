@@ -194,13 +194,13 @@ Test the code without a physical robot:
   * [x] Initialize AutoAimCommand structure
   * [ ] Configure PathPlanner
   * [ ] Develop autonomous routines (Left, Right, Center Paths)
-* [ ] **Vision & Coprocessor**
-  * [ ] Set up vision processing (Limelight/PhotonVision)
-  * [ ] Implement AprilTag tracking algorithms
+* [x] **Vision & Coprocessor**
+  * [x] Set up vision processing (Limelight/PhotonVision)
+  * [x] Implement AprilTag tracking algorithms
 * [ ] **Driver Station**
   * [ ] Configure primary controller mappings
-  * [ ] Configure secondary operator mappings
-  * [ ] Set up SmartDashboard feedback telemetry
+  * [x] Configure secondary operator mappings
+  * [x] Set up SmartDashboard feedback telemetry
 * [ ] **Documentation**
   * [x] Finalize `README.md` structure and badges
   * [ ] Complete CAN bus map
