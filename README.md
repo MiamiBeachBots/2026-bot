@@ -1,18 +1,51 @@
+<a name="readme-top"></a>
+
+<div align="center">
+
 # 2026-bot
+**Miami Beach Bots (FRC Team 2026)**
 
-# *Aut viam inveniam aut faciam.*
+*Aut viam inveniam aut faciam.*
 
-**Team:** Miami Beach Bots (FRC Team 2026)
-**Season:** 2025-2026
+[![Java: 17+](https://img.shields.io/badge/Java-17%2B-orange.svg?logo=java)]()
+[![WPILib: 2025](https://img.shields.io/badge/WPILib-2025-red.svg)]()
+[![Build Status](https://img.shields.io/github/actions/workflow/status/MiamiBeachBots/2026-bot/main.yml?branch=main&logo=github)](https://github.com/MiamiBeachBots/2026-bot/actions)
+[![Repo Size](https://img.shields.io/github/repo-size/MiamiBeachBots/2026-bot)](https://github.com/MiamiBeachBots/2026-bot)
+[![Last Commit](https://img.shields.io/github/last-commit/MiamiBeachBots/2026-bot)](https://github.com/MiamiBeachBots/2026-bot/commits/main)
+
+</div>
+
+---
+
+## Table of Contents
+- [Project Status](#project-status)
+- [Quick Start](#quick-start)
+  - [Prerequisites](#prerequisites)
+  - [Installation \& Branching](#installation--branching)
+- [Build \& Deploy](#build--deploy)
+- [Project Structure](#project-structure)
+- [Documentation](#documentation)
+- [CAN Bus Map](#can-bus-map)
+- [Roadmap \& TODO](#roadmap--todo)
+- [Team \& Sponsors](#team--sponsors)
+
+---
 
 ## Project Status
 
 **Current State:** Pre-Alpha / In Development
 
-- ✅ Tank drive base initialized
-- ✅ Basic project structure and dependencies configured
-- ⚠️ Tank base untested
-- ⏳ Major subsystems pending implementation
+> [!NOTE]
+> This codebase is under active development for the 2025-2026 FRC season.
+
+* **[Complete]** Tank drive base initialized
+* **[Complete]** Basic project structure and dependencies configured
+* **[Warning]** Tank base untested
+* **[Pending]** Major subsystems pending implementation
+
+<p align="right"><a href="#readme-top">Back to top</a></p>
+
+---
 
 ## Quick Start
 
@@ -20,39 +53,58 @@
 
 Ensure you have the following installed before setting up the project:
 
-- **Java Development Kit (JDK):** Version 17 or higher
-- **WPILib Suite:** 2025 release
-- **Git:** For version control
+* **Java Development Kit (JDK):** Version 17 or higher
+* **WPILib Suite:** 2025 release
+* **Git:** For version control
 
-### Installation
+### Installation & Branching
 
-1. **Fork and clone the repository:**
+We use a branching model for all features rather than relying on forks. All contributors should clone the main repository directly and branch off of `main`.
 
-   First, fork the repository on GitHub by clicking the "Fork" button at [https://github.com/MiamiBeachBots/2026-bot](https://github.com/MiamiBeachBots/2026-bot).
-
-   Then clone your fork (replace `YOUR_USERNAME` with your GitHub username):
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/2026-bot.git
+   git clone https://github.com/MiamiBeachBots/2026-bot.git
    cd 2026-bot
    ```
 
-2. **Build the project:**
+2. **Create a feature branch:**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+3. **Build the project:**
    ```bash
    ./gradlew build
    ```
    This command downloads all required vendor dependencies and compiles the code.
 
-### Vendor Dependencies
+4. **Push your changes and open a Pull Request:**
+   ```bash
+   git add .
+   git commit -m "Brief description of changes"
+   git push -u origin feature/your-feature-name
+   ```
+
+<details>
+<summary><strong>View Vendor Dependencies</strong></summary>
 
 This project uses the following vendor libraries (automatically managed via `vendordeps/`):
 
-- **Phoenix 6** (CTRE) - Motor controllers and sensors
-- **Phoenix 5** (CTRE) - Legacy CTRE devices
-- **REVLib** (REV Robotics) - Spark MAX motor controllers
-- **ReduxLib** - Additional utilities
-- **Studica** - Additional hardware support
-- **ThriftyLib** - Encoder support
-- **Maple-Sim** - Simulation utilities
+| Vendor | Library | Description |
+|---|---|---|
+| **CTRE** | Phoenix 6 | Motor controllers and sensors |
+| **CTRE** | Phoenix 5 | Legacy CTRE devices |
+| **REV Robotics** | REVLib | Spark MAX motor controllers |
+| **Redux** | ReduxLib | Additional utilities |
+| **Studica** | Studica | Additional hardware support |
+| **ThriftyBot** | ThriftyLib | Encoder support |
+| **Maple** | Maple-Sim | Simulation utilities |
+
+</details>
+
+<p align="right"><a href="#readme-top">Back to top</a></p>
+
+---
 
 ## Build & Deploy
 
@@ -66,7 +118,7 @@ Compile the robot code locally:
 
 ### Deploying to Robot
 
-1. **Connect to the robot** via WiFi (10.20.26.1) or Ethernet
+1. **Connect to the robot** via WiFi (10.20.26.1) or Ethernet.
 2. **Deploy the code:**
    ```bash
    ./gradlew deploy
@@ -80,9 +132,16 @@ Test the code without a physical robot:
 ./gradlew simulateJava
 ```
 
+<p align="right"><a href="#readme-top">Back to top</a></p>
+
+---
+
 ## Project Structure
 
-```
+<details open>
+<summary><strong>Directory Layout</strong></summary>
+
+```text
 2026-bot/
 ├── src/main/java/frc/robot/    # Robot source code
 │   ├── Robot.java              # Main robot class
@@ -94,91 +153,80 @@ Test the code without a physical robot:
 └── README.md                   # This file
 ```
 
-## Documentation
+</details>
 
-- **[Contributing Guide](Contribguide.md)** - How to contribute to this project
-- **[Style Guide](styleguide.md)** - Code formatting and naming conventions
-- **[Commit Guide](commitguide.md)** - Git commit message standards
-- **[Assist Guide](Assist.md)** - How to get help and report issues
-
-## Development
-
-### Setting Up Your Environment
-
-**For VS Code Users:**
-1. Install the WPILib 2025 suite
-2. Open this project folder in VS Code
-3. Accept the prompt to import the Gradle project
-
-**For CLI Users:**
-1. Ensure JDK 17+ is installed
-2. Use `./gradlew build` to compile
-3. Use `./gradlew deploy` to deploy to robot
-
-### Testing
-
-Run unit tests (when available):
-
-```bash
-./gradlew test
-```
-
-## CAN Bus Map
-
-> **TODO:** Hardware configuration pending
-
-## Roadmap & TODO
-
-- [ ] **Hardware Integration**
-  - [ ] Verify tank drive motor CAN IDs and configurations
-  - [ ] Test individual drive motors
-  - [ ] Verify encoder directions
-- [ ] **Subsystems**
-  - [ ] Complete tank drive testing
-  - [ ] Implement additional mechanisms (TBD based on game)
-- [ ] **Autonomous**
-  - [ ] Configure PathPlanner
-  - [ ] Develop autonomous routines
-- [ ] **Vision & Coprocessor**
-  - [ ] Set up vision processing (Limelight/PhotonVision)
-  - [ ] Implement AprilTag tracking
-- [ ] **Driver Station**
-  - [ ] Configure controller mappings
-  - [ ] Set up driver feedback systems
-- [ ] **Documentation**
-  - [ ] Complete CAN bus map
-  - [ ] Document electrical connections
-  - [ ] Add subsystem documentation
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
-## Contributing
-
-We welcome contributions! Please read our [Contributing Guide](Contribguide.md) and [Style Guide](styleguide.md) before submitting pull requests.
-
-**Important:** All contributions must be made through pull requests from your fork. Do not commit directly to the main repository.
-
-## Team
-
-**Miami Beach Bots** - FRC Team 2026
-Miami Beach, Florida
-
-## Sponsors
-
-We are grateful for the generous support of our sponsors:
-
-- **Gene Haas Foundation**
-- **Waldom Electronics**
-- **Give Miami Day**
-- **Intuitive Foundation**
-- **MDCPS** (Miami-Dade County Public Schools)
-- **Cordyceps Systems**
-- **MBSH PTSA** (Miami Beach Senior High Parent-Teacher-Student Association)
-- **FIRST Robotics**
-- **Metal Supermarkets**
+<p align="right"><a href="#readme-top">Back to top</a></p>
 
 ---
 
-*Built by Miami Beach Bots*
+## Documentation
+
+* **[Contributing Guide](Contribguide.md)** - How to contribute to this project
+* **[Style Guide](styleguide.md)** - Code formatting and naming conventions
+* **[Commit Guide](commitguide.md)** - Git commit message standards
+* **[Assist Guide](Assist.md)** - How to get help and report issues
+
+<p align="right"><a href="#readme-top">Back to top</a></p>
+
+---
+
+## CAN Bus Map
+
+> [!IMPORTANT]
+> Hardware configuration is currently pending confirmation from the build team.
+
+<p align="right"><a href="#readme-top">Back to top</a></p>
+
+---
+
+## Roadmap & TODO
+
+* [ ] **Hardware Integration**
+  * [ ] Verify tank drive motor CAN IDs and configurations
+  * [ ] Test individual drive motors
+  * [ ] Verify encoder directions
+* [ ] **Subsystems**
+  * [ ] Complete tank drive testing
+  * [ ] Implement additional mechanisms (TBD based on game)
+* [ ] **Autonomous**
+  * [ ] Configure PathPlanner
+  * [ ] Develop autonomous routines
+* [ ] **Vision & Coprocessor**
+  * [ ] Set up vision processing (Limelight/PhotonVision)
+  * [ ] Implement AprilTag tracking
+* [ ] **Driver Station**
+  * [ ] Configure controller mappings
+  * [ ] Set up driver feedback systems
+* [ ] **Documentation**
+  * [ ] Complete CAN bus map
+  * [ ] Document electrical connections
+  * [ ] Add subsystem documentation
+
+<p align="right"><a href="#readme-top">Back to top</a></p>
+
+---
+
+## Team & Sponsors
+
+### Miami Beach Bots (FRC Team 2026)
+*Miami Beach, Florida*
+
+We are extremely grateful for the generous support of our sponsors. Their contributions make this project possible:
+
+<div align="center">
+
+| | | |
+|:---:|:---:|:---:|
+| **Gene Haas Foundation** | **Waldom Electronics** | **Give Miami Day** |
+| **Intuitive Foundation** | **MDCPS** | **Cordyceps Systems** |
+| **MBSH PTSA** | **FIRST Robotics** | **Metal Supermarkets** |
+
+</div>
+
+> [!NOTE]  
+> If you are interested in sponsoring our team, please reach out to our team administration!
+
+<div align="center">
+  <br>
+  <i>Built by Miami Beach Bots</i>
+</div>
