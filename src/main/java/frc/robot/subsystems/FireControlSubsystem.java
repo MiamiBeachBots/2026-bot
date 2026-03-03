@@ -45,6 +45,7 @@ public class FireControlSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    // Basic simulation logic if needed.
+    // Broadcast for Python App
+    SmartDashboard.putBoolean("Sim_IsFiring", Math.abs(m_fireMotor.get()) > 0.1);
   }
 }

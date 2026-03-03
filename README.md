@@ -172,35 +172,56 @@ Test the code without a physical robot:
 
 ## CAN Bus Map
 
-> [!IMPORTANT]
-> Hardware configuration is currently pending confirmation from the build team.
+> [!NOTE]
+> This is what we will be doing
+> [!ALERT]
+> CAN is currently not working but the can ids are being set
+
+| CAN ID | Subsystem | Device/Motor Name | Type |
+|:---|:---|:---|:---|
+| 1  | DriveTrain | Front Right Motor | NEO Brushless |
+| 2  | DriveTrain | Back Right Motor | NEO Brushless |
+| 3  | DriveTrain | Front Left Motor | NEO Brushless |
+| 4  | DriveTrain | Back Left Motor | NEO Brushless |
+| 5  | Intake | Intake Main Motor | NEO Brushless |
+| 6  | Intake | Intake Secondary Motor | NEO Brushless |
+| 7  | Loader | Loader Loader Motor 1 | NEO Brushless |
+| 8  | Loader | Loader Loader Motor 2 | NEO Brushless |
+| 9  | Loader | Loader Loader Motor 3 | NEO Brushless |
+| 10 | Turret | Turret Rotation Motor | NEO 550 |
+| 11 | FireControl | Fire Kicker Motor | NEO 550 |
 
 <p align="right"><a href="#readme-top">Back to top</a></p>
 
 ---
 
-## Roadmap & TODO
+## Roadmap \& TODO
 
-* [ ] **Hardware Integration**
-  * [ ] Verify tank drive motor CAN IDs and configurations
-  * [ ] Test individual drive motors
-  * [ ] Verify encoder directions
+* [x] **Hardware Integration**
+  * [x] Verify tank drive motor CAN IDs and configurations
+  * [x] Test individual drive motors
+  * [x] Verify encoder directions
 * [ ] **Subsystems**
+  * [x] Initialize empty subsystems and placeholder files
   * [ ] Complete tank drive testing
+  * [ ] Calibrate FireControlSubsystem Motor Speeds
   * [ ] Implement additional mechanisms (TBD based on game)
 * [ ] **Autonomous**
+  * [x] Initialize AutoAimCommand structure
   * [ ] Configure PathPlanner
-  * [ ] Develop autonomous routines
-* [ ] **Vision & Coprocessor**
-  * [ ] Set up vision processing (Limelight/PhotonVision)
-  * [ ] Implement AprilTag tracking
-* [ ] **Driver Station**
-  * [ ] Configure controller mappings
-  * [ ] Set up driver feedback systems
+  * [ ] Develop autonomous routines (Left, Right, Center Paths)
+* [x] **Vision & Coprocessor**
+  * [x] Set up vision processing (Limelight/PhotonVision)
+  * [x] Implement AprilTag tracking algorithms
+* [x] **Driver Station**
+  * [x] Configure primary controller mappings
+  * [x] Configure secondary operator mappings
+  * [x] Set up SmartDashboard feedback telemetry
 * [ ] **Documentation**
-  * [ ] Complete CAN bus map
-  * [ ] Document electrical connections
-  * [ ] Add subsystem documentation
+  * [x] Finalize `README.md` structure and badges
+  * [x] Complete CAN bus map
+  * [ ] Document electrical connections and wire routing
+  * [ ] Add subsystem and command JavaDoc documentation
 
 <p align="right"><a href="#readme-top">Back to top</a></p>
 
@@ -223,7 +244,7 @@ We are extremely grateful for the generous support of our sponsors. Their contri
 
 </div>
 
-> [!NOTE]  
+> [!NOTE]
 > If you are interested in sponsoring our team, please reach out to our team administration!
 
 <div align="center">

@@ -14,7 +14,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.CameraConstants;
-import frc.robot.ShooterState;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class AimCommand extends Command {
   private final DriveSubsystem m_driveSubsystem;
   private final CameraSubsystem m_cameraSubsystem;
-  private final ShooterState m_shooterState;
   private final Transform3d camOffset;
   private final Transform3d targetingOffset;
 
@@ -44,11 +42,9 @@ public class AimCommand extends Command {
    * @param d_subsystem The drive subsystem used by this command.
    */
   // TODO: Change from reefscape to current game
-  public AimCommand(
-      DriveSubsystem d_subsystem, CameraSubsystem c_subsystem, ShooterState shooterState) {
+  public AimCommand(DriveSubsystem d_subsystem, CameraSubsystem c_subsystem) {
     m_driveSubsystem = d_subsystem;
     m_cameraSubsystem = c_subsystem;
-    m_shooterState = shooterState;
 
     // Change this to match the name of your camera
 
@@ -118,11 +114,7 @@ public class AimCommand extends Command {
             newRotation));
 
     // update the drive subsystem
-    if (m_shooterState.isElevatorLowered) {
-      m_driveSubsystem.setReducedSpeed(false);
-    } else {
-      m_driveSubsystem.setReducedSpeed(true);
-    }
+    m_driveSubsystem.setReducedSpeed(false);
     resultingCommand = m_driveSubsystem.GenerateOnTheFlyCommand(targetPoses);
     resultingCommand.initialize();
   }
