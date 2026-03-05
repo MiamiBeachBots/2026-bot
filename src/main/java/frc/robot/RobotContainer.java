@@ -39,8 +39,6 @@ public class RobotContainer {
   private final Joystick m_flightstick = new Joystick(Constants.FLIGHTSTICK_USB_INDEX);
 
   // Initialize subsystems
-  // private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new
-  // File(Filesystem.getDeployDirectory(), "swerve"));
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem(m_driveSubsystem);
 
@@ -178,34 +176,6 @@ public class RobotContainer {
     // Emergency Unjam (Button 12)
     m_operatorButton12.onTrue(new UnjamIntakeCommand(m_intakeSubsystem));
 
-    // TODO: Make Swerve code follow proper command-based structure
-    /*
-    drivebase.setDefaultCommand(
-        // We create a "RunCommand" (runs repeatedly)
-        Commands.run(
-            () -> {
-                // 1. Get Joystick Inputs (Inverted because Y is up-negative in computer graphics)
-                // MathUtil.applyDeadband ignores tiny drift when the stick is centered
-                double yVelocity = -MathUtil.applyDeadband(driverXbox.getLeftY(), 0.1);
-                double xVelocity = -MathUtil.applyDeadband(driverXbox.getLeftX(), 0.1);
-                double rotation  = -MathUtil.applyDeadband(driverXbox.getRightX(), 0.1);
-
-                // 2. Drive
-                drivebase.drive(
-                    new Translation2d(yVelocity * drivebase.maximumSpeed, xVelocity * drivebase.maximumSpeed),
-                    rotation * Math.PI,
-                    true // Field Relative (True = Standard, False = Robot Oriented)
-                );
-            },
-            drivebase // REQUIRE the subsystem so no other command can interrupt this one
-        )
-    );
-
-    // Map "Back" button to zero the gyro (reset field orientation)
-    if (drivebase.getSwerveDrive() != null) {
-      driverXbox.back().onTrue(Commands.runOnce(drivebase.getSwerveDrive()::zeroGyro, drivebase));
-    }
-      */
   }
 
   private void initializeAutonomous() {
