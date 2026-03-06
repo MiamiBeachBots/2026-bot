@@ -1,5 +1,3 @@
-use std::f64::consts::PI;
-
 /// Calculates the required turret angle to hit a specific side of a square target.
 /// The square target is defined by its center (target_x, target_y), its size (side length),
 /// and its rotation in radians.

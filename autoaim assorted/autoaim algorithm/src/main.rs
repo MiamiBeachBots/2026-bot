@@ -5,7 +5,6 @@ use std::f32::consts::PI;
 const ROBOT_SPEED: f32 = 200.0; // pixels per second
 const ROBOT_ROT_SPEED: f32 = 2.5; // rad per second
 const TURRET_ROT_SPEED: f32 = 5.0; // rad per second
-const PROJECTILE_SPEED: f32 = 400.0; // pixels per second (speed of fired balls)
 
 #[derive(PartialEq)]
 enum ProjectileState {
@@ -151,17 +150,25 @@ async fn main() {
         if is_key_pressed(KeyCode::Space) {
             let mut firing_velocity_xy = 0.0;
             if current_distance > 0.0 {
+                // To display it properly: The algorithm assumes time of flight is dist / 600.
+                // The actual required exit velocity of the turret is calculated natively as vectors:
                 let t = (current_distance as f32) / 600.0;
                 let aim_dx = target_x - robot_x;
                 let aim_dy = target_y - robot_y;
-                let fire_vx = aim_dx / t - robot_vx;
-                let fire_vy = aim_dy / t - robot_vy;
+                let req_vx_world = aim_dx / t;
+                let req_vy_world = aim_dy / t;
+
+                // The *exit velocity* the ball must have relative to the robot is:
+                let fire_vx = req_vx_world - robot_vx;
+                let fire_vy = req_vy_world - robot_vy;
                 firing_velocity_xy = (fire_vx * fire_vx + fire_vy * fire_vy).sqrt();
             }
 
             projectiles.push(Projectile{
                 x: robot_x + turret_rot.cos() * 50.0, // spawn at turret tip
                 y: robot_y + turret_rot.sin() * 50.0,
+                // In world space, the velocity is the robot's velocity + the ball's relative exit velocity 
+                // in the direction the turret is pointing.
                 vx: robot_vx + turret_rot.cos() * firing_velocity_xy,
                 vy: robot_vy + turret_rot.sin() * firing_velocity_xy,
                 life: 3.0, // dies after 3 seconds
