@@ -149,11 +149,16 @@ async fn main() {
 
         // Fire Projectiles
         if is_key_pressed(KeyCode::Space) {
-            // Apply projectile exit velocity based on the derived mathematical algorithm mapping
-            // Note: fire_vx and fire_vy in standard mapping represent relative to target. To shoot it in GUI:
-            // The algorithm selected t = dist / 600.0, yielding fire_speed_surface.
-            // We just use the robot momentum alongside the directed turret RPM map.
-            let firing_velocity_xy = (current_rpm as f32) / 2.15; // Extract physics magnitude
+            let mut firing_velocity_xy = 0.0;
+            if current_distance > 0.0 {
+                let t = (current_distance as f32) / 600.0;
+                let aim_dx = target_x - robot_x;
+                let aim_dy = target_y - robot_y;
+                let fire_vx = aim_dx / t - robot_vx;
+                let fire_vy = aim_dy / t - robot_vy;
+                firing_velocity_xy = (fire_vx * fire_vx + fire_vy * fire_vy).sqrt();
+            }
+
             projectiles.push(Projectile{
                 x: robot_x + turret_rot.cos() * 50.0, // spawn at turret tip
                 y: robot_y + turret_rot.sin() * 50.0,
