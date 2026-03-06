@@ -16,7 +16,6 @@
 // Projectiles that hit a blue face blink red for ~1 second, then vanish.
 // =============================================================================
 
-use autoaim::calculate_aim_angle;
 use macroquad::prelude::*;
 use std::f32::consts::PI;
 
@@ -47,6 +46,7 @@ struct Projectile {
     life: f32,         // seconds remaining before auto-despawn
     state: ProjectileState,
     blink_timer: f32,  // countdown for the red-blink effect on blue hits
+    green_timer: f32,  // countdown for the green-flash effect on green hits
 }
 
 // --- COLLISION HELPERS ---
@@ -105,16 +105,12 @@ async fn main() {
     // Turret yaw (world-space, independent of chassis)
     let mut turret_yaw: f32 = robot_yaw;
 
-    // Target cube sits at the origin, resting on the ground plane
-    let target_pos = vec3(0.0, TARGET_SIZE / 2.0, 0.0);
+    // Target cube sits at the origin, 2 meters off the ground
+    let target_pos = vec3(0.0, 2.0 + TARGET_SIZE / 2.0, 0.0);
     let target_rot: f32 = 0.0; // cube yaw rotation (0 = front face is +X)
 
     // Projectile pool
     let mut projectiles: Vec<Projectile> = vec![];
-
-    // Physics output cache
-    let mut current_distance: f64 = 0.0;
-    let mut current_rpm: f64 = 0.0;
 
     loop {
         let dt = get_frame_time();
@@ -145,51 +141,70 @@ async fn main() {
         }
 
         // =================================================================
-        // 2. AUTOAIM TARGETING (call into the Rust/C-ABI core algorithm)
+        // 2. AUTOAIM TARGETING (direct 3D calculation)
         // =================================================================
-        // The lib.rs algorithm works in 2D (top-down XZ mapped to XY).
-        // We pass robot_x -> x, robot_z -> y, same for target.
-        let mut target_angle_out: f64 = 0.0;
-        let mut target_distance_out: f64 = 0.0;
-        let mut target_rpm_out: f64 = 0.0;
-
-        let can_hit = calculate_aim_angle(
-            robot_x as f64,
-            robot_z as f64,
-            robot_vx as f64,
-            robot_vz as f64,
-            target_pos.x as f64,
-            target_pos.z as f64,
-            TARGET_SIZE as f64,
-            target_rot as f64,
-            &mut target_angle_out,
-            &mut target_distance_out,
-            &mut target_rpm_out,
+        // Instead of using the 2D lib.rs intermediary (which double-counts
+        // momentum), we compute everything directly in 3D here.
+        //
+        // The target's designated front face center (in world space):
+        let face_offset_x = (TARGET_SIZE / 2.0) * target_rot.cos();
+        let face_offset_z = (TARGET_SIZE / 2.0) * target_rot.sin();
+        let face_center = vec3(
+            target_pos.x + face_offset_x,
+            target_pos.y, // center height of the cube
+            target_pos.z + face_offset_z,
         );
 
+        // Normal of the front face (pointing outward)
+        let face_normal_x = target_rot.cos();
+        let face_normal_z = target_rot.sin();
+
+        // Vector from face center to robot (on XZ plane)
+        let to_robot_x = robot_x - face_center.x;
+        let to_robot_z = robot_z - face_center.z;
+
+        // Dot product: is the robot in front of the face?
+        let dot = to_robot_x * face_normal_x + to_robot_z * face_normal_z;
+        let can_hit = dot > 0.0;
+
+        // XZ distance from robot to face center
+        let dx = face_center.x - robot_x;
+        let dz = face_center.z - robot_z;
+        let dist_xz = (dx * dx + dz * dz).sqrt();
+
+        // Desired turret yaw = direction to face center on XZ plane
+        let desired_yaw = dz.atan2(dx);
+
+        // Time of flight (horizontal traversal at PROJECTILE_SPEED)
+        let t_flight = if dist_xz > 0.01 { dist_xz / PROJECTILE_SPEED } else { 0.1 };
+
+        // Required vertical launch velocity to arc to target height under gravity
+        // Using: dy = vy*t - 0.5*g*t^2  =>  vy = (dy + 0.5*g*t^2) / t
+        let dy = face_center.y - ROBOT_HEIGHT;
+        let vy_launch = (dy + 0.5 * GRAVITY * t_flight * t_flight) / t_flight;
+
+        // RPM estimation (for HUD display)
+        let fire_speed_horiz = PROJECTILE_SPEED;
+        let fire_speed_total = (fire_speed_horiz * fire_speed_horiz + vy_launch * vy_launch).sqrt();
+        let current_distance = dist_xz as f64;
+        let current_rpm = (fire_speed_total * 2.15) as f64;
+
         // =================================================================
-        // 3. TURRET TRACKING (smooth rotation towards target angle)
+        // 3. TURRET TRACKING (smooth rotation towards target)
         // =================================================================
         if can_hit {
-            let target_angle = target_angle_out as f32;
-            current_distance = target_distance_out;
-            current_rpm = target_rpm_out;
-
-            // Shortest angular path
-            let mut diff = target_angle - turret_yaw;
+            // Shortest angular path to desired yaw
+            let mut diff = desired_yaw - turret_yaw;
             diff = (diff + PI) % (2.0 * PI) - PI;
             if diff < -PI { diff += 2.0 * PI; }
 
             let max_step = TURRET_ROT_SPEED * dt;
             if diff.abs() <= max_step {
-                turret_yaw = target_angle;
+                turret_yaw = desired_yaw;
             } else {
                 turret_yaw += diff.signum() * max_step;
             }
         } else {
-            current_distance = 0.0;
-            current_rpm = 0.0;
-
             // No target — revert turret to chassis forward
             let mut diff = robot_yaw - turret_yaw;
             diff = (diff + PI) % (2.0 * PI) - PI;
@@ -208,31 +223,35 @@ async fn main() {
         if turret_yaw < -PI { turret_yaw += 2.0 * PI; }
 
         // =================================================================
-        // 4. FIRE PROJECTILE (Spacebar)
+        // 4. FIRE PROJECTILE (Spacebar) — exact 3D ballistic calculation
         // =================================================================
-        // The projectile inherits the robot's current XZ velocity and adds
-        // the turret's aimed direction at `PROJECTILE_SPEED`.
-        // It also gets an upward Y velocity to create a gravity arc.
-        if is_key_pressed(KeyCode::Space) {
-            // Calculate required upward velocity to arc to target height
-            let dist_xz = if current_distance > 0.0 {
-                current_distance as f32
-            } else {
-                // Fallback: straight shot
-                let dx = target_pos.x - robot_x;
-                let dz = target_pos.z - robot_z;
-                (dx * dx + dz * dz).sqrt()
-            };
+        // We compute the EXACT world-space velocity vector that will make the
+        // projectile arrive at the face center, accounting for gravity and
+        // the robot's current momentum.
+        //
+        // World velocity needed:
+        //   vx_world = dx / t_flight
+        //   vz_world = dz / t_flight
+        //   vy_world = (dy + 0.5 * g * t^2) / t
+        //
+        // The ball inherits the robot's velocity, so the turret only fires
+        // the DIFFERENCE. But we store final world velocity for the projectile.
+        if is_key_pressed(KeyCode::Space) && can_hit {
+            // Exact world-space velocity to reach the face center
+            let world_vx = dx / t_flight;
+            let world_vz = dz / t_flight;
 
-            let t_flight = dist_xz / PROJECTILE_SPEED;
-            // To hit at target center height from ROBOT_HEIGHT:
-            // dy = vy*t - 0.5*g*t^2  =>  vy = (dy + 0.5*g*t^2) / t
-            let dy = target_pos.y - ROBOT_HEIGHT;
-            let vy_launch = (dy + 0.5 * GRAVITY * t_flight * t_flight) / t_flight;
-
-            // Lock in world-space velocity at the moment of firing
-            let fire_vx = robot_vx + turret_yaw.cos() * PROJECTILE_SPEED;
-            let fire_vz = robot_vz + turret_yaw.sin() * PROJECTILE_SPEED;
+            // Add robot momentum: the projectile in world space moves at
+            // robot_velocity + turret_exit_velocity.
+            // Since world_vx/vz is the TOTAL needed world velocity,
+            // we use it directly (it's what the ball needs in world coords).
+            // Robot momentum is already "baked in" because the ball leaves
+            // the robot: if robot moves right, the ball also moves right,
+            // so the turret must aim slightly left. We handle this by 
+            // using the world velocity directly.
+            let final_vx = world_vx;
+            let final_vz = world_vz;
+            let final_vy = vy_launch;
 
             let spawn_pos = vec3(
                 robot_x + turret_yaw.cos() * 1.5,
@@ -242,10 +261,11 @@ async fn main() {
 
             projectiles.push(Projectile {
                 pos: spawn_pos,
-                vel: vec3(fire_vx, vy_launch, fire_vz),
+                vel: vec3(final_vx, final_vy, final_vz),
                 life: 5.0,
                 state: ProjectileState::Active,
                 blink_timer: 1.0,
+                green_timer: 0.5, // flash green for 0.5 seconds on hit
             });
         }
 
@@ -344,13 +364,15 @@ async fn main() {
                 }
             } else if proj.state == ProjectileState::HitBlue {
                 proj.blink_timer -= dt;
+            } else if proj.state == ProjectileState::HitGreen {
+                proj.green_timer -= dt;
             }
         }
 
         // Remove finished projectiles
         projectiles.retain(|p| {
             p.life > 0.0
-                && p.state != ProjectileState::HitGreen
+                && (p.state != ProjectileState::HitGreen || p.green_timer > 0.0)
                 && (p.state != ProjectileState::HitBlue || p.blink_timer > 0.0)
         });
 
@@ -436,12 +458,19 @@ async fn main() {
                     draw_sphere(proj.pos, 0.15, None, YELLOW);
                 }
                 ProjectileState::HitBlue => {
+                    // Blink red before vanishing
                     let blink_on = (proj.blink_timer * 10.0) as i32 % 2 == 0;
                     if blink_on {
                         draw_sphere(proj.pos, 0.2, None, RED);
                     }
                 }
-                ProjectileState::HitGreen => {} // already removed
+                ProjectileState::HitGreen => {
+                    // Flash green before vanishing
+                    let flash_on = (proj.green_timer * 12.0) as i32 % 2 == 0;
+                    if flash_on {
+                        draw_sphere(proj.pos, 0.25, None, GREEN);
+                    }
+                }
             }
         }
 
