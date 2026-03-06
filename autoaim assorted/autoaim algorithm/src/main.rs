@@ -47,6 +47,7 @@ struct Projectile {
     state: ProjectileState,
     blink_timer: f32,  // countdown for the red-blink effect on blue hits
     green_timer: f32,  // countdown for the green-flash effect on green hits
+    trail: Vec<Vec3>,  // position history for drawing the parabolic arc
 }
 
 // --- COLLISION HELPERS ---
@@ -265,7 +266,8 @@ async fn main() {
                 life: 5.0,
                 state: ProjectileState::Active,
                 blink_timer: 1.0,
-                green_timer: 0.5, // flash green for 0.5 seconds on hit
+                green_timer: 0.5,
+                trail: vec![spawn_pos], // start trail with spawn position
             });
         }
 
@@ -327,6 +329,9 @@ async fn main() {
                 // Integrate position
                 proj.pos += proj.vel * dt;
                 proj.life -= dt;
+
+                // Record position for trail rendering
+                proj.trail.push(proj.pos);
 
                 // Kill if it hits the ground
                 if proj.pos.y < 0.0 {
@@ -451,8 +456,23 @@ async fn main() {
         // Target center marker
         draw_sphere(target_pos, 0.1, None, RED);
 
-        // --- PROJECTILES ---
+        // --- PROJECTILES & TRAILS ---
         for proj in &projectiles {
+            // Draw the parabolic arc trail
+            if proj.trail.len() > 1 {
+                for i in 1..proj.trail.len() {
+                    // Fade from bright to dim along the trail
+                    let alpha = (i as f32) / (proj.trail.len() as f32);
+                    let trail_color = match proj.state {
+                        ProjectileState::Active => Color::new(1.0, 1.0, 0.0, alpha * 0.8),
+                        ProjectileState::HitGreen => Color::new(0.0, 1.0, 0.0, alpha * 0.8),
+                        ProjectileState::HitBlue => Color::new(1.0, 0.0, 0.0, alpha * 0.8),
+                    };
+                    draw_line_3d(proj.trail[i - 1], proj.trail[i], trail_color);
+                }
+            }
+
+            // Draw the projectile sphere
             match proj.state {
                 ProjectileState::Active => {
                     draw_sphere(proj.pos, 0.15, None, YELLOW);
