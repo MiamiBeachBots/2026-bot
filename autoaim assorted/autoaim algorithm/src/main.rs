@@ -50,14 +50,13 @@ struct Projectile {
     trail: Vec<Vec3>,  // position history for drawing the parabolic arc
 }
 
-// --- COLLISION HELPERS ---
+// --- CONTINUOUS COLLISION HELPERS ---
 
-/// Check if a sphere (center, radius) is within `threshold` distance of a 
-/// finite quad defined by four coplanar corners (in order).
-/// Returns true if the sphere center is close enough to the plane of the quad
-/// AND the closest point on the quad is within radius.
-fn sphere_hits_quad(
-    center: Vec3, radius: f32,
+/// Check if a line segment (start to end) intersects a finite quad 
+/// defined by four coplanar corners (in order). This prevents high-velocity 
+/// projectiles from "tunneling" through thin faces between frames.
+fn ray_hits_quad(
+    start: Vec3, end: Vec3,
     a: Vec3, b: Vec3, c: Vec3, d: Vec3,
 ) -> bool {
     // Compute quad normal via cross product of two edges
@@ -65,20 +64,24 @@ fn sphere_hits_quad(
     let edge2 = d - a;
     let normal = edge1.cross(edge2).normalize();
 
-    // Signed distance from sphere center to the plane of the quad
-    let dist_to_plane = (center - a).dot(normal);
-    if dist_to_plane.abs() > radius {
-        return false;
-    }
+    let dir = end - start;
+    let dot_dir = dir.dot(normal);
 
-    // Project sphere center onto the plane
-    let projected = center - normal * dist_to_plane;
+    // If parallel to plane, no intersection
+    if dot_dir.abs() < 1e-6 { return false; }
 
-    // Check if projected point is inside the quad using edge cross tests
-    let ap = projected - a;
-    let bp = projected - b;
-    let cp = projected - c;
-    let dp = projected - d;
+    let t = (a - start).dot(normal) / dot_dir;
+    
+    // Check if intersection is within the segment [start, end]
+    if t < 0.0 || t > 1.0 { return false; }
+
+    let p = start + dir * t;
+
+    // Check if point p is inside the quad using edge cross tests
+    let ap = p - a;
+    let bp = p - b;
+    let cp = p - c;
+    let dp = p - d;
 
     let ab = b - a;
     let bc = c - b;
@@ -90,9 +93,9 @@ fn sphere_hits_quad(
     let c3 = cd.cross(cp).dot(normal);
     let c4 = da.cross(dp).dot(normal);
 
-    // All same sign means inside quad
-    (c1 >= 0.0 && c2 >= 0.0 && c3 >= 0.0 && c4 >= 0.0)
-        || (c1 <= 0.0 && c2 <= 0.0 && c3 <= 0.0 && c4 <= 0.0)
+    // Tolerance for edge grazing
+    (c1 >= -0.01 && c2 >= -0.01 && c3 >= -0.01 && c4 >= -0.01)
+        || (c1 <= 0.01 && c2 <= 0.01 && c3 <= 0.01 && c4 <= 0.01)
 }
 
 // --- ENTRY POINT ---
@@ -118,8 +121,13 @@ async fn main() {
     let mut cam_pitch: f32 = 0.5; // rad up from horizontal
     let mut cam_dist: f32 = 12.0;
 
+    let mut auto_fire_cooldown = 0.0;
+
     loop {
         let dt = get_frame_time();
+        if auto_fire_cooldown > 0.0 {
+            auto_fire_cooldown -= dt;
+        }
 
         // =================================================================
         // 0. CAMERA INPUTS (Mouse Pan & Zoom)
@@ -267,8 +275,10 @@ async fn main() {
         // lead calculated by the quadratic solver above.
         let is_locked = can_hit && (desired_yaw - turret_yaw).abs() < 0.05;
 
-        // Auto-fire whenever firmly locked
-        if is_locked {
+        // Auto-fire whenever firmly locked (with cooldown)
+        if (is_locked || is_key_pressed(KeyCode::Space)) && auto_fire_cooldown <= 0.0 {
+            auto_fire_cooldown = 0.25; // max 4 shots per second
+
             let spawn_pos = vec3(
                 robot_x + turret_yaw.cos() * 1.5,
                 ROBOT_HEIGHT,
@@ -364,6 +374,8 @@ async fn main() {
         // =================================================================
         for proj in &mut projectiles {
             if proj.state == ProjectileState::Active {
+                let old_pos = proj.pos;
+
                 // Apply gravity to Y velocity
                 proj.vel.y -= GRAVITY * dt;
 
@@ -371,39 +383,40 @@ async fn main() {
                 proj.pos += proj.vel * dt;
                 proj.life -= dt;
 
+                let new_pos = proj.pos;
+
                 // Record position for trail rendering
-                proj.trail.push(proj.pos);
+                proj.trail.push(new_pos);
 
                 // Kill if it hits the ground
-                if proj.pos.y < 0.0 {
+                if new_pos.y < 0.0 {
                     proj.state = ProjectileState::HitBlue; // treat ground hit as miss
                 }
 
-                // Check collision against cube faces (sphere radius = 0.15)
-                let r = 0.15;
-
+                // Check continuous ray collision against cube faces
                 // Front face (GREEN) — SUCCESS
-                if sphere_hits_quad(proj.pos, r,
+                if ray_hits_quad(old_pos, new_pos,
                     front_bottom_right, front_top_right,
                     front_top_left, front_bottom_left)
                 {
                     proj.state = ProjectileState::HitGreen;
+                    proj.pos = new_pos; // optionally clamp strictly to plane
                 }
                 // Back face
-                else if sphere_hits_quad(proj.pos, r,
+                else if ray_hits_quad(old_pos, new_pos,
                     back_bottom_right, back_top_right,
                     back_top_left, back_bottom_left)
                 {
                     proj.state = ProjectileState::HitBlue;
                 }
                 // Right face
-                else if sphere_hits_quad(proj.pos, r,
+                else if ray_hits_quad(old_pos, new_pos,
                     right_bl, right_tl, right_tr, right_br)
                 {
                     proj.state = ProjectileState::HitBlue;
                 }
                 // Left face
-                else if sphere_hits_quad(proj.pos, r,
+                else if ray_hits_quad(old_pos, new_pos,
                     left_bl, left_tl, left_tr, left_br)
                 {
                     proj.state = ProjectileState::HitBlue;
