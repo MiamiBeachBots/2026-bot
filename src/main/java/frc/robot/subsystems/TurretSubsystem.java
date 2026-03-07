@@ -43,7 +43,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     // Electrical Safety Limit (Prevents the motor from pulling too many amps and burning out)
     m_config.smartCurrentLimit(40);
-    
+
     // Hardware-level Torque Smoothing (time in seconds from 0 to full speed)
     m_config.openLoopRampRate(0.25);
     m_config.closedLoopRampRate(0.25);
