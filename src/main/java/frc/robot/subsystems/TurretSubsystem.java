@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -23,6 +24,7 @@ public class TurretSubsystem extends SubsystemBase {
   private final SparkMaxConfig m_config;
   private final SparkClosedLoopController m_pidController;
   private final RelativeEncoder m_encoder;
+  private final SlewRateLimiter m_speedLimiter;
 
   // PID Constants (Need tuning)
   private final double kP = 0.1;
@@ -41,12 +43,20 @@ public class TurretSubsystem extends SubsystemBase {
 
     // Electrical Safety Limit (Prevents the motor from pulling too many amps and burning out)
     m_config.smartCurrentLimit(40);
+    
+    // Hardware-level Torque Smoothing (time in seconds from 0 to full speed)
+    m_config.openLoopRampRate(0.25);
+    m_config.closedLoopRampRate(0.25);
+
     // Setup PID
     m_config.closedLoop.pid(kP, kI, kD);
     m_config.closedLoop.outputRange(-0.5, 0.5); // Limit output speed for safety during testing
 
     m_turretMotor.configure(
         m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    // Software Slew Rate Limiter for manual inputs (acceleration cap: full speed in 0.5s)
+    m_speedLimiter = new SlewRateLimiter(2.0);
 
     m_pidController = m_turretMotor.getClosedLoopController();
     m_encoder = m_turretMotor.getEncoder();
@@ -78,8 +88,9 @@ public class TurretSubsystem extends SubsystemBase {
       speed = 0;
     }
     double adjustedSpeed =
-        SpeedConstants.adjustSpeed(
-            speed, SpeedConstants.TURRET_MAX_SPEED, SpeedConstants.TURRET_SENSITIVITY);
+        m_speedLimiter.calculate(
+            SpeedConstants.adjustSpeed(
+                speed, SpeedConstants.TURRET_MAX_SPEED, SpeedConstants.TURRET_SENSITIVITY));
     m_pidController.setReference(
         adjustedSpeed,
         SparkMax.ControlType.kDutyCycle,
@@ -115,6 +126,7 @@ public class TurretSubsystem extends SubsystemBase {
   /** Stops the turret motor. */
   public void stop() {
     m_turretMotor.set(0);
+    m_speedLimiter.reset(0); // Reset limiter so next move doesn't jump
   }
 
   @Override
