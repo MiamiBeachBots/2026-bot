@@ -98,6 +98,21 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   /**
+   * Directly sets the voltage of the turret motor, useful for ProfiledPID + Feedforward outputs.
+   *
+   * @param volts Output voltage.
+   */
+  public void setTurretVoltage(double volts) {
+    m_turretMotor.setVoltage(volts);
+  }
+
+  /** Gets the current robot-relative position of the turret in radians. */
+  public double getTurretAngleRadians() {
+    double currentRotations = m_encoder.getPosition();
+    return (currentRotations / Constants.TURRET_GEAR_RATIO) * 2.0 * Math.PI;
+  }
+
+  /**
    * Sets the target angle of the turret using closed-loop control.
    *
    * @param targetAngleDegrees Target angle in degrees.

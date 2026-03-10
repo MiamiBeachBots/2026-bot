@@ -103,7 +103,11 @@ public class RobotContainer {
     // Fire Override
     m_controller1
         .rightTrigger()
-        .whileTrue(new RunCommand(() -> m_fireSubsystem.fire(1.0), m_fireSubsystem));
+        .whileTrue(
+            new edu.wpi.first.wpilibj2.command.StartEndCommand(
+                () -> m_fireSubsystem.setShooterRPM(5000.0),
+                () -> m_fireSubsystem.stop(),
+                m_fireSubsystem));
 
     // Default Drive
     m_driveSubsystem.setDefaultCommand(m_defaultDrive);
@@ -127,11 +131,14 @@ public class RobotContainer {
         .whileTrue(
             new FireCommand(
                 m_fireSubsystem,
+                m_loaderSubsystem,
                 () -> 1.0,
                 m_flightstick.button(Constants.JOYSTICK_DEFAULT_BUTTON)));
 
     // Auto Aim Command (Bind to Button 2 of flight stick to toggle)
-    m_flightstick.button(2).toggleOnTrue(new AutoAimCommand(m_turretSubsystem, m_cameraSubsystem));
+    m_flightstick
+        .button(2)
+        .toggleOnTrue(new AutoAimCommand(m_turretSubsystem, m_cameraSubsystem, m_driveSubsystem));
 
     // Turret Preset Orientations (Buttons 6 - 11)
     // Values are placeholders for raw motor rotations until gear ratio is determined.
