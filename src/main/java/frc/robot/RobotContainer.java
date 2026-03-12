@@ -103,6 +103,7 @@ public class RobotContainer {
     // Fire Override
     m_controller1
         .rightTrigger()
+        .and(() -> !m_turretSubsystem.isUnwinding())
         .whileTrue(
             new edu.wpi.first.wpilibj2.command.StartEndCommand(
                 () -> m_fireSubsystem.setShooterRPM(5000.0),
@@ -128,6 +129,7 @@ public class RobotContainer {
     // Run at full speed (1.0) while trigger is held, rather than mapped to Y axis.
     m_flightstick
         .button(Constants.JOYSTICK_DEFAULT_BUTTON)
+        .and(() -> !m_turretSubsystem.isUnwinding())
         .whileTrue(
             new FireCommand(
                 m_fireSubsystem,
