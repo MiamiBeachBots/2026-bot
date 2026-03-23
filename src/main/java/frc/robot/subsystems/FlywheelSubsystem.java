@@ -12,8 +12,13 @@ import frc.robot.DriveConstants;
 import frc.robot.RobotTelemetry;
 import frc.robot.constants.Constants.CANConstants;
 import frc.robot.utils.HelperFunctions;
+import frc.robot.utils.TunableControls.ControlConstants;
+import frc.robot.utils.TunableControls.TunableProfiledController;
+import frc.robot.utils.TunableControls.TunableControlConstants;
+
 
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -25,7 +30,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 import frc.robot.constants.Constants.CANConstants;
 
 public class FlywheelSubsystem extends SubsystemBase {
@@ -40,9 +44,10 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   //Motor Configs
   private final SparkMaxConfig m_flywheelConfig = new SparkMaxConfig();
-
-  private final double kP, kI, kD, kIz, kMaxOutput, kMinOutput;
-  private final SparkClosedLoopController m_flywheelPIDController;
+  //PID 
+  private final ControlConstants CONTROL_CONSTANTS;
+  private final TunableControlConstants TUNABLE_CONSTANTS;
+  private final TunableProfiledController m_flywheelPIDController;
   // general drive constants
   // https://www.chiefdelphi.com/t/encoders-velocity-to-m-s/390332/2
   // https://sciencing.com/convert-rpm-linear-speed-8232280.html
@@ -54,11 +59,21 @@ public class FlywheelSubsystem extends SubsystemBase {
   private final double kPositionConversionRatio = (Math.PI * kWheelDiameter) / kGearRatio;
   private final double kVelocityConversionRatio = kPositionConversionRatio / 60;
 
+
+  //PID coefficients
+    //TODO: Tune PID
+    private final double kP = 0;
+    private final double kI = 0;
+    private final double kD = 0;
+    private final double kIz = 0;
+    private final double kMaxOutput = 1;
+    private final double kMinOutput = -1;
    // setup feedforward
    //TODO: Profile feedforward
   private final double kS = 0;
   private final double kV = 0;
   private final double kA = 0;
+
 
   // setup SysID for auto profiling
   private final SysIdRoutine m_sysIdRoutine;
@@ -66,9 +81,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   // current limit
   private final int k_CurrentLimit = 60;
 
-  SimpleMotorFeedforward m_shooterFeedForward =
-      new SimpleMotorFeedforward(
-          kS, kV, kA);
+  private boolean isTuning = false;
 
   public FlywheelSubsystem() {
     //Create Motor
@@ -91,24 +104,24 @@ public class FlywheelSubsystem extends SubsystemBase {
     //Set Current Limit
     m_flywheelConfig.smartCurrentLimit(k_CurrentLimit);
 
-    m_flywheelPIDController = m_flywheelMotor.getClosedLoopController();
+
 
 
     m_flywheelConfig.encoder.positionConversionFactor(kPositionConversionRatio);
     m_flywheelConfig.encoder.velocityConversionFactor(kVelocityConversionRatio);
 
-    //PID coefficients
-    //TODO: Tune PID
-    kP = 0;
-    kI = 0;
-    kD = 0;
-    kIz = 0;
-    kMaxOutput = 1;
-    kMinOutput = -1;
 
     m_flywheelConfig.closedLoop.pid(kP, kI, kD, DriveConstants.kDrivetrainVelocityPIDSlot);
     m_flywheelConfig.closedLoop.iZone(kIz);
     m_flywheelConfig.closedLoop.outputRange(kMinOutput, kMaxOutput, DriveConstants.kDrivetrainVelocityPIDSlot);
+
+    //TODO: TUNE
+    CONTROL_CONSTANTS = new ControlConstants()
+      .withPID(kP, kI, kD)
+      .withTolerance(0.04, 0.1);
+    TUNABLE_CONSTANTS = new TunableControlConstants("Flywheel", CONTROL_CONSTANTS);
+    m_flywheelPIDController = new TunableProfiledController(TUNABLE_CONSTANTS);
+  
     // setup SysID for auto profiling
     m_sysIdRoutine =
         new SysIdRoutine(
@@ -120,8 +133,6 @@ public class FlywheelSubsystem extends SubsystemBase {
                 (voltage) -> this.setVoltage(voltage),
                 null, // No log consumer, since data is recorded by AdvantageKit
                 this));
-
-
     m_flywheelMotor.configure(m_flywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
@@ -138,11 +149,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   //Sets the shooter speed in m/s
   public void setShooterSpeed(double targetVelocity){
-    m_flywheelPIDController.setSetpoint(
-      targetVelocity, 
-      ControlType.kVelocity, 
-      DriveConstants.kDrivetrainVelocityPIDSlot, 
-      m_shooterFeedForward.calculate(targetVelocity));  
+    m_flywheelPIDController.setGoal(targetVelocity);
   }
 //TODO: Add method to set shooter speed in RPM if needed
 
@@ -158,9 +165,15 @@ public class FlywheelSubsystem extends SubsystemBase {
     setShooterSpeed(0);
   }
 
+
   @Override
   public void periodic() {
+    if(isTuning) {
+    
+    }
     //TODO: Telemetry
+
+
   }
 
   @Override
