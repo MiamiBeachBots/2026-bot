@@ -2,13 +2,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.FireControlSubsystem;
+import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class FireCommand extends Command {
-  private final FireControlSubsystem m_fireSubsystem;
+  private final FlywheelSubsystem m_fireSubsystem;
   private final LoaderSubsystem m_loaderSubsystem;
   private final DoubleSupplier m_speedSupplier;
   private final BooleanSupplier m_triggerHeldSupplier;
@@ -20,7 +20,7 @@ public class FireCommand extends Command {
    * via the Loader when the flywheel is at the target RPM.
    */
   public FireCommand(
-      FireControlSubsystem fireSubsystem,
+      FlywheelSubsystem fireSubsystem,
       LoaderSubsystem loaderSubsystem,
       DoubleSupplier speedSupplier,
       BooleanSupplier triggerHeldSupplier) {

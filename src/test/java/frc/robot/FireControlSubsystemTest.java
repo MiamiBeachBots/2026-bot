@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.simulation.SimHooks;
-import frc.robot.subsystems.FireControlSubsystem;
+import frc.robot.subsystems.FlywheelSubsystem;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -15,19 +15,19 @@ import org.junit.jupiter.api.Test;
  */
 public class FireControlSubsystemTest {
 
-  private static FireControlSubsystem m_fireControl;
+  private static FlywheelSubsystem m_fireControl;
 
   @BeforeAll
   static void initAll() {
     assert HAL.initialize(500, 0);
     SimHooks.pauseTiming();
     m_fireControl =
-        new FireControlSubsystem(
-            new frc.robot.subsystems.FireControlIO() {
+        new FlywheelSubsystem(
+            new frc.robot.subsystems.FlywheelIO() {
               private double rpm = 0.0;
 
               @Override
-              public void updateInputs(FireControlIOInputs inputs) {
+              public void updateInputs(FlywheelIOInputs inputs) {
                 inputs.velocityRPM = rpm;
               }
 

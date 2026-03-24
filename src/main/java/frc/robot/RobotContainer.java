@@ -19,7 +19,7 @@ import frc.robot.commands.UnjamIntakeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.FireControlSubsystem;
+import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -46,11 +46,11 @@ public class RobotContainer {
           Constants.CURRENT_MODE == Constants.Mode.REAL
               ? new frc.robot.subsystems.TurretIOSparkMax()
               : new frc.robot.subsystems.TurretIO() {});
-  private final FireControlSubsystem m_fireSubsystem =
-      new FireControlSubsystem(
+  private final FlywheelSubsystem m_fireSubsystem =
+      new FlywheelSubsystem(
           Constants.CURRENT_MODE == Constants.Mode.REAL
-              ? new frc.robot.subsystems.FireControlIOSparkMax()
-              : new frc.robot.subsystems.FireControlIO() {});
+              ? new frc.robot.subsystems.FlywheelIOSparkMax()
+              : new frc.robot.subsystems.FlywheelIO() {});
   private final IntakeSubsystem m_intakeSubsystem =
       new IntakeSubsystem(
           Constants.CURRENT_MODE == Constants.Mode.REAL

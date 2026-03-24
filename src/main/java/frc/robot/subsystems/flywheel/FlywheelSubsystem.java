@@ -5,13 +5,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotTelemetry;
 import org.littletonrobotics.junction.Logger;
 
-public class FireControlSubsystem extends SubsystemBase {
-  private final FireControlIO m_io;
-  private final FireControlIOInputsAutoLogged m_inputs = new FireControlIOInputsAutoLogged();
+public class FlywheelSubsystem extends SubsystemBase {
+  private final FlywheelIO m_io;
+  private final FlywheelIOInputsAutoLogged m_inputs = new FlywheelIOInputsAutoLogged();
   private final SimpleMotorFeedforward m_feedforward;
   private final edu.wpi.first.math.filter.SlewRateLimiter m_spinDownLimiter;
 
-  public FireControlSubsystem(FireControlIO io) {
+  public FlywheelSubsystem(FlywheelIO io) {
     m_io = io;
 
     // Approximate feedforward constants for a NEO flywheel (Volts, V*s/rad, V*s^2/rad)

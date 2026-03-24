@@ -2,17 +2,17 @@ package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface LoaderIO {
+public interface FlywheelIO {
   @AutoLog
-  public static class LoaderIOInputs {
+  public static class FlywheelIOInputs {
     public double appliedVolts = 0.0;
     public double currentAmps = 0.0;
     public double velocityRPM = 0.0;
   }
 
-  public default void updateInputs(LoaderIOInputs inputs) {}
+  public default void updateInputs(FlywheelIOInputs inputs) {}
 
-  public default void setVoltage(double volts) {}
+  public default void setVelocity(double velocityRPM, double feedforwardVolts) {}
 
   public default void stop() {}
 }

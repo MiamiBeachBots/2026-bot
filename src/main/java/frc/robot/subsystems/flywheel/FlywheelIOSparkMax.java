@@ -9,12 +9,12 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.constants.Constants.CANConstants;
 
-public class FireControlIOSparkMax implements FireControlIO {
+public class FlywheelIOSparkMax implements FlywheelIO {
   private final SparkMax m_fireMotor;
   private final SparkClosedLoopController m_pidController;
 
   @SuppressWarnings("removal")
-  public FireControlIOSparkMax() {
+  public FlywheelIOSparkMax() {
     m_fireMotor = new SparkMax(CANConstants.MOTOR_FIRE_ID, MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
 
@@ -28,7 +28,7 @@ public class FireControlIOSparkMax implements FireControlIO {
   }
 
   @Override
-  public void updateInputs(FireControlIOInputs inputs) {
+  public void updateInputs(FlywheelIOInputs inputs) {
     inputs.appliedVolts = m_fireMotor.getAppliedOutput() * m_fireMotor.getBusVoltage();
     inputs.currentAmps = m_fireMotor.getOutputCurrent();
     inputs.velocityRPM = m_fireMotor.getEncoder().getVelocity();

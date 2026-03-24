@@ -8,7 +8,7 @@ import frc.robot.subsystems.*;
 public class PitHealthCheckCommand extends Command {
   private final DriveSubsystem m_drive;
   private final IntakeSubsystem m_intake;
-  private final FireControlSubsystem m_fire;
+  private final FlywheelSubsystem m_fire;
   private final LoaderSubsystem m_loader;
   private final TurretSubsystem m_turret;
 
@@ -19,7 +19,7 @@ public class PitHealthCheckCommand extends Command {
   public PitHealthCheckCommand(
       DriveSubsystem drive,
       IntakeSubsystem intake,
-      FireControlSubsystem fire,
+      FlywheelSubsystem fire,
       LoaderSubsystem loader,
       TurretSubsystem turret) {
     m_drive = drive;
