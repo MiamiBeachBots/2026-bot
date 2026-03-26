@@ -144,7 +144,7 @@ public class RobotContainer {
         new FireCommand(m_fireSubsystem, () -> m_flightstick.getY(), m_operatorDefaultButton));
 
     // Auto Aim Command (Bind to Button 2 of flight stick to toggle)
-    m_operatorButton2.toggleOnTrue(new AutoAimCommand(m_turretSubsystem));
+    m_operatorButton2.toggleOnTrue(new AutoAimCommand(m_turretSubsystem, m_cameraSubsystem, m_driveSubsystem));
 
     // Turret Preset Orientations (Buttons 6 - 11)
     // Values are placeholders for raw motor rotations until gear ratio is determined.
