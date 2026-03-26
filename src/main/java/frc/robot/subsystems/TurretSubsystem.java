@@ -1,8 +1,8 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -49,7 +49,7 @@ public class TurretSubsystem extends SubsystemBase {
     if (Math.abs(speed) < 0.1) {
       speed = 0;
     }
-    m_pidController.setReference(speed, SparkMax.ControlType.kDutyCycle);
+    m_pidController.setSetpoint(speed, SparkMax.ControlType.kDutyCycle);
   }
 
   /**
@@ -58,7 +58,7 @@ public class TurretSubsystem extends SubsystemBase {
    * @param targetRotations Target position in motor rotations.
    */
   public void setTargetPosition(double targetRotations) {
-    m_pidController.setReference(targetRotations, SparkMax.ControlType.kPosition);
+    m_pidController.setSetpoint(targetRotations, SparkMax.ControlType.kPosition);
   }
 
   /**
