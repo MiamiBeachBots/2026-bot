@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -81,4 +83,5 @@ public final class Constants {
   public static final double SHOOTER_ANGLE = Math.PI / 4;
   public static final double HUB_HEIGHT = 1.8288;
   public static final double BALL_DIAMETER = 0.15;
+  public static final Translation2d HUB_POSITION = new Translation2d(4.625594, 4.034663);
 }

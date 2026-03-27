@@ -22,14 +22,12 @@ public class AutoAimCommand extends Command {
     public ShotData(double angle, double force) {
       this.angle = angle;
       this.force = force;
-
     }
-
   }
 
-  public AutoAimCommand(TurretSubsystem turret, CameraSubsystem c_subsystem, DriveSubsystem d_subsystem) {
+  public AutoAimCommand(
+      TurretSubsystem turret, DriveSubsystem d_subsystem) {
     m_turret = turret;
-    m_cameraSubsystem = c_subsystem;
     m_driveSubsystem = d_subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(turret);
@@ -45,27 +43,32 @@ public class AutoAimCommand extends Command {
   @Override
   public void execute() {
     // TODO: Friend's auto-aim logic here
-    m_cameraSubsystem.targetingCamera1Result.ifPresent(result -> {
-      for (PhotonTrackedTarget target : result.getTargets()) {
-        if (target.getFiducialId() != CameraConstants.HUB_FIDUCIUAL_ID) continue;
-        ShotData shotData = calculateShot(target.getBestCameraToTarget(), m_driveSubsystem.getRotation2d(), m_driveSubsystem.getSpeeds());
-        m_turret.setTargetPosition(shotData.angle / (Math.PI * 2));
-      }
-    });
+    ShotData shotData =
+            calculateShot(
+                    m_driveSubsystem.getPose(),
+                    m_driveSubsystem.getRotation2d(),
+                    m_driveSubsystem.getSpeeds());
+    m_turret.setTargetPosition(shotData.angle / (Math.PI * 2));
   }
 
-  private ShotData calculateShot(Transform3d target, Rotation2d chassisRotation, ChassisSpeeds chassisSpeeds) {
+  private ShotData calculateShot(Pose2d pose, Rotation2d chassisRotation, ChassisSpeeds chassisSpeeds) {
     double shooterAngleCos = Math.cos(Constants.SHOOTER_ANGLE);
     double shooterAngleTan = Math.tan(Constants.SHOOTER_ANGLE);
 
-    Translation2d relativeXYDisplacement = target.getTranslation().toTranslation2d();
+    Translation2d relativeXYDisplacement = pose.getTranslation();
     double distance = relativeXYDisplacement.getDistance(Translation2d.kZero);
     Translation2d xyDisplacement = relativeXYDisplacement.rotateBy(chassisRotation.times(-1));
     Rotation2d angleToTarget = target.getRotation().toRotation2d();
     double radiansToTarget = angleToTarget.getRadians();
 
-    double verticalDisplacement = (Constants.HUB_HEIGHT - Constants.SHOOTER_HEIGHT - (Constants.BALL_DIAMETER / 2));
-    double launchSpeed = Math.sqrt((Constants.AUTOAIM_GRAVITY * Math.pow(distance, 2)) / (2 * Math.pow(shooterAngleCos, 2) * (distance * shooterAngleTan - verticalDisplacement)));
+    double verticalDisplacement =
+        (Constants.HUB_HEIGHT - Constants.SHOOTER_HEIGHT - (Constants.BALL_DIAMETER / 2));
+    double launchSpeed =
+        Math.sqrt(
+            (Constants.AUTOAIM_GRAVITY * Math.pow(distance, 2))
+                / (2
+                    * Math.pow(shooterAngleCos, 2)
+                    * (distance * shooterAngleTan - verticalDisplacement)));
     double xySpeed = shooterAngleCos * launchSpeed;
     double airtime = distance / xySpeed;
 
@@ -76,12 +79,17 @@ public class AutoAimCommand extends Command {
     double xPrediction = (xVelocity + chassisSpeeds.vxMetersPerSecond) * airtime;
     double yPrediction = (yVelocity + chassisSpeeds.vyMetersPerSecond) * airtime;
 
-    Transform2d correctedTargetXYDisplacement = new Transform2d(xyDisplacement.getX() * 2 - xPrediction, xyDisplacement.getY() * 2 - yPrediction, Rotation2d.kZero);
-    double correctedAngle = Math.atan2(correctedTargetXYDisplacement.getY(), correctedTargetXYDisplacement.getX());
-    double correctedForce = correctedTargetXYDisplacement.getY() / (Math.sin(correctedAngle) * airtime);
+    Transform2d correctedTargetXYDisplacement =
+        new Transform2d(
+            xyDisplacement.getX() * 2 - xPrediction,
+            xyDisplacement.getY() * 2 - yPrediction,
+            Rotation2d.kZero);
+    double correctedAngle =
+        Math.atan2(correctedTargetXYDisplacement.getY(), correctedTargetXYDisplacement.getX());
+    double correctedForce =
+        correctedTargetXYDisplacement.getY() / (Math.sin(correctedAngle) * airtime);
 
     return new ShotData(correctedAngle, correctedForce);
-
   }
 
   // Returns true when the command should end.

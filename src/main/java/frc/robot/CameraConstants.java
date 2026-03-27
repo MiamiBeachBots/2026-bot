@@ -65,6 +65,6 @@ public class CameraConstants {
           Units.degreesToRadians(0.0),
           Units.degreesToRadians(0));
 
-  public static final int HUB_FIDUCIUAL_ID = 7; // Change 7 for actual hub april tag id, change to range later
-
+  public static final int HUB_FIDUCIUAL_ID =
+      7; // Change 7 for actual hub april tag id, change to range later
 }
