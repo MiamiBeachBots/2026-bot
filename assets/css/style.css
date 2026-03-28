@@ -198,8 +198,10 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1rem;
 }
 
-/* H1 from README body — hide it since it's duplicated in the hero */
-.page-body > h1:first-child { display: none; }
+/* H1 from README body — duplicates hero, hide it and its intro blob */
+.page-body > h1:first-child,
+.page-body > h1:first-child + p,
+.page-body > h1:first-child + p + p { display: none; }
 
 h2 {
   font-size: 1.55rem;
