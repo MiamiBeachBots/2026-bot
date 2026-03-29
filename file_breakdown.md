@@ -10,8 +10,8 @@ pie title Language Distribution (by Line Count)
     "Java" : 4522
     "Other" : 3076
     "Python" : 1843
+    "Markdown" : 869
     "JSON" : 856
-    "Markdown" : 754
     "Gradle" : 204
     "Rust" : 172
     "YAML" : 44
@@ -27,8 +27,8 @@ pie title Language Distribution (by Line Count)
 | **Java** | `.java` | 50 | 4,522 |
 | **Other** | `.bat, .css, .csv, .gitignore, .html, .jar, .properties, .txt` | 22 | 3,076 |
 | **Python** | `.py` | 10 | 1,843 |
+| **Markdown** | `.md` | 18 | 869 |
 | **JSON** | `.json` | 20 | 856 |
-| **Markdown** | `.md` | 17 | 754 |
 | **Gradle** | `.gradle` | 2 | 204 |
 | **Rust** | `.rs` | 1 | 172 |
 | **YAML** | `.yml` | 1 | 44 |
