@@ -9,7 +9,7 @@ pie title Language Distribution (by Line Count)
     "Rust Lockfile" : 4874
     "Java" : 4522
     "Other" : 3365
-    "Python" : 1843
+    "Python" : 1904
     "Markdown" : 869
     "JSON" : 856
     "Gradle" : 204
@@ -26,7 +26,7 @@ pie title Language Distribution (by Line Count)
 | **Rust Lockfile** | `.lock` | 1 | 4,874 |
 | **Java** | `.java` | 50 | 4,522 |
 | **Other** | `.bat, .css, .csv, .gitignore, .html, .jar, .properties, .txt` | 23 | 3,365 |
-| **Python** | `.py` | 10 | 1,843 |
+| **Python** | `.py` | 11 | 1,904 |
 | **Markdown** | `.md` | 18 | 869 |
 | **JSON** | `.json` | 20 | 856 |
 | **Gradle** | `.gradle` | 2 | 204 |
