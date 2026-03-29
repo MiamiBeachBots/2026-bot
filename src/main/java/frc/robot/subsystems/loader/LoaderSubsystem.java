@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.loader;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;

@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.flywheel;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;

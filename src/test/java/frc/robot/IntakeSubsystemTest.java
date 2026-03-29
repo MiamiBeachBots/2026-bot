@@ -3,7 +3,7 @@ package frc.robot;
 import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.hal.HAL;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ public class IntakeSubsystemTest {
     assert HAL.initialize(500, 0);
     m_intake =
         new IntakeSubsystem(
-            new frc.robot.subsystems.IntakeIO() {
+            new frc.robot.subsystems.intake.IntakeIO() {
               private double volts = 0.0;
 
               @Override

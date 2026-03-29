@@ -1,7 +1,11 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.loader;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volts;
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -34,9 +38,10 @@ public class LoaderIOSparkMax implements LoaderIO {
 
   @Override
   public void updateInputs(LoaderIOInputs inputs) {
-    inputs.appliedVolts = m_loaderMotor1.getAppliedOutput() * m_loaderMotor1.getBusVoltage();
-    inputs.currentAmps = m_loaderMotor1.getOutputCurrent();
-    inputs.velocityRPM = m_loaderMotor1.getEncoder().getVelocity();
+    inputs.appliedVolts =
+        Volts.of(m_loaderMotor1.getAppliedOutput() * m_loaderMotor1.getBusVoltage());
+    inputs.currentAmps = Amps.of(m_loaderMotor1.getOutputCurrent());
+    inputs.velocityRPM = RPM.of(m_loaderMotor1.getEncoder().getVelocity());
   }
 
   @Override

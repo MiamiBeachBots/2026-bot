@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.constants;
 
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathConstraints;

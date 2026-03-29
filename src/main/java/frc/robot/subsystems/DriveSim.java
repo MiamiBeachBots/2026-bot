@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import frc.robot.DriveConstants;
+import frc.robot.constants.DriveConstants;
 
 public class DriveSim {
   private final SimDouble SimGyroAngleHandler;

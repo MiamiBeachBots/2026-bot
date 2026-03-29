@@ -1,8 +1,8 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.flywheel;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -13,7 +13,6 @@ public class FlywheelIOSparkMax implements FlywheelIO {
   private final SparkMax m_fireMotor;
   private final SparkClosedLoopController m_pidController;
 
-  @SuppressWarnings("removal")
   public FlywheelIOSparkMax() {
     m_fireMotor = new SparkMax(CANConstants.MOTOR_FIRE_ID, MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
@@ -34,10 +33,9 @@ public class FlywheelIOSparkMax implements FlywheelIO {
     inputs.velocityRPM = m_fireMotor.getEncoder().getVelocity();
   }
 
-  @SuppressWarnings("removal")
   @Override
   public void setVelocity(double velocityRPM, double feedforwardVolts) {
-    m_pidController.setReference(
+    m_pidController.setSetpoint(
         velocityRPM,
         ControlType.kVelocity,
         com.revrobotics.spark.ClosedLoopSlot.kSlot0,

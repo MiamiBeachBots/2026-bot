@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.simulation.SimHooks;
-import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.flywheel.FlywheelSubsystem;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +23,7 @@ public class FireControlSubsystemTest {
     SimHooks.pauseTiming();
     m_fireControl =
         new FlywheelSubsystem(
-            new frc.robot.subsystems.FlywheelIO() {
+            new frc.robot.subsystems.flywheel.FlywheelIO() {
               private double rpm = 0.0;
 
               @Override

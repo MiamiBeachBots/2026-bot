@@ -3,7 +3,7 @@ package frc.robot;
 import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.hal.HAL;
-import frc.robot.subsystems.LoaderSubsystem;
+import frc.robot.subsystems.loader.LoaderSubsystem;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ public class LoaderSubsystemTest {
   @BeforeAll
   static void initAll() {
     assert HAL.initialize(500, 0);
-    m_loader = new LoaderSubsystem(new frc.robot.subsystems.LoaderIO() {});
+    m_loader = new LoaderSubsystem(new frc.robot.subsystems.loader.LoaderIO() {});
   }
 
   // ─── setLoaderSpeed ───────────────────────────────────────────────

@@ -1,9 +1,12 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Radians;
 import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.hal.HAL;
-import frc.robot.subsystems.TurretSubsystem;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.Angle;
+import frc.robot.subsystems.turret.TurretSubsystem;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -21,18 +24,18 @@ public class TurretSubsystemTest {
     assert HAL.initialize(500, 0);
     m_turret =
         new TurretSubsystem(
-            new frc.robot.subsystems.TurretIO() {
+            new frc.robot.subsystems.turret.TurretIO() {
               private double pos = 0.0;
               private double targetPos = 0.0;
 
               @Override
               public void updateInputs(TurretIOInputs inputs) {
-                inputs.positionRotations = pos;
+                inputs.positionRadians = Angle.ofBaseUnits(pos, Radians);
               }
 
               @Override
-              public void setPosition(double target) {
-                targetPos = target;
+              public void setPosition(double position, double feedforward) {
+                targetPos = position;
               }
             });
   }

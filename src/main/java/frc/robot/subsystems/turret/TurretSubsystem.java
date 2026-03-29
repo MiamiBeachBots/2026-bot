@@ -1,11 +1,12 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.turret;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotTelemetry;
-import frc.robot.constants.Constants;
 import frc.robot.constants.SpeedConstants;
-import frc.robot.constants.TweakConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class TurretSubsystem extends SubsystemBase {
@@ -13,12 +14,37 @@ public class TurretSubsystem extends SubsystemBase {
   private final TurretIOInputsAutoLogged m_inputs = new TurretIOInputsAutoLogged();
   private final SlewRateLimiter m_speedLimiter;
 
+  // Setup trapezoidal profile for smoothing movement
+  private final TrapezoidProfile m_profile =
+      new TrapezoidProfile(
+          new TrapezoidProfile.Constraints(
+              TurretConstants.MAX_VELOCITY, TurretConstants.MAX_ACCELERATION));
+  private TrapezoidProfile.State m_goal = new TrapezoidProfile.State();
+  private TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+
+  // Setup Feedforward
+  private SimpleMotorFeedforward m_feedForward =
+      new SimpleMotorFeedforward(
+          TurretConstants.kS, TurretConstants.kG, TurretConstants.kV, TurretConstants.kA);
+  private double m_previousVelocity = 0;
+  public boolean m_pidEnabled = true;
+
+  ;
+
   private boolean m_isUnwinding = false;
 
   public TurretSubsystem(TurretIO io) {
+
     m_io = io;
+
     // Software Slew Rate Limiter for manual inputs (acceleration cap: full speed in 0.5s)
     m_speedLimiter = new SlewRateLimiter(2.0);
+  }
+
+  /** Updates the setpoint */
+  private void updateSetpoint(TrapezoidProfile.State goal) {
+    m_previousVelocity = m_setpoint.velocity;
+    m_setpoint = m_profile.calculate(0.02, m_setpoint, goal);
   }
 
   /**
@@ -32,16 +58,14 @@ public class TurretSubsystem extends SubsystemBase {
     if (Math.abs(speed) < 0.1) {
       speed = 0;
     }
+
     double adjustedSpeed =
         m_speedLimiter.calculate(
             SpeedConstants.adjustSpeed(
                 speed, SpeedConstants.TURRET_MAX_SPEED, SpeedConstants.TURRET_SENSITIVITY));
 
-    if (TweakConstants.REVERSE_TURRET_DIRECTION) {
-      adjustedSpeed = -adjustedSpeed;
-    }
-
-    m_io.setVoltage(adjustedSpeed * 12.0);
+    m_io.setVelocity(
+       adjustedSpeed * TurretConstants.MAX_VELOCITY, 0);
   }
 
   /**
@@ -56,14 +80,14 @@ public class TurretSubsystem extends SubsystemBase {
 
   /** Gets the current robot-relative position of the turret in radians. */
   public double getTurretAngleRadians() {
-    double currentRotations = m_inputs.positionRotations;
-    return (currentRotations / Constants.TURRET_GEAR_RATIO) * 2.0 * Math.PI;
+    double currentRotations = m_inputs.positionRadians.magnitude();
+    return currentRotations;
   }
 
   /** Gets the current robot-relative position of the turret in degrees. */
   public double getTurretAngleDegrees() {
-    double currentRotations = m_inputs.positionRotations;
-    return (currentRotations / Constants.TURRET_GEAR_RATIO) * 360.0;
+    double currentRotations = m_inputs.positionRadians.magnitude();
+    return Units.radiansToDegrees(currentRotations);
   }
 
   /**
@@ -73,8 +97,10 @@ public class TurretSubsystem extends SubsystemBase {
    */
   public void setTargetAngle(double targetAngleDegrees) {
     if (m_isUnwinding) return;
-    double targetRotations = (targetAngleDegrees / 360.0) * Constants.TURRET_GEAR_RATIO;
-    m_io.setPosition(targetRotations);
+
+    double targetAngleRadians = Units.degreesToRadians(targetAngleDegrees);
+
+    m_goal = new TrapezoidProfile.State(targetAngleRadians, 0);
   }
 
   /**
@@ -100,18 +126,22 @@ public class TurretSubsystem extends SubsystemBase {
     return m_isUnwinding;
   }
 
+  public void disablePID() {
+    m_pidEnabled = false;
+  }
+
   @Override
   public void periodic() {
     double currentAngle = getTurretAngleDegrees();
 
     // Check if we exceeded bounds and enter unwinding state
-    if (Math.abs(currentAngle) >= 360.0 && !m_isUnwinding) {
+    if (Math.abs(currentAngle) >= 360.0 && !m_isUnwinding && m_pidEnabled) {
       m_isUnwinding = true;
     }
 
     // Handle unwinding logic
     if (m_isUnwinding) {
-      m_io.setPosition(0.0);
+      updateSetpoint(new TrapezoidProfile.State(0, 0));
 
       // Check if we're back near 0 center
       // Stiction and SparkMax deadband with an undertuned PID (kP=0.1) can cause
@@ -121,14 +151,18 @@ public class TurretSubsystem extends SubsystemBase {
         // Reset our rate limiter so the driver can cleanly regain control
         m_speedLimiter.reset(0);
       }
+    } else if (m_pidEnabled) {
+      updateSetpoint(m_goal);
     }
+    m_io.setPosition(
+        m_setpoint.position, m_feedForward.calculateWithVelocities(m_previousVelocity, m_setpoint.velocity));
 
     m_io.updateInputs(m_inputs);
     Logger.processInputs("Turret", m_inputs);
 
     // Output current state of turret motor for debugging
-    RobotTelemetry.putNumber("Turret Motor Speed Output", m_inputs.appliedVolts / 12.0);
-    RobotTelemetry.putNumber("Turret Position", m_inputs.positionRotations);
+    RobotTelemetry.putNumber("Turret Motor Speed Output", m_inputs.velocityRPM.magnitude() / 12.0);
+    RobotTelemetry.putNumber("Turret Position", m_inputs.positionRadians.magnitude());
     RobotTelemetry.putBoolean("Turret Is Unwinding", m_isUnwinding);
   }
 

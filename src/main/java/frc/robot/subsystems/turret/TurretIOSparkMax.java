@@ -1,32 +1,40 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.turret;
 
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Volts;
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.constants.Constants.CANConstants;
+import frc.robot.constants.DriveConstants;
 
 public class TurretIOSparkMax implements TurretIO {
   private final SparkMax m_turretMotor;
   private final SparkClosedLoopController m_pidController;
 
-  @SuppressWarnings("removal")
   public TurretIOSparkMax() {
     m_turretMotor = new SparkMax(CANConstants.MOTOR_TURRET_ID, MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
-
-    config.smartCurrentLimit(25);
+    //Configure motor settings
+    config.smartCurrentLimit(TurretConstants.kCurrentLimit);
     config.idleMode(SparkMaxConfig.IdleMode.kBrake);
 
-    config.closedLoop.pid(0.05, 0.0, 0.0);
-    config.closedLoop.outputRange(-1.0, 1.0);
+    config.encoder.positionConversionFactor(TurretConstants.kPositionConversionRatio);
+    config.encoder.velocityConversionFactor(TurretConstants.kVelocityConversionRatio);
 
-    config.closedLoop.maxMotion.maxVelocity(1000);
+    config.closedLoop.pid(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
+    config.closedLoop.outputRange(TurretConstants.kMin, TurretConstants.kMax);
+
+    config.closedLoop.maxMotion.cruiseVelocity(1000);
     config.closedLoop.maxMotion.maxAcceleration(500);
-    config.closedLoop.maxMotion.allowedClosedLoopError(0.5);
+    config.closedLoop.maxMotion.allowedProfileError(0.5);
 
     m_turretMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -35,19 +43,29 @@ public class TurretIOSparkMax implements TurretIO {
 
   @Override
   public void updateInputs(TurretIOInputs inputs) {
-    inputs.appliedVolts = m_turretMotor.getAppliedOutput() * m_turretMotor.getBusVoltage();
-    inputs.currentAmps = m_turretMotor.getOutputCurrent();
-    inputs.positionRotations = m_turretMotor.getEncoder().getPosition();
-    inputs.velocityRPM = m_turretMotor.getEncoder().getVelocity();
+    inputs.appliedVolts =
+        Volts.of(m_turretMotor.getAppliedOutput() * m_turretMotor.getBusVoltage());
+    inputs.currentAmps = Amps.of(m_turretMotor.getOutputCurrent());
+    inputs.positionRadians = Radians.of(m_turretMotor.getEncoder().getPosition());
+    inputs.velocityRPM = RPM.of(m_turretMotor.getEncoder().getVelocity());
   }
 
-  @SuppressWarnings("removal")
   @Override
-  public void setPosition(double positionRotations) {
-    m_pidController.setReference(
-        positionRotations,
-        ControlType.kMAXMotionPositionControl,
-        com.revrobotics.spark.ClosedLoopSlot.kSlot0);
+  public void setPosition(double position, double feedforward) {
+    m_pidController.setSetpoint(
+        position,
+        SparkBase.ControlType.kPosition,
+        DriveConstants.kDrivetrainPositionPIDSlot,
+        feedforward);
+  }
+
+  @Override
+  public void setVelocity(double velocity, double feedforward) {
+    m_pidController.setSetpoint(
+        velocity,
+        SparkBase.ControlType.kVelocity,
+        DriveConstants.kDrivetrainVelocityPIDSlot,
+        feedforward);
   }
 
   @Override

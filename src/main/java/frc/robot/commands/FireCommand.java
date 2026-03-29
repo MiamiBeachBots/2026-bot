@@ -2,8 +2,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.FlywheelSubsystem;
-import frc.robot.subsystems.LoaderSubsystem;
+import frc.robot.subsystems.flywheel.FlywheelSubsystem;
+import frc.robot.subsystems.loader.LoaderSubsystem;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 

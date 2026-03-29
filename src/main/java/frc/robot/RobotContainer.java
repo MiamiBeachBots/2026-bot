@@ -19,10 +19,18 @@ import frc.robot.commands.UnjamIntakeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.FlywheelSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LoaderSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.flywheel.FlywheelIO;
+import frc.robot.subsystems.flywheel.FlywheelIOSparkMax;
+import frc.robot.subsystems.flywheel.FlywheelSubsystem;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSparkMax;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.loader.LoaderIO;
+import frc.robot.subsystems.loader.LoaderIOSparkMax;
+import frc.robot.subsystems.loader.LoaderSubsystem;
+import frc.robot.subsystems.turret.TurretIO;
+import frc.robot.subsystems.turret.TurretIOSparkMax;
+import frc.robot.subsystems.turret.TurretSubsystem;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -44,23 +52,24 @@ public class RobotContainer {
   private final TurretSubsystem m_turretSubsystem =
       new TurretSubsystem(
           Constants.CURRENT_MODE == Constants.Mode.REAL
-              ? new frc.robot.subsystems.TurretIOSparkMax()
-              : new frc.robot.subsystems.TurretIO() {});
+              ? new TurretIOSparkMax()
+              //TODO: TurretIOSim
+              : new TurretIO() {});
   private final FlywheelSubsystem m_fireSubsystem =
       new FlywheelSubsystem(
           Constants.CURRENT_MODE == Constants.Mode.REAL
-              ? new frc.robot.subsystems.FlywheelIOSparkMax()
-              : new frc.robot.subsystems.FlywheelIO() {});
+              ? new FlywheelIOSparkMax()
+              : new FlywheelIO() {});
   private final IntakeSubsystem m_intakeSubsystem =
       new IntakeSubsystem(
           Constants.CURRENT_MODE == Constants.Mode.REAL
-              ? new frc.robot.subsystems.IntakeIOSparkMax()
-              : new frc.robot.subsystems.IntakeIO() {});
+              ? new IntakeIOSparkMax()
+              : new IntakeIO() {});
   private final LoaderSubsystem m_loaderSubsystem =
       new LoaderSubsystem(
           Constants.CURRENT_MODE == Constants.Mode.REAL
-              ? new frc.robot.subsystems.LoaderIOSparkMax()
-              : new frc.robot.subsystems.LoaderIO() {});
+              ? new LoaderIOSparkMax()
+              : new LoaderIO() {});
 
   // Initialize Commands
   private final DefaultDrive m_defaultDrive =
