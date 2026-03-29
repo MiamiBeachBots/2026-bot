@@ -56,7 +56,7 @@ Explain **why** you're doing something, not **what** you're doing. The code shou
 
 ```java
 // Stop motors before init to prevent brownouts
-motor.set(0); 
+motor.set(0);
 ```
 
 ---

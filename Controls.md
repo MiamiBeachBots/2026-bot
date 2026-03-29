@@ -5,7 +5,7 @@ title: "Controls | 2026-bot"
 
 # Controls
 
-Master map for the Xbox and Flight Stick setups. 
+Master map for the Xbox and Flight Stick setups.
 
 ## Primary Driver (Xbox - Port 0)
 

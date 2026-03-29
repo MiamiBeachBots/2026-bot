@@ -53,8 +53,8 @@ Push and open a PR on GitHub. Tag someone for a review. Don't merge your own cod
 
 ## Standards
 
-- **Indent:** 2 spaces. 
-- **Brackets:** K&R (same line). 
+- **Indent:** 2 spaces.
+- **Brackets:** K&R (same line).
 - **Naming:** `camelCase` for variables, `PascalCase` for classes.
 - **Constants:** Everything in `Constants.java`. No magic numbers.
 

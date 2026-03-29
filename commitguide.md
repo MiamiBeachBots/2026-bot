@@ -4,7 +4,7 @@ title: "Commit Guide | 2026-bot"
 ---
 # Git Commits
 
-Keep them atomic. One change, one commit. 
+Keep them atomic. One change, one commit.
 
 ## Format
 
