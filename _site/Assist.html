@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ page.title | default: site.title }}</title>
-  <meta name="description" content="{{ page.description | default: site.description }}" />
+  <title>Get Help | 2026-bot</title>
+  <meta name="description" content="Miami Beach Bots (FRC Team 2026) — Aut viam inveniam aut faciam. Robot code for the 2025–2026 FIRST Robotics Competition season." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 <body>
 
@@ -29,20 +29,53 @@
   <!-- ╔══════════════ NAVIGATION ══════════════╗ -->
   <nav class="site-nav">
     <div class="nav-inner">
-      <a href="{{ '/' | relative_url }}">HUB</a>
-      <a href="{{ '/Contribguide' | relative_url }}">CONTRIBUTING</a>
-      <a href="{{ '/styleguide' | relative_url }}">STYLE_GUIDE</a>
-      <a href="{{ '/commitguide' | relative_url }}">COMMITS</a>
-      <a href="{{ '/Controls' | relative_url }}">CONTROLS</a>
-      <a href="{{ '/deploy-guide' | relative_url }}">DEPLOY</a>
-      <a href="{{ '/Assist' | relative_url }}">SUPPORT</a>
+      <a href="/">HUB</a>
+      <a href="/Contribguide">CONTRIBUTING</a>
+      <a href="/styleguide">STYLE_GUIDE</a>
+      <a href="/commitguide">COMMITS</a>
+      <a href="/Controls">CONTROLS</a>
+      <a href="/deploy-guide">DEPLOY</a>
+      <a href="/Assist">SUPPORT</a>
     </div>
   </nav>
 
   <!-- ╔══════════════ MAIN CONTENT ══════════════╗ -->
   <main class="main-content">
     <article class="page-body">
-      {{ content }}
+      <h1 id="support">Support</h1>
+
+<p>Something broke? Here’s how to fix it or who to ping.</p>
+
+<h2 id="filing-issues">Filing Issues</h2>
+
+<p>We track everything on <a href="https://github.com/MiamiBeachBots/2026-bot/issues">GitHub Issues</a>.</p>
+
+<h3 id="-code-bugs">🐛 Code Bugs</h3>
+<p>If the robot crashes or doesn’t do what you expected:</p>
+<ol>
+  <li>Search existing issues first.</li>
+  <li>Label it <code class="language-plaintext highlighter-rouge">bug</code> or <code class="language-plaintext highlighter-rouge">urgent</code>.</li>
+  <li>Include the <strong>Full Error Trace</strong> from the Driver Station console.</li>
+</ol>
+
+<h3 id="-requests">💬 Requests</h3>
+<p>Want a new feature or found a typo in the docs?</p>
+<ol>
+  <li>Open an issue.</li>
+  <li>Label it <code class="language-plaintext highlighter-rouge">feature</code> or <code class="language-plaintext highlighter-rouge">docs</code>.</li>
+</ol>
+
+<hr />
+
+<h2 id="direct-contact">Direct Contact</h2>
+
+<p>If it’s competition-day urgent or private, ping <strong>Thalia</strong>:
+📧 <a href="mailto:thaliathenerd@proton.me">thaliathenerd@proton.me</a></p>
+
+<hr />
+
+<p><em>Try to use GitHub for everything else so the whole team can see the fix.</em></p>
+
     </article>
   </main>
 

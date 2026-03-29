@@ -1,28 +1,33 @@
-# 2026-Bot Controls
+---
+layout: default
+title: "Controls | 2026-bot"
+---
 
-This document serves as the master reference for all controller mappings and driver station interactions for both the Primary Driver and the Secondary Operator.
+# Controls
 
-## Primary Driver (Xbox Controller - Port 0)
+Master map for the Xbox and Flight Stick setups. 
 
-| Input | Action | Description |
+## Primary Driver (Xbox - Port 0)
+
+| Input | Action | Note |
 |:---|:---|:---|
-| **Left Stick Y-Axis** | Drive Left Sides | Controls the speed of the left track/wheels (Tank Drive). |
-| **Right Stick Y-Axis** | Drive Right Sides | Controls the speed of the right track/wheels (Tank Drive). |
-| **Left Bumper** | Toggle Precision Mode | Hold to limit maximum speed to 30% for fine adjustments. |
-| **Right Bumper** | Toggle Brake/Coast | Toggles the drivetrain between Brake and Coast mode. |
-| **Left Trigger** | Unjam / Reverse Intake | Reverses the intake if a piece gets stuck. |
-| **Right Trigger** | Fire Override | Allows the driver to shoot without the operator. |
-| **Button A** | Toggle Intake | Enables the driver to quickly spin up or stop the intake. |
-| **Button Y** | Switch Queued Mode | Toggles the queued shooter state. |
+| **Left Stick Y** | Left Drive | Tank control |
+| **Right Stick Y** | Right Drive | Tank control |
+| **LB** | Precision | 30% speed limit |
+| **RB** | Brake Mode | Toggles brake/coast |
+| **LT** | Reverse Intake | Unjamming |
+| **RT** | Fire Override | For manual shooting |
+| **A** | Intake Toggle | Spin up/stop |
+| **Y** | Queue Shooter | Prep for firing |
 
-## Secondary Operator (Flight Stick - Port 1)
+## Operator (Flight Stick - Port 1)
 
-| Input | Action | Description |
+| Input | Action | Note |
 |:---|:---|:---|
-| **X-Axis** | Turret Manual Control | Manually rotates the Turret left and right. |
-| **Y-Axis** | Loader Speed | Pushing stick forward spins the 3-motor Loader inward. |
-| **Throttle Slider** | Intake Speed | Automatically scales the 2-motor Intake speed. |
-| **Trigger (Top)** | Fire Weapon | Activates feeder/kicker motor full speed to launch the ball. |
-| **Button 2** | Toggle Auto Aim | Activates auto-aim mode for targeting. |
-| **Buttons 6-11** | Turret Presets | Rotates the turret to predefined angular positions. |
-| **Button 12** | Emergency Unjam | Unjams the intake system. |
+| **X** | Turret Rotation | Manual aim |
+| **Y** | Loader Speed | Forward = load |
+| **Throttle** | Intake Speed | Scaling |
+| **Trigger** | FIRE | Full speed launch |
+| **Btn 2** | Auto Aim | Lock on target |
+| **Btn 6-11** | Presets | Snap to angles |
+| **Btn 12** | Emergency | System unjam |

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026-bot | Miami Beach Bots</title>
+  <meta name="description" content="Miami Beach Bots (FRC Team 2026) — Aut viam inveniam aut faciam. Robot code for the 2025–2026 FIRST Robotics Competition season." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+
+  <!-- ╔══════════════ HEADER ══════════════╗ -->
+  <header class="site-header">
+    <div class="header-badge">AUTO_MODE_ACTIVE // FRC_2026</div>
+    <h1 class="header-title">Miami Beach Bots</h1>
+    <p class="header-subtitle">Building 2026-bot &mdash; <em>Aut viam inveniam aut faciam.</em></p>
+    
+    <div class="header-actions">
+      <a href="https://github.com/MiamiBeachBots/2026-bot" class="btn btn-primary" target="_blank" rel="noopener">
+        SOURCE_CODE
+      </a>
+      <a href="https://github.com/MiamiBeachBots/2026-bot/releases" class="btn" target="_blank" rel="noopener">RELEASES</a>
+    </div>
+  </header>
+
+  <!-- ╔══════════════ NAVIGATION ══════════════╗ -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="/">HUB</a>
+      <a href="/Contribguide">CONTRIBUTING</a>
+      <a href="/styleguide">STYLE_GUIDE</a>
+      <a href="/commitguide">COMMITS</a>
+      <a href="/Controls">CONTROLS</a>
+      <a href="/deploy-guide">DEPLOY</a>
+      <a href="/Assist">SUPPORT</a>
+    </div>
+  </nav>
+
+  <!-- ╔══════════════ MAIN CONTENT ══════════════╗ -->
+  <main class="main-content">
+    <article class="page-body">
+      <p><a href="https://adoptium.net/"><img src="https://img.shields.io/badge/Java-17%2B-orange.svg?logo=openjdk" alt="Java" /></a>
+<a href="https://docs.wpilib.org/"><img src="https://img.shields.io/badge/WPILib-2026-red.svg" alt="WPILib" /></a>
+<a href="https://github.com/MiamiBeachBots/2026-bot/actions"><img src="https://img.shields.io/github/actions/workflow/status/MiamiBeachBots/2026-bot/main.yml?branch=main&amp;logo=github" alt="Build" /></a></p>
+
+<hr />
+
+<p>This is the main codebase for Team 2026’s 2026 robot (<em>REBUILT</em>). We’re running a tank drive with a bunch of extra hardware: auto-aiming turret, PhotonVision for AprilTags, and a Coral TPU for onboard ML.</p>
+
+<h2 id="status">Status</h2>
+
+<p><strong>Work in progress.</strong> We’ve got the drive base setup and CAN IDs mapped out, but hardware testing is still pending.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Component</th>
+      <th style="text-align: left">State</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Tank Drive</td>
+      <td style="text-align: left">✅ Init</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">CAN Mapping</td>
+      <td style="text-align: left">✅ Ready</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Drive Test</td>
+      <td style="text-align: left">⚠️ Pending</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Subsystems</td>
+      <td style="text-align: left">🚧 In Development</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Autos</td>
+      <td style="text-align: left">🚧 TBD</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="quick-start">Quick Start</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@github.com:MiamiBeachBots/2026-bot.git
+<span class="nb">cd </span>2026-bot
+./gradlew build        <span class="c"># pull deps + compile</span>
+./gradlew deploy       <span class="c"># push to RIO (needs robot wifi)</span>
+./gradlew simulateJava    <span class="c"># run it in sim</span>
+</code></pre></div></div>
+
+<p><em>Note: Make sure you’re on the robot’s wifi (10.20.26.x) before you try to deploy.</em></p>
+
+<hr />
+
+<h2 id="technical-hub">Technical Hub</h2>
+
+<p>Detailed guides for our workflow and system specs:</p>
+
+<ul>
+  <li><strong><a href="Contribguide">Contributing</a></strong> — how we handle branches and PRs</li>
+  <li><strong><a href="styleguide">Style Guide</a></strong> — code formatting (no tabs, please)</li>
+  <li><strong><a href="commitguide">Commit Guide</a></strong> — naming conventions for git</li>
+  <li><strong><a href="Controls">Controls</a></strong> — what button does what</li>
+  <li><strong><a href="deploy-guide">Deploy Guide</a> / <a href="Assist">Assist</a></strong> — setup and troubleshooting</li>
+</ul>
+
+<hr />
+
+<h2 id="system-architecture">System Architecture</h2>
+
+<h3 id="auto-aim-logic">Auto Aim Logic</h3>
+
+<pre><code class="language-mermaid">graph TD
+  A[DriveSubsystem] --&gt;|Odometry| C(Calculations)
+  B[CameraSubsystem] --&gt;|AprilTags| C
+  C --&gt;|Lead Calc| D{Result}
+  D --&gt;|Yaw| E[PIDController]
+  E --&gt;|Voltage| G{Sum}
+  F[SimpleFeedforward] --&gt;|FF| G
+  G --&gt;|setVoltage| H((Turret Motor))
+</code></pre>
+
+<h3 id="fire-control">Fire Control</h3>
+
+<pre><code class="language-mermaid">stateDiagram-v2
+  [*] --&gt; SpinUp: Trigger
+  SpinUp --&gt; Feed: RPM Ready
+  Feed --&gt; SpinUp: RPM Drop
+  Feed --&gt; [*]: Release
+</code></pre>
+
+<h3 id="navigation">Navigation</h3>
+
+<pre><code class="language-mermaid">graph LR
+  A[PhotonVision] --&gt;|Pose| B(Pose Estimator)
+  C[Coral TPU] --&gt;|Game Pieces| B
+  B --&gt;|Pose2d| D[PathPlanner]
+  D --&gt;|Trajectory| E((DriveSubsystem))
+</code></pre>
+
+<hr />
+
+<h2 id="can-bus-map">CAN Bus Map</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">ID</th>
+      <th style="text-align: left">Subsystem</th>
+      <th style="text-align: left">Motor</th>
+      <th style="text-align: left">Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left">Drive</td>
+      <td style="text-align: left">Front Right</td>
+      <td style="text-align: left">NEO</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: left">Drive</td>
+      <td style="text-align: left">Back Right</td>
+      <td style="text-align: left">NEO</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: left">Drive</td>
+      <td style="text-align: left">Front Left</td>
+      <td style="text-align: left">NEO</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: left">Drive</td>
+      <td style="text-align: left">Back Left</td>
+      <td style="text-align: left">NEO</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td style="text-align: left">Intake</td>
+      <td style="text-align: left">Main</td>
+      <td style="text-align: left">NEO</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: left">Intake</td>
+      <td style="text-align: left">Secondary</td>
+      <td style="text-align: left">NEO</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">7</td>
+      <td style="text-align: left">Loader</td>
+      <td style="text-align: left">Motor 1</td>
+      <td style="text-align: left">NEO</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">8</td>
+      <td style="text-align: left">Loader</td>
+      <td style="text-align: left">Motor 2</td>
+      <td style="text-align: left">NEO</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">9</td>
+      <td style="text-align: left">Loader</td>
+      <td style="text-align: left">Motor 3</td>
+      <td style="text-align: left">NEO</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">10</td>
+      <td style="text-align: left">Turret</td>
+      <td style="text-align: left">Rotation</td>
+      <td style="text-align: left">NEO</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">11</td>
+      <td style="text-align: left">FireControl</td>
+      <td style="text-align: left">Kicker</td>
+      <td style="text-align: left">NEO</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="sponsors">Sponsors</h2>
+
+<p>Thanks to our sponsors for keeping the lab running:</p>
+
+<p><strong>Gene Haas Foundation · Waldom Electronics · Give Miami Day · Intuitive Foundation · MDCPS · Cordyceps Systems · MBSH PTSA · FIRST Robotics · Metal Supermarkets</strong></p>
+
+<p><em>Miami Beach Senior High — Miami Beach, Florida</em></p>
+
+    </article>
+  </main>
+
+  <!-- ╔══════════════ FOOTER ══════════════╗ -->
+  <footer class="site-footer">
+    <div class="footer-brand">Team 2026 // Miami Beach, FL</div>
+    <p>pal in palanteir. <a href="https://github.com/MiamiBeachBots/2026-bot" target="_blank" rel="noopener">GITHUB_REPO</a></p>
+  </footer>
+
+  <!-- ╔══════════════ MERMAID ══════════════╗ -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Find all Jekyll-style mermaid blocks (Kramdown puts class on code, not pre)
+      var codeBlocks = document.querySelectorAll('code.language-mermaid');
+      codeBlocks.forEach(function(codeElement) {
+        var container = document.createElement('div');
+        container.className = 'mermaid';
+        container.textContent = codeElement.innerText;
+        
+        // Kramdown structure: <pre><code class="language-mermaid">
+        var pre = codeElement.parentElement;
+        if (pre && pre.tagName === 'PRE') {
+          pre.parentNode.replaceChild(container, pre);
+        } else {
+          codeElement.parentNode.replaceChild(container, codeElement);
+        }
+      });
+
+      // Initialize mermaid with custom theme
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+          'background': '#0d0d12',
+          'primaryColor': '#16161e',
+          'primaryBorderColor': '#ff2d9c',
+          'primaryTextColor': '#e0e0e6',
+          'lineColor': '#00f0ff',
+          'secondaryColor': '#1f1f29',
+          'tertiaryColor': '#16161e'
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
