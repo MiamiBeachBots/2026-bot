@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Radians;
 import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.hal.HAL;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import org.junit.jupiter.api.BeforeAll;

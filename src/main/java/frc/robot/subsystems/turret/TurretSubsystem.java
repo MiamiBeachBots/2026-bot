@@ -64,8 +64,7 @@ public class TurretSubsystem extends SubsystemBase {
             SpeedConstants.adjustSpeed(
                 speed, SpeedConstants.TURRET_MAX_SPEED, SpeedConstants.TURRET_SENSITIVITY));
 
-    m_io.setVelocity(
-       adjustedSpeed * TurretConstants.MAX_VELOCITY, 0);
+    m_io.setVelocity(adjustedSpeed * TurretConstants.MAX_VELOCITY, 0);
   }
 
   /**
@@ -155,7 +154,8 @@ public class TurretSubsystem extends SubsystemBase {
       updateSetpoint(m_goal);
     }
     m_io.setPosition(
-        m_setpoint.position, m_feedForward.calculateWithVelocities(m_previousVelocity, m_setpoint.velocity));
+        m_setpoint.position,
+        m_feedForward.calculateWithVelocities(m_previousVelocity, m_setpoint.velocity));
 
     m_io.updateInputs(m_inputs);
     Logger.processInputs("Turret", m_inputs);
