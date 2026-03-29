@@ -8,7 +8,7 @@ A comprehensive analysis of the languages that power this codebase.
 pie title Language Distribution (by Line Count)
     "Rust Lockfile" : 4874
     "Java" : 4522
-    "Other" : 3076
+    "Other" : 3365
     "Python" : 1843
     "Markdown" : 869
     "JSON" : 856
@@ -25,7 +25,7 @@ pie title Language Distribution (by Line Count)
 | :--- | :--- | :--- | :--- |
 | **Rust Lockfile** | `.lock` | 1 | 4,874 |
 | **Java** | `.java` | 50 | 4,522 |
-| **Other** | `.bat, .css, .csv, .gitignore, .html, .jar, .properties, .txt` | 22 | 3,076 |
+| **Other** | `.bat, .css, .csv, .gitignore, .html, .jar, .properties, .txt` | 23 | 3,365 |
 | **Python** | `.py` | 10 | 1,843 |
 | **Markdown** | `.md` | 18 | 869 |
 | **JSON** | `.json` | 20 | 856 |
