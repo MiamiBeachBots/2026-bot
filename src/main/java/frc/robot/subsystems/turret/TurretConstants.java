@@ -9,7 +9,7 @@ public class TurretConstants {
   public static final double kP = 0.05;
   public static final double kI = 0.001;
   public static final double kD = 0.01;
-  //TODO Implement live tuning for PID values using advantagekit LoggedNetworkNumbers
+  // TODO Implement live tuning for PID values using advantagekit LoggedNetworkNumbers
   // FeedForward Values
   // TODO: Tune
   public static final double kS = 0.01; // Static volts
@@ -35,6 +35,6 @@ public class TurretConstants {
       kPositionConversionRatio / 60; // Radians/min -> Radians/s
   public static final double kPositionConversionRatioAbsolute = (Math.PI * 2); // Radians per minute
   public static final double kVelocityConversionRatioAbsolute =
-      kPositionConversionRatioAbsolute / 60; // Radians Per second  
-    public static final int kCurrentLimit = 25;
+      kPositionConversionRatioAbsolute / 60; // Radians Per second
+  public static final int kCurrentLimit = 25;
 }

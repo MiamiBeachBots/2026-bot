@@ -53,7 +53,7 @@ public class RobotContainer {
       new TurretSubsystem(
           Constants.CURRENT_MODE == Constants.Mode.REAL
               ? new TurretIOSparkMax()
-              //TODO: TurretIOSim
+              // TODO: TurretIOSim
               : new TurretIO() {});
   private final FlywheelSubsystem m_fireSubsystem =
       new FlywheelSubsystem(
@@ -162,10 +162,6 @@ public class RobotContainer {
     m_flightstick
         .button(Constants.JOYSTICK_DEFAULT_BUTTON)
         .and(() -> !m_turretSubsystem.isUnwinding())
-        .and(
-            () ->
-                frc.robot.constants.TweakConstants.ALLOW_FIRE_WHILE_MOVING
-                    || Math.abs(m_driveSubsystem.getSpeeds().vxMetersPerSecond) < 0.1)
         .whileTrue(
             new FireCommand(
                 m_fireSubsystem,

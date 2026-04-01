@@ -22,7 +22,7 @@ public class TurretIOSparkMax implements TurretIO {
   public TurretIOSparkMax() {
     m_turretMotor = new SparkMax(CANConstants.MOTOR_TURRET_ID, MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
-    //Configure motor settings
+    // Configure motor settings
     config.smartCurrentLimit(TurretConstants.kCurrentLimit);
     config.idleMode(SparkMaxConfig.IdleMode.kBrake);
 
