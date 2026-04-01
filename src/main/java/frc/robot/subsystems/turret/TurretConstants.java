@@ -1,8 +1,13 @@
 package frc.robot.subsystems.turret;
 
 import edu.wpi.first.math.util.Units;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class TurretConstants {
+  // Is tuning through advantageKit
+  public static final boolean IS_ADVANTAGE_TUNING = false;
+  // Is finding tuning through sysid
+  public static final boolean IS_SYSID_TUNING = false;
   // PID values
   // TODO: Tune
 
@@ -37,4 +42,15 @@ public class TurretConstants {
   public static final double kVelocityConversionRatioAbsolute =
       kPositionConversionRatioAbsolute / 60; // Radians Per second
   public static final int kCurrentLimit = 25;
+
+  // Setup LoggedNetworkNumbers for live PID and Feedforward tuning through advantagekit
+  // PID
+  public static final LoggedNetworkNumber kPLogged = new LoggedNetworkNumber("Turret/kP", kP);
+  public static final LoggedNetworkNumber kILogged = new LoggedNetworkNumber("Turret/kI", kI);
+  public static final LoggedNetworkNumber kDLogged = new LoggedNetworkNumber("Turret/kD", kD);
+  // Feedforward
+  public static final LoggedNetworkNumber kSLogged = new LoggedNetworkNumber("Turret/kS", kS);
+  public static final LoggedNetworkNumber kGLogged = new LoggedNetworkNumber("Turret/kG", kG);
+  public static final LoggedNetworkNumber kVLogged = new LoggedNetworkNumber("Turret/kV", kV);
+  public static final LoggedNetworkNumber kALogged = new LoggedNetworkNumber("Turret/kA", kA);
 }

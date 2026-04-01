@@ -42,6 +42,8 @@ public interface TurretIO {
    */
   public default void setVelocity(double velocity, double feedforward) {}
 
+  public default void updatePIDValues(double kP, double kI, double kD) {}
+
   public default void setVoltage(double volts) {}
 
   public default void stop() {}

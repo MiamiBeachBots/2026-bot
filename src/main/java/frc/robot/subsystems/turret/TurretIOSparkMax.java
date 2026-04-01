@@ -17,26 +17,27 @@ import frc.robot.constants.DriveConstants;
 
 public class TurretIOSparkMax implements TurretIO {
   private final SparkMax m_turretMotor;
-  private final SparkClosedLoopController m_pidController;
+  private SparkClosedLoopController m_pidController;
+  private final SparkMaxConfig m_config;
 
   public TurretIOSparkMax() {
     m_turretMotor = new SparkMax(CANConstants.MOTOR_TURRET_ID, MotorType.kBrushless);
-    SparkMaxConfig config = new SparkMaxConfig();
+    m_config = new SparkMaxConfig();
     // Configure motor settings
-    config.smartCurrentLimit(TurretConstants.kCurrentLimit);
-    config.idleMode(SparkMaxConfig.IdleMode.kBrake);
+    m_config.smartCurrentLimit(TurretConstants.kCurrentLimit);
+    m_config.idleMode(SparkMaxConfig.IdleMode.kBrake);
 
-    config.encoder.positionConversionFactor(TurretConstants.kPositionConversionRatio);
-    config.encoder.velocityConversionFactor(TurretConstants.kVelocityConversionRatio);
+    m_config.encoder.positionConversionFactor(TurretConstants.kPositionConversionRatio);
+    m_config.encoder.velocityConversionFactor(TurretConstants.kVelocityConversionRatio);
 
-    config.closedLoop.pid(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
-    config.closedLoop.outputRange(TurretConstants.kMin, TurretConstants.kMax);
+    m_config.closedLoop.pid(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
+    m_config.closedLoop.outputRange(TurretConstants.kMin, TurretConstants.kMax);
 
-    config.closedLoop.maxMotion.cruiseVelocity(1000);
-    config.closedLoop.maxMotion.maxAcceleration(500);
-    config.closedLoop.maxMotion.allowedProfileError(0.5);
-
-    m_turretMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_config.closedLoop.maxMotion.cruiseVelocity(1000);
+    m_config.closedLoop.maxMotion.maxAcceleration(500);
+    m_config.closedLoop.maxMotion.allowedProfileError(0.5);
+    m_turretMotor.configure(
+        m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_pidController = m_turretMotor.getClosedLoopController();
   }
@@ -71,6 +72,14 @@ public class TurretIOSparkMax implements TurretIO {
   @Override
   public void setVoltage(double volts) {
     m_turretMotor.setVoltage(volts);
+  }
+
+  @Override
+  public void updatePIDValues(double kP, double kI, double kD) {
+    m_config.closedLoop.pid(kP, kI, kD);
+    m_turretMotor.configure(
+        m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_pidController = m_turretMotor.getClosedLoopController();
   }
 
   @Override

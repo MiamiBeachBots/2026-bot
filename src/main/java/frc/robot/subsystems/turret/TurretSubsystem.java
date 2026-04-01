@@ -4,7 +4,9 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotTelemetry;
 import frc.robot.constants.SpeedConstants;
 import org.littletonrobotics.junction.Logger;
@@ -29,7 +31,7 @@ public class TurretSubsystem extends SubsystemBase {
   private double m_previousVelocity = 0;
   public boolean m_pidEnabled = true;
 
-  ;
+  private SysIdRoutine m_sysIdRoutine;
 
   private boolean m_isUnwinding = false;
 
@@ -37,6 +39,17 @@ public class TurretSubsystem extends SubsystemBase {
 
     m_io = io;
 
+    m_sysIdRoutine =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> this.setVoltage(voltage.magnitude()),
+                null, // No log consumer, since data is recorded by AdvantageKit
+                this));
     // Software Slew Rate Limiter for manual inputs (acceleration cap: full speed in 0.5s)
     m_speedLimiter = new SlewRateLimiter(2.0);
   }
@@ -72,7 +85,7 @@ public class TurretSubsystem extends SubsystemBase {
    *
    * @param volts Output voltage.
    */
-  public void setTurretVoltage(double volts) {
+  public void setVoltage(double volts) {
     if (m_isUnwinding) return;
     m_io.setVoltage(volts);
   }
@@ -87,6 +100,14 @@ public class TurretSubsystem extends SubsystemBase {
   public double getTurretAngleDegrees() {
     double currentRotations = m_inputs.positionRadians.magnitude();
     return Units.radiansToDegrees(currentRotations);
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.dynamic(direction);
   }
 
   /**
@@ -131,32 +152,38 @@ public class TurretSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double currentAngle = getTurretAngleDegrees();
+    if (TurretConstants.IS_ADVANTAGE_TUNING) {
+      m_io.updatePIDValues(
+          TurretConstants.kPLogged.get(),
+          TurretConstants.kILogged.get(),
+          TurretConstants.kDLogged.get());
+    } else if (!TurretConstants.IS_SYSID_TUNING) {
 
-    // Check if we exceeded bounds and enter unwinding state
-    if (Math.abs(currentAngle) >= 360.0 && !m_isUnwinding && m_pidEnabled) {
-      m_isUnwinding = true;
-    }
-
-    // Handle unwinding logic
-    if (m_isUnwinding) {
-      updateSetpoint(new TrapezoidProfile.State(0, 0));
-
-      // Check if we're back near 0 center
-      // Stiction and SparkMax deadband with an undertuned PID (kP=0.1) can cause
-      // the motor to stall ~18 degrees away from 0.0, so we use a wider 25.0 deg tolerance.
-      if (Math.abs(currentAngle) <= 25.0) {
-        m_isUnwinding = false;
-        // Reset our rate limiter so the driver can cleanly regain control
-        m_speedLimiter.reset(0);
+      double currentAngle = getTurretAngleDegrees();
+      // Check if we exceeded bounds and enter unwinding state
+      if (Math.abs(currentAngle) >= 360.0 && !m_isUnwinding && m_pidEnabled) {
+        m_isUnwinding = true;
       }
-    } else if (m_pidEnabled) {
-      updateSetpoint(m_goal);
-    }
-    m_io.setPosition(
-        m_setpoint.position,
-        m_feedForward.calculateWithVelocities(m_previousVelocity, m_setpoint.velocity));
 
+      // Handle unwinding logic
+      if (m_isUnwinding) {
+        updateSetpoint(new TrapezoidProfile.State(0, 0));
+
+        // Check if we're back near 0 center
+        // Stiction and SparkMax deadband with an undertuned PID (kP=0.1) can cause
+        // the motor to stall ~18 degrees away from 0.0, so we use a wider 25.0 deg tolerance.
+        if (Math.abs(currentAngle) <= 25.0) {
+          m_isUnwinding = false;
+          // Reset our rate limiter so the driver can cleanly regain control
+          m_speedLimiter.reset(0);
+        }
+      } else if (m_pidEnabled) {
+        updateSetpoint(m_goal);
+      }
+      m_io.setPosition(
+          m_setpoint.position,
+          m_feedForward.calculateWithVelocities(m_previousVelocity, m_setpoint.velocity));
+    }
     m_io.updateInputs(m_inputs);
     Logger.processInputs("Turret", m_inputs);
 

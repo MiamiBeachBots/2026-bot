@@ -22,7 +22,7 @@ public final class Constants {
     public static final int MOTOR_BACK_RIGHT_ID = 12;
     public static final int MOTOR_FRONT_LEFT_ID = 13;
     public static final int MOTOR_BACK_LEFT_ID = 14;
-    
+
     /// Intake Subsystem
     public static final int MOTOR_INTAKE_MAIN_ID = 21;
     public static final int MOTOR_INTAKE_SECONDARY_ID = 22;
@@ -35,7 +35,6 @@ public final class Constants {
     /// Turret and Fire Subsystems
     public static final int MOTOR_FIRE_ID = 41;
     public static final int MOTOR_TURRET_ID = 42;
-  
   }
 
   // Is simulation
@@ -65,5 +64,4 @@ public final class Constants {
   // Joystick buttons
   public static final int JOYSTICK_DEFAULT_BUTTON = 1;
   public static final int JOYSTICK_TRIGGER = 1;
-
 }
