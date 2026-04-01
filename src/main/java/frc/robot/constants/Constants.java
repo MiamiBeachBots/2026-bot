@@ -18,23 +18,24 @@ public final class Constants {
   public static final class CANConstants {
     // CAN Bus Devices
     /// Drive Train Motors
-    public static final int MOTOR_FRONT_RIGHT_ID = 1;
-    public static final int MOTOR_BACK_RIGHT_ID = 2;
-    public static final int MOTOR_FRONT_LEFT_ID = 3;
-    public static final int MOTOR_BACK_LEFT_ID = 4;
-
+    public static final int MOTOR_FRONT_RIGHT_ID = 11;
+    public static final int MOTOR_BACK_RIGHT_ID = 12;
+    public static final int MOTOR_FRONT_LEFT_ID = 13;
+    public static final int MOTOR_BACK_LEFT_ID = 14;
+    
     /// Intake Subsystem
-    public static final int MOTOR_INTAKE_MAIN_ID = 5;
-    public static final int MOTOR_INTAKE_SECONDARY_ID = 6;
+    public static final int MOTOR_INTAKE_MAIN_ID = 21;
+    public static final int MOTOR_INTAKE_SECONDARY_ID = 22;
 
     /// Loader Subsystem
-    public static final int MOTOR_LOADER_1_ID = 7;
-    public static final int MOTOR_LOADER_2_ID = 8;
+    public static final int MOTOR_LOADER_1_ID = 31;
+    public static final int MOTOR_LOADER_2_ID = 32;
     public static final int MOTOR_LOADER_3_ID = 9;
 
     /// Turret and Fire Subsystems
-    public static final int MOTOR_TURRET_ID = 10;
-    public static final int MOTOR_FIRE_ID = 11;
+    public static final int MOTOR_FIRE_ID = 41;
+    public static final int MOTOR_TURRET_ID = 42;
+  
   }
 
   // Is simulation
@@ -65,6 +66,4 @@ public final class Constants {
   public static final int JOYSTICK_DEFAULT_BUTTON = 1;
   public static final int JOYSTICK_TRIGGER = 1;
 
-  // Turret Subsystem
-  public static final double TURRET_GEAR_RATIO = 10.0;
 }
