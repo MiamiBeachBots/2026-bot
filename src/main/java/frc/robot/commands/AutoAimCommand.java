@@ -3,17 +3,20 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.CameraConstants;
 import frc.robot.Constants;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.FireControlSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class AutoAimCommand extends Command {
   private final TurretSubsystem m_turret;
-  private final CameraSubsystem m_cameraSubsystem;
   private final DriveSubsystem m_driveSubsystem;
+  private final FireControlSubsystem m_fireSubsystem;
 
   private static class ShotData {
     double angle;
@@ -26,9 +29,10 @@ public class AutoAimCommand extends Command {
   }
 
   public AutoAimCommand(
-      TurretSubsystem turret, DriveSubsystem d_subsystem) {
+      TurretSubsystem turret, DriveSubsystem d_subsystem, FireControlSubsystem f_subsystem) {
     m_turret = turret;
     m_driveSubsystem = d_subsystem;
+    m_fireSubsystem = f_subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(turret);
   }
@@ -43,26 +47,37 @@ public class AutoAimCommand extends Command {
   @Override
   public void execute() {
     // TODO: Friend's auto-aim logic here
-    ShotData shotData =
-            calculateShot(
-                    m_driveSubsystem.getPose(),
-                    m_driveSubsystem.getRotation2d(),
-                    m_driveSubsystem.getSpeeds());
-    m_turret.setTargetPosition(shotData.angle / (Math.PI * 2));
+    ShotData shotData = calculateShot(Constants.HUB_POSITION, Constants.HUB_HEIGHT);
+    double turretRotations = radiansToRotations(shotData.angle - m_driveSubsystem.getRotation2d().getRadians());
+    double shooterRPM = linearToRotationalVelocity(shotData.force, Constants.SHOOTER_RADIUS) * 60;
+    m_turret.setTargetPosition(turretRotations);
+    m_fireSubsystem.setRPM(shooterRPM);
+    Commands.waitUntil(m_turret.isAtPosition(turretRotations, ));
+
   }
 
-  private ShotData calculateShot(Pose2d pose, Rotation2d chassisRotation, ChassisSpeeds chassisSpeeds) {
+  private double linearToRotationalVelocity(double velocity, double radius) {
+      return velocity / radius;
+
+  }
+
+  private double radiansToRotations(double theta) {
+      return theta / (Math.PI * 2);
+
+  }
+
+  private ShotData calculateShot(Translation2d target, double targetHeight) {
     double shooterAngleCos = Math.cos(Constants.SHOOTER_ANGLE);
     double shooterAngleTan = Math.tan(Constants.SHOOTER_ANGLE);
 
-    Translation2d relativeXYDisplacement = pose.getTranslation();
-    double distance = relativeXYDisplacement.getDistance(Translation2d.kZero);
-    Translation2d xyDisplacement = relativeXYDisplacement.rotateBy(chassisRotation.times(-1));
-    Rotation2d angleToTarget = target.getRotation().toRotation2d();
-    double radiansToTarget = angleToTarget.getRadians();
+    Pose2d pose = m_driveSubsystem.getPose();
+    Translation2d position = pose.getTranslation();
+    double distance = position.getDistance(target);
+    Translation2d xyDisplacement = target.minus(position);
+    double angleToTarget = Math.atan2(xyDisplacement.getY(), xyDisplacement.getX());
 
     double verticalDisplacement =
-        (Constants.HUB_HEIGHT - Constants.SHOOTER_HEIGHT - (Constants.BALL_DIAMETER / 2));
+        (targetHeight - Constants.SHOOTER_HEIGHT - (Constants.BALL_DIAMETER / 2));
     double launchSpeed =
         Math.sqrt(
             (Constants.AUTOAIM_GRAVITY * Math.pow(distance, 2))
@@ -73,17 +88,17 @@ public class AutoAimCommand extends Command {
     double airtime = distance / xySpeed;
 
     // Velocity from a top-down view
-    double xVelocity = Math.cos(radiansToTarget) * xySpeed;
-    double yVelocity = Math.sin(radiansToTarget) * xySpeed;
+    double xVelocity = Math.cos(angleToTarget) * xySpeed;
+    double yVelocity = Math.sin(angleToTarget) * xySpeed;
 
+    ChassisSpeeds chassisSpeeds = m_driveSubsystem.getSpeeds();
     double xPrediction = (xVelocity + chassisSpeeds.vxMetersPerSecond) * airtime;
     double yPrediction = (yVelocity + chassisSpeeds.vyMetersPerSecond) * airtime;
 
-    Transform2d correctedTargetXYDisplacement =
-        new Transform2d(
+    Translation2d correctedTargetXYDisplacement =
+        new Translation2d(
             xyDisplacement.getX() * 2 - xPrediction,
-            xyDisplacement.getY() * 2 - yPrediction,
-            Rotation2d.kZero);
+            xyDisplacement.getY() * 2 - yPrediction);
     double correctedAngle =
         Math.atan2(correctedTargetXYDisplacement.getY(), correctedTargetXYDisplacement.getX());
     double correctedForce =

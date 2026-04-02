@@ -145,7 +145,7 @@ public class RobotContainer {
 
     // Auto Aim Command (Bind to Button 2 of flight stick to toggle)
     m_operatorButton2.toggleOnTrue(
-        new AutoAimCommand(m_turretSubsystem, m_driveSubsystem));
+        new AutoAimCommand(m_turretSubsystem, m_driveSubsystem, m_fireSubsystem));
 
     // Turret Preset Orientations (Buttons 6 - 11)
     // Values are placeholders for raw motor rotations until gear ratio is determined.
