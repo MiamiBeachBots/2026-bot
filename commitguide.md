@@ -1,22 +1,26 @@
-# Commit Guide
+---
+layout: default
+title: "Commit Guide | 2026-bot"
+---
+# Git Commits
 
-## Message Structure
+Keep them atomic. One change, one commit.
 
-We use a simplified Conventional Commits format:
+## Format
 
 ```
-[Type] Description
+[Tag] Short description
 ```
 
-### Allowed Types
+### Tags
 
 | Type | When to Use | Example |
 |------|-------------|---------|
 | `[Feat]` | New feature or capability | `[Feat] Add field-oriented drive` |
 | `[Fix]` | Bug fix or correction | `[Fix] Correct module 3 encoder offset` |
-| `[Refactor]` | Code cleanup without changing behavior | `[Refactor] Simplify PID controller logic` |
+| `[Refactor]` | Clean up code without changing how it works | `[Refactor] Simplify PID controller logic` |
 | `[Docs]` | Documentation changes only | `[Docs] Update wiring diagram` |
-| `[Chore]` | Build, deps, or tool updates | `[Chore] Update Phoenix6 to v25.0.0` |
+| `[Chore]` | Build, dependency, or tool updates | `[Chore] Update Phoenix6 to v25.0.0` |
 | `[Test]` | Adding or fixing tests | `[Test] Add unit tests for shooter` |
 | `[Perf]` | Performance improvements | `[Perf] Optimize path planning algorithm` |
 | `[Style]` | Formatting, whitespace, naming | `[Style] Format DriveSubsystem.java` |

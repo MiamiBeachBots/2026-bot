@@ -1,0 +1,44 @@
+title: "2026-bot | Miami Beach Bots"
+description: "Miami Beach Bots (FRC Team 2026) — Aut viam inveniam aut faciam. Robot code for the 2025–2026 FIRST Robotics Competition season."
+url: "https://miamibeachbots.github.io"
+baseurl: "/2026-bot"
+
+# Theme & rendering
+plugins:
+  - jekyll-relative-links
+  - jekyll-seo-tag
+
+relative_links:
+  enabled: true
+  collections: true
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
+
+# Exclude non-page files from Jekyll build
+exclude:
+  - "*.gradle"
+  - "gradlew"
+  - "gradlew.bat"
+  - "build.gradle"
+  - "settings.gradle"
+  - "build/"
+  - ".gradle/"
+  - "src/"
+  - "coral/"
+  - "dashboard/"
+  - "utilities/"
+  - "vendordeps/"
+  - "gradle/"
+  - "*.bat"
+  - "*.sh"
+  - "*.py"
+  - "*.json"
+  - "spotlessapply"
+  - ".github/"
+  - ".vscode/"
+  - ".wpilib/"
+  - "node_modules/"

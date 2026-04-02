@@ -1,42 +1,24 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.PersistMode;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CANConstants;
+import frc.robot.RobotTelemetry;
+import frc.robot.constants.Constants;
+import frc.robot.constants.SpeedConstants;
+import frc.robot.constants.TweakConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class TurretSubsystem extends SubsystemBase {
-  private final SparkMax m_turretMotor;
-  private final SparkMaxConfig m_config;
-  private final SparkClosedLoopController m_pidController;
-  private final RelativeEncoder m_encoder;
+  private final TurretIO m_io;
+  private final TurretIOInputsAutoLogged m_inputs = new TurretIOInputsAutoLogged();
+  private final SlewRateLimiter m_speedLimiter;
 
-  // PID Constants (Need tuning)
-  private final double kP = 0.1;
-  private final double kI = 0.0;
-  private final double kD = 0.0;
+  private boolean m_isUnwinding = false;
 
-  public TurretSubsystem() {
-    m_turretMotor = new SparkMax(CANConstants.MOTOR_TURRET_ID, MotorType.kBrushless);
-    m_config = new SparkMaxConfig();
-
-    // Electrical Safety Limit (Prevents the motor from pulling too many amps and burning out)
-    m_config.smartCurrentLimit(40);
-    // Setup PID
-    m_config.closedLoop.pid(kP, kI, kD);
-    m_config.closedLoop.outputRange(-0.5, 0.5); // Limit output speed for safety during testing
-
-    m_turretMotor.configure(
-        m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    m_pidController = m_turretMotor.getClosedLoopController();
-    m_encoder = m_turretMotor.getEncoder();
+  public TurretSubsystem(TurretIO io) {
+    m_io = io;
+    // Software Slew Rate Limiter for manual inputs (acceleration cap: full speed in 0.5s)
+    m_speedLimiter = new SlewRateLimiter(2.0);
   }
 
   /**
@@ -45,48 +27,111 @@ public class TurretSubsystem extends SubsystemBase {
    * @param speed The target speed (-1 to 1) (bool).
    */
   public void setTurretSpeed(double speed) {
+    if (m_isUnwinding) return;
     // Add simple range just in case controller has drift
     if (Math.abs(speed) < 0.1) {
       speed = 0;
     }
-    m_pidController.setSetpoint(speed, SparkMax.ControlType.kDutyCycle);
+    double adjustedSpeed =
+        m_speedLimiter.calculate(
+            SpeedConstants.adjustSpeed(
+                speed, SpeedConstants.TURRET_MAX_SPEED, SpeedConstants.TURRET_SENSITIVITY));
+
+    if (TweakConstants.REVERSE_TURRET_DIRECTION) {
+      adjustedSpeed = -adjustedSpeed;
+    }
+
+    m_io.setVoltage(adjustedSpeed * 12.0);
   }
 
   /**
-   * Sets the target position of the turret motor using closed-loop control.
+   * Directly sets the voltage of the turret motor, useful for ProfiledPID + Feedforward outputs.
    *
-   * @param targetRotations Target position in motor rotations.
+   * @param volts Output voltage.
    */
-  public void setTargetPosition(double targetRotations) {
-    m_pidController.setSetpoint(targetRotations, SparkMax.ControlType.kPosition);
+  public void setTurretVoltage(double volts) {
+    if (m_isUnwinding) return;
+    m_io.setVoltage(volts);
+  }
+
+  /** Gets the current robot-relative position of the turret in radians. */
+  public double getTurretAngleRadians() {
+    double currentRotations = m_inputs.positionRotations;
+    return (currentRotations / Constants.TURRET_GEAR_RATIO) * 2.0 * Math.PI;
+  }
+
+  /** Gets the current robot-relative position of the turret in degrees. */
+  public double getTurretAngleDegrees() {
+    double currentRotations = m_inputs.positionRotations;
+    return (currentRotations / Constants.TURRET_GEAR_RATIO) * 360.0;
   }
 
   /**
-   * Checks if the turret is at the specified target position.
+   * Sets the target angle of the turret using closed-loop control.
    *
-   * @param targetRotations Target position in motor rotations.
-   * @param tolerance Tolerance in motor rotations.
+   * @param targetAngleDegrees Target angle in degrees.
+   */
+  public void setTargetAngle(double targetAngleDegrees) {
+    if (m_isUnwinding) return;
+    double targetRotations = (targetAngleDegrees / 360.0) * Constants.TURRET_GEAR_RATIO;
+    m_io.setPosition(targetRotations);
+  }
+
+  /**
+   * Checks if the turret is at the specified target angle.
+   *
+   * @param targetAngleDegrees Target angle in degrees.
+   * @param toleranceDegrees Tolerance in degrees.
    * @return True if within tolerance, false otherwise.
    */
-  public boolean isAtPosition(double targetRotations, double tolerance) {
-    double currentPos = m_encoder.getPosition();
-    return Math.abs(currentPos - targetRotations) <= tolerance;
+  public boolean isAtAngle(double targetAngleDegrees, double toleranceDegrees) {
+    return Math.abs(getTurretAngleDegrees() - targetAngleDegrees) <= toleranceDegrees;
   }
 
   /** Stops the turret motor. */
   public void stop() {
-    m_turretMotor.set(0);
+    if (m_isUnwinding) return;
+    m_io.stop();
+    m_speedLimiter.reset(0); // Reset limiter so next move doesn't jump
+  }
+
+  /** Returns whether the turret is currently auto-unwinding. */
+  public boolean isUnwinding() {
+    return m_isUnwinding;
   }
 
   @Override
   public void periodic() {
+    double currentAngle = getTurretAngleDegrees();
+
+    // Check if we exceeded bounds and enter unwinding state
+    if (Math.abs(currentAngle) >= 360.0 && !m_isUnwinding) {
+      m_isUnwinding = true;
+    }
+
+    // Handle unwinding logic
+    if (m_isUnwinding) {
+      m_io.setPosition(0.0);
+
+      // Check if we're back near 0 center
+      // Stiction and SparkMax deadband with an undertuned PID (kP=0.1) can cause
+      // the motor to stall ~18 degrees away from 0.0, so we use a wider 25.0 deg tolerance.
+      if (Math.abs(currentAngle) <= 25.0) {
+        m_isUnwinding = false;
+        // Reset our rate limiter so the driver can cleanly regain control
+        m_speedLimiter.reset(0);
+      }
+    }
+
+    m_io.updateInputs(m_inputs);
+    Logger.processInputs("Turret", m_inputs);
+
     // Output current state of turret motor for debugging
-    SmartDashboard.putNumber("Turret Motor Speed Output", m_turretMotor.get());
-    SmartDashboard.putNumber("Turret Position", m_encoder.getPosition());
+    RobotTelemetry.putNumber("Turret Motor Speed Output", m_inputs.appliedVolts / 12.0);
+    RobotTelemetry.putNumber("Turret Position", m_inputs.positionRotations);
+    RobotTelemetry.putBoolean("Turret Is Unwinding", m_isUnwinding);
   }
 
   @Override
-  public void simulationPeriodic() {
-    // Basic simulation logic if needed.
-  }
+  public void simulationPeriodic() {}
 }

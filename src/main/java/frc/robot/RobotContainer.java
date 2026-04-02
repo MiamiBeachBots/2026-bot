@@ -3,29 +3,25 @@ package frc.robot;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.ShooterState.ShooterModes;
 import frc.robot.commands.AimCommand;
-import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.FireCommand;
-import frc.robot.commands.FlywheelCommand;
 import frc.robot.commands.IntakeSliderCommand;
 import frc.robot.commands.SetTurretPositionCommand;
 import frc.robot.commands.UnjamIntakeCommand;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FireControlSubsystem;
-import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -35,47 +31,45 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  * serves as the central hub for organizing the robot's command-based structure.
  */
 public class RobotContainer {
-  // Initialize state-based system to pass data between commands
-  private final ShooterState m_shooterState = new ShooterState();
   // The Controller (Port 0 is usually the first USB controller plugged in)
   private final CommandXboxController m_controller1 =
       new CommandXboxController(Constants.CONTROLLER_USB_INDEX);
-  private final Joystick m_flightstick = new Joystick(Constants.FLIGHTSTICK_USB_INDEX);
+  private final CommandJoystick m_flightstick =
+      new CommandJoystick(Constants.FLIGHTSTICK_USB_INDEX);
 
   // Initialize subsystems
-  // private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new
-  // File(Filesystem.getDeployDirectory(), "swerve"));
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   private final CameraSubsystem m_cameraSubsystem = new CameraSubsystem(m_driveSubsystem);
-  private final FlywheelSubsystem m_shooterSubsytem = new FlywheelSubsystem();
 
-  private final TurretSubsystem m_turretSubsystem = new TurretSubsystem();
-  private final FireControlSubsystem m_fireSubsystem = new FireControlSubsystem();
-  private final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+  private final TurretSubsystem m_turretSubsystem =
+      new TurretSubsystem(
+          Constants.CURRENT_MODE == Constants.Mode.REAL
+              ? new frc.robot.subsystems.TurretIOSparkMax()
+              : new frc.robot.subsystems.TurretIO() {});
+  private final FireControlSubsystem m_fireSubsystem =
+      new FireControlSubsystem(
+          Constants.CURRENT_MODE == Constants.Mode.REAL
+              ? new frc.robot.subsystems.FireControlIOSparkMax()
+              : new frc.robot.subsystems.FireControlIO() {});
+  private final IntakeSubsystem m_intakeSubsystem =
+      new IntakeSubsystem(
+          Constants.CURRENT_MODE == Constants.Mode.REAL
+              ? new frc.robot.subsystems.IntakeIOSparkMax()
+              : new frc.robot.subsystems.IntakeIO() {});
+  private final LoaderSubsystem m_loaderSubsystem =
+      new LoaderSubsystem(
+          Constants.CURRENT_MODE == Constants.Mode.REAL
+              ? new frc.robot.subsystems.LoaderIOSparkMax()
+              : new frc.robot.subsystems.LoaderIO() {});
 
   // Initialize Commands
   private final DefaultDrive m_defaultDrive =
       new DefaultDrive(
-          m_driveSubsystem, m_shooterState, this::getControllerLeftY, this::getControllerRightY);
-  private final AimCommand m_aimCommand =
-      new AimCommand(m_driveSubsystem, m_cameraSubsystem, m_shooterState);
-  private final FlywheelCommand m_shooterCommand =
-      new FlywheelCommand(m_shooterSubsytem, m_shooterState);
-
-  // Init controller buttons
-  private Trigger m_toggleBrakeButton;
-  private Trigger m_switchQueuedButton;
-  private Trigger m_driverDefaultButton;
-  // Init joystick buttons
-  private JoystickButton m_operatorDefaultButton;
-  private JoystickButton m_operatorButton2;
-  private JoystickButton m_operatorButton6;
-  private JoystickButton m_operatorButton7;
-  private JoystickButton m_operatorButton8;
-  private JoystickButton m_operatorButton9;
-  private JoystickButton m_operatorButton10;
-  private JoystickButton m_operatorButton11;
-  private JoystickButton m_operatorButton12;
+          m_driveSubsystem,
+          this::getControllerLeftY,
+          this::getControllerRightY,
+          () -> m_controller1.leftBumper().getAsBoolean());
+  private final AimCommand m_aimCommand = new AimCommand(m_driveSubsystem, m_cameraSubsystem);
 
   // Init For Autonomous
   private LoggedDashboardChooser<String> autoDashboardChooser =
@@ -96,8 +90,7 @@ public class RobotContainer {
     initializeAutonomous();
     // Setup on the fly path planning
     configureTeleopPaths();
-    // Configure the button bindings
-    setupTriggers();
+
     if (enableAutoProfiling) {
       // bindDriveSysIDCommands();
       bindDriveSysIDCommands();
@@ -107,54 +100,78 @@ public class RobotContainer {
     }
   }
 
-  private void setupTriggers() {
-    // Controller Buttons
-    m_toggleBrakeButton = m_controller1.b();
-    m_switchQueuedButton = m_controller1.y();
-    m_driverDefaultButton = m_controller1.a();
-
-    // Joystick Buttons
-    m_operatorDefaultButton =
-        new JoystickButton(m_flightstick, Constants.JOYSTICK_DEFAULT_BUTTON); //
-    m_operatorButton2 = new JoystickButton(m_flightstick, 2);
-    m_operatorButton6 = new JoystickButton(m_flightstick, 6);
-    m_operatorButton7 = new JoystickButton(m_flightstick, 7);
-    m_operatorButton8 = new JoystickButton(m_flightstick, 8);
-    m_operatorButton9 = new JoystickButton(m_flightstick, 9);
-    m_operatorButton10 = new JoystickButton(m_flightstick, 10);
-    m_operatorButton11 = new JoystickButton(m_flightstick, 11);
-    m_operatorButton12 = new JoystickButton(m_flightstick, 12);
-  }
-
   private void bindCommands() {
     // Controller Bindings
-    m_switchQueuedButton.whileTrue(new InstantCommand(() -> m_shooterState.switchModes()));
-    m_driverDefaultButton.whileTrue(new InstantCommand(() -> m_shooterState.defaultOverride()));
+    m_controller1
+        .rightBumper()
+        .onTrue(new InstantCommand(() -> m_driveSubsystem.SwitchBrakemode()));
+
+    // Intake
+    m_controller1
+        .a()
+        .and(
+            () ->
+                !frc.robot.constants.TweakConstants.DISABLE_INTAKE_DURING_FIRE
+                    || !m_flightstick.button(Constants.JOYSTICK_DEFAULT_BUTTON).getAsBoolean())
+        .toggleOnTrue(
+            new RunCommand(() -> m_intakeSubsystem.setIntakeSpeed(1.0), m_intakeSubsystem));
+    m_controller1
+        .leftTrigger()
+        .and(
+            () ->
+                !frc.robot.constants.TweakConstants.DISABLE_INTAKE_DURING_FIRE
+                    || !m_flightstick.button(Constants.JOYSTICK_DEFAULT_BUTTON).getAsBoolean())
+        .whileTrue(new RunCommand(() -> m_intakeSubsystem.setIntakeSpeed(-1.0), m_intakeSubsystem));
+
+    // Fire Override
+    m_controller1
+        .rightTrigger()
+        .and(() -> !m_turretSubsystem.isUnwinding())
+        .whileTrue(
+            new edu.wpi.first.wpilibj2.command.StartEndCommand(
+                () -> m_fireSubsystem.setShooterRPM(5000.0),
+                () -> m_fireSubsystem.stop(),
+                m_fireSubsystem));
+
+    // Default Drive
+    m_driveSubsystem.setDefaultCommand(m_defaultDrive);
     // Joystick Bindings
-    m_operatorDefaultButton.whileTrue(
-        new InstantCommand(() -> m_shooterState.setQueuedMode(ShooterModes.DEFAULT)));
+    // (Removed queued shooter mode override)
 
     // Turret Default Command (Bind to X-axis of flight stick)
     m_turretSubsystem.setDefaultCommand(
         new RunCommand(
             () -> m_turretSubsystem.setTurretSpeed(m_flightstick.getX()), m_turretSubsystem));
 
-    // Fire Control Command (Bind to Trigger / Button 1 of flight stick)
-    m_operatorDefaultButton.onTrue(
-        new FireCommand(m_fireSubsystem, () -> m_flightstick.getY(), m_operatorDefaultButton));
+    // Loader Default Command (Bind to Y-axis of flight stick)
+    m_loaderSubsystem.setDefaultCommand(
+        new RunCommand(
+            () -> m_loaderSubsystem.setLoaderSpeed(m_flightstick.getY()), m_loaderSubsystem));
 
-    // Auto Aim Command (Bind to Button 2 of flight stick to toggle)
-    m_operatorButton2.toggleOnTrue(
-        new AutoAimCommand(m_turretSubsystem, m_driveSubsystem, m_fireSubsystem));
+    // Fire Control Command (Bind to Trigger / Button 1 of flight stick)
+    // Run at full speed (1.0) while trigger is held, rather than mapped to Y axis.
+    m_flightstick
+        .button(Constants.JOYSTICK_DEFAULT_BUTTON)
+        .and(() -> !m_turretSubsystem.isUnwinding())
+        .and(
+            () ->
+                frc.robot.constants.TweakConstants.ALLOW_FIRE_WHILE_MOVING
+                    || Math.abs(m_driveSubsystem.getSpeeds().vxMetersPerSecond) < 0.1)
+        .whileTrue(
+            new FireCommand(
+                m_fireSubsystem,
+                m_loaderSubsystem,
+                () -> 1.0,
+                m_flightstick.button(Constants.JOYSTICK_DEFAULT_BUTTON)));
 
     // Turret Preset Orientations (Buttons 6 - 11)
     // Values are placeholders for raw motor rotations until gear ratio is determined.
-    m_operatorButton6.onTrue(new SetTurretPositionCommand(m_turretSubsystem, -0.5));
-    m_operatorButton7.onTrue(new SetTurretPositionCommand(m_turretSubsystem, -0.25));
-    m_operatorButton8.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.0));
-    m_operatorButton9.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.25));
-    m_operatorButton10.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.5));
-    m_operatorButton11.onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.75));
+    m_flightstick.button(6).onTrue(new SetTurretPositionCommand(m_turretSubsystem, -90.0));
+    m_flightstick.button(7).onTrue(new SetTurretPositionCommand(m_turretSubsystem, -45.0));
+    m_flightstick.button(8).onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.0));
+    m_flightstick.button(9).onTrue(new SetTurretPositionCommand(m_turretSubsystem, 45.0));
+    m_flightstick.button(10).onTrue(new SetTurretPositionCommand(m_turretSubsystem, 90.0));
+    m_flightstick.button(11).onTrue(new SetTurretPositionCommand(m_turretSubsystem, 180.0));
 
     // Intake System
     // Bind fuzzy slider (Flightstick Throttle axis) to automatically control the Intake.
@@ -162,36 +179,16 @@ public class RobotContainer {
         new IntakeSliderCommand(m_intakeSubsystem, () -> m_flightstick.getThrottle()));
 
     // Emergency Unjam (Button 12)
-    m_operatorButton12.onTrue(new UnjamIntakeCommand(m_intakeSubsystem));
+    m_flightstick.button(12).onTrue(new UnjamIntakeCommand(m_intakeSubsystem));
+  }
 
-    // TODO: Make Swerve code follow proper command-based structure
-    /*
-    drivebase.setDefaultCommand(
-        // We create a "RunCommand" (runs repeatedly)
-        Commands.run(
-            () -> {
-                // 1. Get Joystick Inputs (Inverted because Y is up-negative in computer graphics)
-                // MathUtil.applyDeadband ignores tiny drift when the stick is centered
-                double yVelocity = -MathUtil.applyDeadband(driverXbox.getLeftY(), 0.1);
-                double xVelocity = -MathUtil.applyDeadband(driverXbox.getLeftX(), 0.1);
-                double rotation  = -MathUtil.applyDeadband(driverXbox.getRightX(), 0.1);
+  public void disabledInit() {
+    m_turretSubsystem.setTargetAngle(0.0);
+  }
 
-                // 2. Drive
-                drivebase.drive(
-                    new Translation2d(yVelocity * drivebase.maximumSpeed, xVelocity * drivebase.maximumSpeed),
-                    rotation * Math.PI,
-                    true // Field Relative (True = Standard, False = Robot Oriented)
-                );
-            },
-            drivebase // REQUIRE the subsystem so no other command can interrupt this one
-        )
-    );
-
-    // Map "Back" button to zero the gyro (reset field orientation)
-    if (drivebase.getSwerveDrive() != null) {
-      driverXbox.back().onTrue(Commands.runOnce(drivebase.getSwerveDrive()::zeroGyro, drivebase));
-    }
-      */
+  public edu.wpi.first.wpilibj2.command.Command getPitHealthCheckCommand() {
+    return new frc.robot.commands.PitHealthCheckCommand(
+        m_driveSubsystem, m_intakeSubsystem, m_fireSubsystem, m_loaderSubsystem, m_turretSubsystem);
   }
 
   private void initializeAutonomous() {
@@ -206,10 +203,7 @@ public class RobotContainer {
     // pathGroup.get(0)));
     NamedCommands.registerCommand(
         "BrakeCommand", new InstantCommand(() -> m_driveSubsystem.SetBrakemode()));
-    NamedCommands.registerCommand("ShooterCommand", m_shooterCommand);
     NamedCommands.registerCommand("AimCommand", m_aimCommand);
-    NamedCommands.registerCommand(
-        "SwitchQueuedCommand", new InstantCommand(() -> m_shooterState.switchModes()));
   }
 
   private void bindDriveSysIDCommands() {
@@ -229,11 +223,13 @@ public class RobotContainer {
   }
 
   public double getControllerRightY() {
-    return -m_controller1.getRightY();
+    double y = -m_controller1.getRightY();
+    return frc.robot.constants.TweakConstants.INVERT_DRIVE_CONTROLS ? -y : y;
   }
 
   public double getControllerLeftY() {
-    return -m_controller1.getLeftY();
+    double y = -m_controller1.getLeftY();
+    return frc.robot.constants.TweakConstants.INVERT_DRIVE_CONTROLS ? -y : y;
   }
 
   public double GetFlightStickY() {
@@ -251,7 +247,7 @@ public class RobotContainer {
   }
 
   // for smart dashboard.
-  public Joystick getFlightStick() {
+  public CommandJoystick getFlightStick() {
     return this.m_flightstick;
   }
 
@@ -267,6 +263,5 @@ public class RobotContainer {
 
   public void periodic() {
     // This method will be called once per scheduler run (Only for inter subsystem state updating)
-    m_shooterState.StatePeriodic();
   }
 }

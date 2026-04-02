@@ -2,10 +2,8 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
+package frc.robot.constants;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -20,32 +18,23 @@ public final class Constants {
   public static final class CANConstants {
     // CAN Bus Devices
     /// Drive Train Motors
-    public static final int MOTOR_FRONT_RIGHT_ID = -1;
-    public static final int MOTOR_BACK_RIGHT_ID = -1;
-    public static final int MOTOR_FRONT_LEFT_ID = -1;
-    public static final int MOTOR_BACK_LEFT_ID = -1;
-
-    /// Elevator Motors
-    public static final int MOTOR_ELEVATOR_LEFT_ID = -1;
-    public static final int MOTOR_ELEVATOR_RIGHT_ID = -1;
-
-    /// Arm Motors
-    public static final int MOTOR_ARM_MAIN_ID = -1;
-
-    /// Shooter Motors
-    public static final int MOTOR_SHOOTER_LEFT_ID = -1;
-    public static final int MOTOR_SHOOTER_RIGHT_ID = -1;
-
-    /// Lifter Motors
-    public static final int MOTOR_LIFTER_LEFT_ID = -1;
-    public static final int MOTOR_LIFTER_RIGHT_ID = -1;
-
-    /// Turret and Fire Subsystems
-    public static final int MOTOR_TURRET_ID = -1;
-    public static final int MOTOR_FIRE_ID = -1;
+    public static final int MOTOR_FRONT_RIGHT_ID = 1;
+    public static final int MOTOR_BACK_RIGHT_ID = 2;
+    public static final int MOTOR_FRONT_LEFT_ID = 3;
+    public static final int MOTOR_BACK_LEFT_ID = 4;
 
     /// Intake Subsystem
-    public static final int MOTOR_INTAKE_ID = -1;
+    public static final int MOTOR_INTAKE_MAIN_ID = 5;
+    public static final int MOTOR_INTAKE_SECONDARY_ID = 6;
+
+    /// Loader Subsystem
+    public static final int MOTOR_LOADER_1_ID = 7;
+    public static final int MOTOR_LOADER_2_ID = 8;
+    public static final int MOTOR_LOADER_3_ID = 9;
+
+    /// Turret and Fire Subsystems
+    public static final int MOTOR_TURRET_ID = 10;
+    public static final int MOTOR_FIRE_ID = 11;
   }
 
   // Is simulation
@@ -76,12 +65,6 @@ public final class Constants {
   public static final int JOYSTICK_DEFAULT_BUTTON = 1;
   public static final int JOYSTICK_TRIGGER = 1;
 
-  // AutoAiming constants
-  public static final double AUTOAIM_GRAVITY = 9.81;
-  public static final double SHOOTER_RADIUS = 5.08;
-  public static final double SHOOTER_HEIGHT = 0.5318252;
-  public static final double SHOOTER_ANGLE = Math.PI / 4;
-  public static final double HUB_HEIGHT = 1.8288;
-  public static final double BALL_DIAMETER = 0.15;
-  public static final Translation2d HUB_POSITION = new Translation2d(4.625594, 4.034663);
+  // Turret Subsystem
+  public static final double TURRET_GEAR_RATIO = 10.0;
 }

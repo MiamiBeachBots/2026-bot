@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controls | 2026-bot</title>
+  <meta name="description" content="Miami Beach Bots (FRC Team 2026) — Aut viam inveniam aut faciam. Robot code for the 2025–2026 FIRST Robotics Competition season." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+
+  <!-- ╔══════════════ HEADER ══════════════╗ -->
+  <header class="site-header">
+    <div class="header-badge">AUTO_MODE_ACTIVE // FRC_2026</div>
+    <h1 class="header-title">Miami Beach Bots</h1>
+    <p class="header-subtitle">Building 2026-bot &mdash; <em>Aut viam inveniam aut faciam.</em></p>
+    
+    <div class="header-actions">
+      <a href="https://github.com/MiamiBeachBots/2026-bot" class="btn btn-primary" target="_blank" rel="noopener">
+        SOURCE_CODE
+      </a>
+      <a href="https://github.com/MiamiBeachBots/2026-bot/releases" class="btn" target="_blank" rel="noopener">RELEASES</a>
+    </div>
+  </header>
+
+  <!-- ╔══════════════ NAVIGATION ══════════════╗ -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="/">HUB</a>
+      <a href="/Contribguide">CONTRIBUTING</a>
+      <a href="/styleguide">STYLE_GUIDE</a>
+      <a href="/commitguide">COMMITS</a>
+      <a href="/Controls">CONTROLS</a>
+      <a href="/deploy-guide">DEPLOY</a>
+      <a href="/Assist">SUPPORT</a>
+    </div>
+  </nav>
+
+  <!-- ╔══════════════ MAIN CONTENT ══════════════╗ -->
+  <main class="main-content">
+    <article class="page-body">
+      <h1 id="controls">Controls</h1>
+
+<p>Master map for the Xbox and Flight Stick setups.</p>
+
+<h2 id="primary-driver-xbox---port-0">Primary Driver (Xbox - Port 0)</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Input</th>
+      <th style="text-align: left">Action</th>
+      <th style="text-align: left">Note</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Left Stick Y</strong></td>
+      <td style="text-align: left">Left Drive</td>
+      <td style="text-align: left">Tank control</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Right Stick Y</strong></td>
+      <td style="text-align: left">Right Drive</td>
+      <td style="text-align: left">Tank control</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>LB</strong></td>
+      <td style="text-align: left">Precision</td>
+      <td style="text-align: left">30% speed limit</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>RB</strong></td>
+      <td style="text-align: left">Brake Mode</td>
+      <td style="text-align: left">Toggles brake/coast</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>LT</strong></td>
+      <td style="text-align: left">Reverse Intake</td>
+      <td style="text-align: left">Unjamming</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>RT</strong></td>
+      <td style="text-align: left">Fire Override</td>
+      <td style="text-align: left">For manual shooting</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>A</strong></td>
+      <td style="text-align: left">Intake Toggle</td>
+      <td style="text-align: left">Spin up/stop</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Y</strong></td>
+      <td style="text-align: left">Queue Shooter</td>
+      <td style="text-align: left">Prep for firing</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="operator-flight-stick---port-1">Operator (Flight Stick - Port 1)</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Input</th>
+      <th style="text-align: left">Action</th>
+      <th style="text-align: left">Note</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>X</strong></td>
+      <td style="text-align: left">Turret Rotation</td>
+      <td style="text-align: left">Manual aim</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Y</strong></td>
+      <td style="text-align: left">Loader Speed</td>
+      <td style="text-align: left">Forward = load</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Throttle</strong></td>
+      <td style="text-align: left">Intake Speed</td>
+      <td style="text-align: left">Scaling</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Trigger</strong></td>
+      <td style="text-align: left">FIRE</td>
+      <td style="text-align: left">Full speed launch</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Btn 2</strong></td>
+      <td style="text-align: left">Auto Aim</td>
+      <td style="text-align: left">Lock on target</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Btn 6-11</strong></td>
+      <td style="text-align: left">Presets</td>
+      <td style="text-align: left">Snap to angles</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Btn 12</strong></td>
+      <td style="text-align: left">Emergency</td>
+      <td style="text-align: left">System unjam</td>
+    </tr>
+  </tbody>
+</table>
+
+    </article>
+  </main>
+
+  <!-- ╔══════════════ FOOTER ══════════════╗ -->
+  <footer class="site-footer">
+    <div class="footer-brand">Team 2026 // Miami Beach, FL</div>
+    <p>we put the pal in palintier. <a href="https://github.com/MiamiBeachBots/2026-bot" target="_blank" rel="noopener">GITHUB_REPO</a></p>
+  </footer>
+
+  <!-- ╔══════════════ MERMAID ══════════════╗ -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Find all Jekyll-style mermaid blocks (Kramdown puts class on code, not pre)
+      var codeBlocks = document.querySelectorAll('code.language-mermaid');
+      codeBlocks.forEach(function(codeElement) {
+        var container = document.createElement('div');
+        container.className = 'mermaid';
+        container.textContent = codeElement.innerText;
+        
+        // Kramdown structure: <pre><code class="language-mermaid">
+        var pre = codeElement.parentElement;
+        if (pre && pre.tagName === 'PRE') {
+          pre.parentNode.replaceChild(container, pre);
+        } else {
+          codeElement.parentNode.replaceChild(container, codeElement);
+        }
+      });
+
+      // Initialize mermaid with custom theme
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+          'background': '#0d0d12',
+          'primaryColor': '#16161e',
+          'primaryBorderColor': '#ff2d9c',
+          'primaryTextColor': '#e0e0e6',
+          'lineColor': '#00f0ff',
+          'secondaryColor': '#1f1f29',
+          'tertiaryColor': '#16161e'
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

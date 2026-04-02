@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deploy Guide | 2026-bot</title>
+  <meta name="description" content="Miami Beach Bots (FRC Team 2026) — Aut viam inveniam aut faciam. Robot code for the 2025–2026 FIRST Robotics Competition season." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+
+  <!-- ╔══════════════ HEADER ══════════════╗ -->
+  <header class="site-header">
+    <div class="header-badge">AUTO_MODE_ACTIVE // FRC_2026</div>
+    <h1 class="header-title">Miami Beach Bots</h1>
+    <p class="header-subtitle">Building 2026-bot &mdash; <em>Aut viam inveniam aut faciam.</em></p>
+    
+    <div class="header-actions">
+      <a href="https://github.com/MiamiBeachBots/2026-bot" class="btn btn-primary" target="_blank" rel="noopener">
+        SOURCE_CODE
+      </a>
+      <a href="https://github.com/MiamiBeachBots/2026-bot/releases" class="btn" target="_blank" rel="noopener">RELEASES</a>
+    </div>
+  </header>
+
+  <!-- ╔══════════════ NAVIGATION ══════════════╗ -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="/">HUB</a>
+      <a href="/Contribguide">CONTRIBUTING</a>
+      <a href="/styleguide">STYLE_GUIDE</a>
+      <a href="/commitguide">COMMITS</a>
+      <a href="/Controls">CONTROLS</a>
+      <a href="/deploy-guide">DEPLOY</a>
+      <a href="/Assist">SUPPORT</a>
+    </div>
+  </nav>
+
+  <!-- ╔══════════════ MAIN CONTENT ══════════════╗ -->
+  <main class="main-content">
+    <article class="page-body">
+      <h1 id="deployment">Deployment</h1>
+
+<h2 id="1-setup-your-machine">1. Setup Your Machine</h2>
+<p>We use setup scripts to keep everyone on the same page.</p>
+
+<ul>
+  <li><strong>Windows:</strong> Run <code class="language-plaintext highlighter-rouge">setup.bat</code> as Admin.</li>
+  <li><strong>Mac / Linux:</strong> Run <code class="language-plaintext highlighter-rouge">./setup.sh</code>.</li>
+</ul>
+
+<p>Both will install the 2026 WPILib toolchain, Python, and Rust.</p>
+
+<h2 id="2-deploying">2. Deploying</h2>
+<ol>
+  <li>Turn on the robot and connect to the radio.</li>
+  <li>Check your ping: <code class="language-plaintext highlighter-rouge">10.20.26.2</code>.</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">./gradlew deploy</code>.</li>
+  <li>If it fails, check your laptop’s firewall.</li>
+</ol>
+
+<hr />
+
+<p><em>If you’re tuning, use <code class="language-plaintext highlighter-rouge">cd thalia-tweaks &amp;&amp; cargo run</code> to launch the GUI.</em></p>
+
+    </article>
+  </main>
+
+  <!-- ╔══════════════ FOOTER ══════════════╗ -->
+  <footer class="site-footer">
+    <div class="footer-brand">Team 2026 // Miami Beach, FL</div>
+    <p>we put the pal in palintier. <a href="https://github.com/MiamiBeachBots/2026-bot" target="_blank" rel="noopener">GITHUB_REPO</a></p>
+  </footer>
+
+  <!-- ╔══════════════ MERMAID ══════════════╗ -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Find all Jekyll-style mermaid blocks (Kramdown puts class on code, not pre)
+      var codeBlocks = document.querySelectorAll('code.language-mermaid');
+      codeBlocks.forEach(function(codeElement) {
+        var container = document.createElement('div');
+        container.className = 'mermaid';
+        container.textContent = codeElement.innerText;
+        
+        // Kramdown structure: <pre><code class="language-mermaid">
+        var pre = codeElement.parentElement;
+        if (pre && pre.tagName === 'PRE') {
+          pre.parentNode.replaceChild(container, pre);
+        } else {
+          codeElement.parentNode.replaceChild(container, codeElement);
+        }
+      });
+
+      // Initialize mermaid with custom theme
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+          'background': '#0d0d12',
+          'primaryColor': '#16161e',
+          'primaryBorderColor': '#ff2d9c',
+          'primaryTextColor': '#e0e0e6',
+          'lineColor': '#00f0ff',
+          'secondaryColor': '#1f1f29',
+          'tertiaryColor': '#16161e'
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
