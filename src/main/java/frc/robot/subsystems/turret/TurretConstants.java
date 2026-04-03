@@ -1,6 +1,7 @@
 package frc.robot.subsystems.turret;
 
 import edu.wpi.first.math.util.Units;
+import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class TurretConstants {
@@ -10,10 +11,15 @@ public class TurretConstants {
   public static final boolean IS_SYSID_TUNING = false;
   // PID values
   // TODO: Tune
+    //Position PID values
+  public static final double kpP = 0.05;
+  public static final double kpI = 0.001;
+  public static final double kpD = 0.01;
+  // Velocity PID values
+  public static final double kvP = 0.05;
+    public static final double kvI = 0.001;
+    public static final double kvD = 0.01;
 
-  public static final double kP = 0.05;
-  public static final double kI = 0.001;
-  public static final double kD = 0.01;
   // TODO Implement live tuning for PID values using advantagekit LoggedNetworkNumbers
   // FeedForward Values
   // TODO: Tune
@@ -24,7 +30,7 @@ public class TurretConstants {
   // Max motion values
   public static final double MAX_VELOCITY =
       Units.degreesToRadians(360); // 1 FUll rotation per second
-  public static final double MAX_ACCELERATION = Units.degreesToRadians(180); // TODO:
+  public static final double MAX_ACCELERATION = Units.degreesToRadians(360); // TODO:
   public static final double kMin = -1.0;
   public static final double kMax = 1.0;
   // general drive constants
@@ -45,9 +51,12 @@ public class TurretConstants {
 
   // Setup LoggedNetworkNumbers for live PID and Feedforward tuning through advantagekit
   // PID
-  public static final LoggedNetworkNumber kPLogged = new LoggedNetworkNumber("Turret/kP", kP);
-  public static final LoggedNetworkNumber kILogged = new LoggedNetworkNumber("Turret/kI", kI);
-  public static final LoggedNetworkNumber kDLogged = new LoggedNetworkNumber("Turret/kD", kD);
+  public static final LoggedNetworkBoolean tuningSlot =
+      new LoggedNetworkBoolean("Turret/slot", true); // true for position, false for velocity
+  public static final LoggedNetworkNumber kPLogged = new LoggedNetworkNumber("Turret/kP", kpP); //P
+  public static final LoggedNetworkNumber kILogged = new LoggedNetworkNumber("Turret/kI", kpI);
+  public static final LoggedNetworkNumber kDLogged = new LoggedNetworkNumber("Turret/kD", kpD);
+
   // Feedforward
   public static final LoggedNetworkNumber kSLogged = new LoggedNetworkNumber("Turret/kS", kS);
   public static final LoggedNetworkNumber kGLogged = new LoggedNetworkNumber("Turret/kG", kG);

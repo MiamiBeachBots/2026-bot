@@ -1,5 +1,6 @@
 package frc.robot.subsystems.turret;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -8,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotTelemetry;
+import frc.robot.constants.DriveConstants;
 import frc.robot.constants.SpeedConstants;
 import org.littletonrobotics.junction.Logger;
 
@@ -29,11 +31,12 @@ public class TurretSubsystem extends SubsystemBase {
       new SimpleMotorFeedforward(
           TurretConstants.kS, TurretConstants.kG, TurretConstants.kV, TurretConstants.kA);
   private double m_previousVelocity = 0;
-  public boolean m_pidEnabled = true;
 
   private SysIdRoutine m_sysIdRoutine;
 
   private boolean m_isUnwinding = false;
+
+  private ClosedLoopSlot currentMovement = DriveConstants.kDrivetrainPositionPIDSlot;
 
   public TurretSubsystem(TurretIO io) {
 
@@ -77,7 +80,8 @@ public class TurretSubsystem extends SubsystemBase {
             SpeedConstants.adjustSpeed(
                 speed, SpeedConstants.TURRET_MAX_SPEED, SpeedConstants.TURRET_SENSITIVITY));
 
-    m_io.setVelocity(adjustedSpeed * TurretConstants.MAX_VELOCITY, 0);
+    m_goal = new TrapezoidProfile.State(0, adjustedSpeed * TurretConstants.MAX_VELOCITY);
+    currentMovement = DriveConstants.kDrivetrainVelocityPIDSlot;
   }
 
   /**
@@ -121,6 +125,7 @@ public class TurretSubsystem extends SubsystemBase {
     double targetAngleRadians = Units.degreesToRadians(targetAngleDegrees);
 
     m_goal = new TrapezoidProfile.State(targetAngleRadians, 0);
+    currentMovement = DriveConstants.kDrivetrainPositionPIDSlot;
   }
 
   /**
@@ -146,22 +151,21 @@ public class TurretSubsystem extends SubsystemBase {
     return m_isUnwinding;
   }
 
-  public void disablePID() {
-    m_pidEnabled = false;
-  }
-
   @Override
   public void periodic() {
     if (TurretConstants.IS_ADVANTAGE_TUNING) {
       m_io.updatePIDValues(
           TurretConstants.kPLogged.get(),
           TurretConstants.kILogged.get(),
-          TurretConstants.kDLogged.get());
+          TurretConstants.kDLogged.get(),
+          TurretConstants.tuningSlot.get()
+              ? DriveConstants.kDrivetrainPositionPIDSlot
+              : DriveConstants.kDrivetrainVelocityPIDSlot);
     } else if (!TurretConstants.IS_SYSID_TUNING) {
 
       double currentAngle = getTurretAngleDegrees();
       // Check if we exceeded bounds and enter unwinding state
-      if (Math.abs(currentAngle) >= 360.0 && !m_isUnwinding && m_pidEnabled) {
+      if (Math.abs(currentAngle) >= 360.0 && !m_isUnwinding) {
         m_isUnwinding = true;
       }
 
@@ -177,12 +181,18 @@ public class TurretSubsystem extends SubsystemBase {
           // Reset our rate limiter so the driver can cleanly regain control
           m_speedLimiter.reset(0);
         }
-      } else if (m_pidEnabled) {
+      } else {
         updateSetpoint(m_goal);
       }
-      m_io.setPosition(
-          m_setpoint.position,
-          m_feedForward.calculateWithVelocities(m_previousVelocity, m_setpoint.velocity));
+      if (currentMovement == DriveConstants.kDrivetrainVelocityPIDSlot) {
+        m_io.setPosition(
+            m_setpoint.velocity,
+            m_feedForward.calculateWithVelocities(m_previousVelocity, m_setpoint.velocity));
+      } else if (currentMovement == DriveConstants.kDrivetrainPositionPIDSlot) {
+        m_io.setPosition(
+            m_setpoint.position,
+            m_feedForward.calculateWithVelocities(m_previousVelocity, m_setpoint.velocity));
+      }
     }
     m_io.updateInputs(m_inputs);
     Logger.processInputs("Turret", m_inputs);

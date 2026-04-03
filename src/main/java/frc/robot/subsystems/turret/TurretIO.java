@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -42,7 +43,7 @@ public interface TurretIO {
    */
   public default void setVelocity(double velocity, double feedforward) {}
 
-  public default void updatePIDValues(double kP, double kI, double kD) {}
+  public default void updatePIDValues(double kP, double kI, double kD, ClosedLoopSlot slot) {}
 
   public default void setVoltage(double volts) {}
 

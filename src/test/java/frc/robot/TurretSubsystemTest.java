@@ -108,13 +108,12 @@ public class TurretSubsystemTest {
 
   @Test
   public void testSetTurretVoltage_zero_doesNotThrow() {
-    assertDoesNotThrow(() -> m_turret.setTurretVoltage(0.0), "setTurretVoltage(0) must not throw");
+    assertDoesNotThrow(() -> m_turret.setVoltage(0.0), "setTurretVoltage(0) must not throw");
   }
 
   @Test
   public void testSetTurretVoltage_positive_doesNotThrow() {
-    assertDoesNotThrow(
-        () -> m_turret.setTurretVoltage(3.0), "setTurretVoltage(3.0) must not throw");
+    assertDoesNotThrow(() -> m_turret.setVoltage(3.0), "setTurretVoltage(3.0) must not throw");
   }
 
   // ─── setTargetAngle ──────────────────────────────────────────────
