@@ -78,6 +78,17 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   /**
+   * Sets the target angle of the turret using closed-loop control.
+   *
+   * @param radians Target angle in radians.
+   */
+  public void setTargetRadians(double radians) {
+    if (m_isUnwinding) return;
+    double targetRotations = (radians / (Math.PI * 2)) * Constants.TURRET_GEAR_RATIO;
+    m_io.setPosition(targetRotations);
+  }
+
+  /**
    * Checks if the turret is at the specified target angle.
    *
    * @param targetAngleDegrees Target angle in degrees.

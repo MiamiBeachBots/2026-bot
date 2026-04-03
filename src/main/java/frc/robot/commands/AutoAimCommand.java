@@ -3,20 +3,17 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.CameraConstants;
-import frc.robot.Constants;
-import frc.robot.subsystems.CameraSubsystem;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FireControlSubsystem;
+import frc.robot.subsystems.LoaderSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class AutoAimCommand extends Command {
   private final TurretSubsystem m_turret;
   private final DriveSubsystem m_driveSubsystem;
   private final FireControlSubsystem m_fireSubsystem;
+  private final LoaderSubsystem m_loaderSubsystem;
 
   private static class ShotData {
     double angle;
@@ -29,10 +26,11 @@ public class AutoAimCommand extends Command {
   }
 
   public AutoAimCommand(
-      TurretSubsystem turret, DriveSubsystem d_subsystem, FireControlSubsystem f_subsystem) {
+      TurretSubsystem turret, DriveSubsystem d_subsystem, FireControlSubsystem f_subsystem, LoaderSubsystem l_subsystem) {
     m_turret = turret;
     m_driveSubsystem = d_subsystem;
     m_fireSubsystem = f_subsystem;
+    m_loaderSubsystem = l_subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(turret);
   }
@@ -48,22 +46,15 @@ public class AutoAimCommand extends Command {
   public void execute() {
     // TODO: Friend's auto-aim logic here
     ShotData shotData = calculateShot(Constants.HUB_POSITION, Constants.HUB_HEIGHT);
-    double turretRotations = radiansToRotations(shotData.angle - m_driveSubsystem.getRotation2d().getRadians());
+    // * 60 for RPM (60s each min)
     double shooterRPM = linearToRotationalVelocity(shotData.force, Constants.SHOOTER_RADIUS) * 60;
-    m_turret.setTargetPosition(turretRotations);
-    m_fireSubsystem.setRPM(shooterRPM);
-    Commands.waitUntil(m_turret.isAtPosition(turretRotations, ));
-
+    m_turret.setTargetRadians(shotData.angle - m_turret.getTurretAngleRadians());
+    m_fireSubsystem.setShooterRPM(shooterRPM);
+    m_loaderSubsystem.setLoaderSpeed(1);
   }
 
   private double linearToRotationalVelocity(double velocity, double radius) {
-      return velocity / radius;
-
-  }
-
-  private double radiansToRotations(double theta) {
-      return theta / (Math.PI * 2);
-
+    return velocity / radius;
   }
 
   private ShotData calculateShot(Translation2d target, double targetHeight) {
@@ -97,8 +88,7 @@ public class AutoAimCommand extends Command {
 
     Translation2d correctedTargetXYDisplacement =
         new Translation2d(
-            xyDisplacement.getX() * 2 - xPrediction,
-            xyDisplacement.getY() * 2 - yPrediction);
+            xyDisplacement.getX() * 2 - xPrediction, xyDisplacement.getY() * 2 - yPrediction);
     double correctedAngle =
         Math.atan2(correctedTargetXYDisplacement.getY(), correctedTargetXYDisplacement.getX());
     double correctedForce =
@@ -117,6 +107,8 @@ public class AutoAimCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_turret.stop();
+    m_fireSubsystem.stop();
+    m_loaderSubsystem.stop();
     System.out.println("AutoAimCommand Ended - Returning to Manual Control");
   }
 }

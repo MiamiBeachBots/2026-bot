@@ -18,7 +18,7 @@ public final class SpeedConstants {
   public static double INTAKE_MAIN_MAX_SPEED = 100.0;
   public static double INTAKE_MAIN_SENSITIVITY = 100.0;
 
-  public static double INTAKE_SECONDARY_MAX_SPEED = 100.0;
+  public static double INTAKE_SECONDARY_MAX_SPEED = 20.0;
   public static double INTAKE_SECONDARY_SENSITIVITY = 100.0;
 
   // Loader Subsystem

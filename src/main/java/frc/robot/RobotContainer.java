@@ -10,12 +10,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.AimCommand;
-import frc.robot.commands.DefaultDrive;
-import frc.robot.commands.FireCommand;
-import frc.robot.commands.IntakeSliderCommand;
-import frc.robot.commands.SetTurretPositionCommand;
-import frc.robot.commands.UnjamIntakeCommand;
+import frc.robot.commands.*;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -180,6 +175,9 @@ public class RobotContainer {
 
     // Emergency Unjam (Button 12)
     m_flightstick.button(12).onTrue(new UnjamIntakeCommand(m_intakeSubsystem));
+
+    // AutoAim
+    m_flightstick.button(13).onTrue(new AutoAimCommand(m_turretSubsystem, m_driveSubsystem, m_fireSubsystem, m_loaderSubsystem));
   }
 
   public void disabledInit() {
