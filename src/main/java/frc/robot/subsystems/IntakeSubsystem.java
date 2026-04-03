@@ -3,13 +3,14 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotTelemetry;
+import frc.robot.constants.Constants;
 import frc.robot.constants.SpeedConstants;
 import org.littletonrobotics.junction.Logger;
 
 /** Subsystem handling the intake/loading system. */
 public class IntakeSubsystem extends SubsystemBase {
 
-  private final IntakeIO m_io;
+  private final IntakeIOSparkMax m_io;
   private final IntakeIOInputsAutoLogged m_inputs = new IntakeIOInputsAutoLogged();
 
   private boolean m_isStalled = false;
@@ -18,8 +19,10 @@ public class IntakeSubsystem extends SubsystemBase {
   private static final double STALL_TIME_THRESHOLD = 0.5; // Seconds to consider perfectly stalled
   private static final double REVERSE_TIME = 1.0; // Seconds to reverse after a stall
 
+  private double intakePosition = 0;
+
   @SuppressWarnings("removal")
-  public IntakeSubsystem(IntakeIO io) {
+  public IntakeSubsystem(IntakeIOSparkMax io) {
     m_io = io;
     m_stallTimer.start();
   }
@@ -36,6 +39,23 @@ public class IntakeSubsystem extends SubsystemBase {
         SpeedConstants.adjustSpeed(
             speed, SpeedConstants.INTAKE_MAIN_MAX_SPEED, SpeedConstants.INTAKE_MAIN_SENSITIVITY);
     m_io.setVoltage(adjustedSpeed * 12.0);
+  }
+
+  /**
+   *
+   * @param up If intake should be up or down.
+   */
+  public void setIntakeState(boolean up) {
+    m_io.setSecondaryPosition(up ? Constants.UP_POSITION : Constants.DOWN_POSITION);
+  }
+
+  /**
+   *
+   * @param delta Amount to pivot intake by.
+   */
+  public void pivotIntake(double delta) {
+    intakePosition += delta;
+    m_io.setSecondaryPosition(intakePosition);
   }
 
   /** Stops the intake. */

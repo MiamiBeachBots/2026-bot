@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -9,7 +11,9 @@ import frc.robot.constants.Constants.CANConstants;
 
 public class IntakeIOSparkMax implements IntakeIO {
   private final SparkMax m_intakeMotorMain;
+  private final SparkClosedLoopController m_primaryIntakePID;
   private final SparkMax m_intakeMotorSecondary;
+  private final SparkClosedLoopController m_secondaryIntakePID;
 
   @SuppressWarnings("removal")
   public IntakeIOSparkMax() {
@@ -24,9 +28,13 @@ public class IntakeIOSparkMax implements IntakeIO {
     m_intakeMotorMain.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+    m_primaryIntakePID = m_intakeMotorMain.getClosedLoopController();
+
     config.follow(m_intakeMotorMain);
     m_intakeMotorSecondary.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    m_secondaryIntakePID = m_intakeMotorSecondary.getClosedLoopController();
   }
 
   @Override
@@ -40,6 +48,11 @@ public class IntakeIOSparkMax implements IntakeIO {
   @Override
   public void setVoltage(double volts) {
     m_intakeMotorMain.setVoltage(volts);
+  }
+
+  @Override
+  public void setSecondaryPosition(double position) {
+    m_secondaryIntakePID.setSetpoint(position, SparkBase.ControlType.kPosition);
   }
 
   @Override

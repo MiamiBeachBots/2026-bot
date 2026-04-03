@@ -3,6 +3,7 @@ package frc.robot;
 import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.hal.HAL;
+import frc.robot.subsystems.IntakeIOSparkMax;
 import frc.robot.subsystems.IntakeSubsystem;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -21,26 +22,7 @@ public class IntakeSubsystemTest {
   static void initAll() {
     assert HAL.initialize(500, 0);
     m_intake =
-        new IntakeSubsystem(
-            new frc.robot.subsystems.IntakeIO() {
-              private double volts = 0.0;
-
-              @Override
-              public void updateInputs(IntakeIOInputs inputs) {
-                inputs.mainMotorAppliedVolts = volts;
-                inputs.mainMotorCurrentAmps = 0.0; // Simulated
-              }
-
-              @Override
-              public void setVoltage(double v) {
-                volts = v;
-              }
-
-              @Override
-              public void stop() {
-                volts = 0.0;
-              }
-            });
+        new IntakeSubsystem(new IntakeIOSparkMax());
   }
 
   // ─── setIntakeSpeed ───────────────────────────────────────────────

@@ -11,10 +11,16 @@ public interface IntakeIO {
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(IntakeIOInputs inputs) {}
+  public void updateInputs(IntakeIOInputs inputs);
 
   /** Run the main motor at the specified voltage. */
-  public default void setVoltage(double volts) {}
+  public void setVoltage(double volts);
+
+  /**
+   *
+   * @param position in motor rotations
+   */
+  public void setSecondaryPosition(double position);
 
   /** Stop the motor. */
   public default void stop() {}

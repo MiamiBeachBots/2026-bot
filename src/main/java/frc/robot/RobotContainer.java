@@ -47,16 +47,12 @@ public class RobotContainer {
               ? new frc.robot.subsystems.FireControlIOSparkMax()
               : new frc.robot.subsystems.FireControlIO() {});
   private final IntakeSubsystem m_intakeSubsystem =
-      new IntakeSubsystem(
-          Constants.CURRENT_MODE == Constants.Mode.REAL
-              ? new frc.robot.subsystems.IntakeIOSparkMax()
-              : new frc.robot.subsystems.IntakeIO() {});
+      new IntakeSubsystem(new frc.robot.subsystems.IntakeIOSparkMax());
   private final LoaderSubsystem m_loaderSubsystem =
       new LoaderSubsystem(
           Constants.CURRENT_MODE == Constants.Mode.REAL
               ? new frc.robot.subsystems.LoaderIOSparkMax()
               : new frc.robot.subsystems.LoaderIO() {});
-
   // Initialize Commands
   private final DefaultDrive m_defaultDrive =
       new DefaultDrive(
@@ -80,7 +76,6 @@ public class RobotContainer {
    * controller commands are properly initialized before the robot starts operating.
    */
   public RobotContainer() {
-
     // Initialize the autonomous command
     initializeAutonomous();
     // Setup on the fly path planning
@@ -161,12 +156,13 @@ public class RobotContainer {
 
     // Turret Preset Orientations (Buttons 6 - 11)
     // Values are placeholders for raw motor rotations until gear ratio is determined.
-    m_flightstick.button(6).onTrue(new SetTurretPositionCommand(m_turretSubsystem, -90.0));
-    m_flightstick.button(7).onTrue(new SetTurretPositionCommand(m_turretSubsystem, -45.0));
-    m_flightstick.button(8).onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.0));
-    m_flightstick.button(9).onTrue(new SetTurretPositionCommand(m_turretSubsystem, 45.0));
-    m_flightstick.button(10).onTrue(new SetTurretPositionCommand(m_turretSubsystem, 90.0));
-    m_flightstick.button(11).onTrue(new SetTurretPositionCommand(m_turretSubsystem, 180.0));
+
+    // TODO: MAKE CONSTANTS, TESTING PURPOSES
+    m_flightstick.button(6).onTrue(new IntakeTestingCommand(m_intakeSubsystem, m_flightstick.button(6), () -> 0.05f));
+    m_flightstick.button(7).onTrue(new IntakeTestingCommand(m_intakeSubsystem, m_flightstick.button(7), () -> -0.05f));
+
+    // AutoAim
+    m_flightstick.button(8).onTrue(new AutoAimCommand(m_turretSubsystem, m_driveSubsystem, m_fireSubsystem, m_loaderSubsystem));
 
     // Intake System
     // Bind fuzzy slider (Flightstick Throttle axis) to automatically control the Intake.
@@ -175,9 +171,6 @@ public class RobotContainer {
 
     // Emergency Unjam (Button 12)
     m_flightstick.button(12).onTrue(new UnjamIntakeCommand(m_intakeSubsystem));
-
-    // AutoAim
-    m_flightstick.button(13).onTrue(new AutoAimCommand(m_turretSubsystem, m_driveSubsystem, m_fireSubsystem, m_loaderSubsystem));
   }
 
   public void disabledInit() {
