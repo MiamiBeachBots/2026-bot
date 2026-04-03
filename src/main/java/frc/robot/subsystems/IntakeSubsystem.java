@@ -42,7 +42,6 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /**
-   *
    * @param up If intake should be up or down.
    */
   public void setIntakeState(boolean up) {
@@ -50,7 +49,6 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /**
-   *
    * @param delta Amount to pivot intake by.
    */
   public void pivotIntake(double delta) {

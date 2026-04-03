@@ -158,11 +158,19 @@ public class RobotContainer {
     // Values are placeholders for raw motor rotations until gear ratio is determined.
 
     // TODO: MAKE CONSTANTS, TESTING PURPOSES
-    m_flightstick.button(6).onTrue(new IntakeTestingCommand(m_intakeSubsystem, m_flightstick.button(6), () -> 0.05f));
-    m_flightstick.button(7).onTrue(new IntakeTestingCommand(m_intakeSubsystem, m_flightstick.button(7), () -> -0.05f));
+    m_flightstick
+        .button(6)
+        .onTrue(new IntakeTestingCommand(m_intakeSubsystem, m_flightstick.button(6), () -> 0.05f));
+    m_flightstick
+        .button(7)
+        .onTrue(new IntakeTestingCommand(m_intakeSubsystem, m_flightstick.button(7), () -> -0.05f));
 
     // AutoAim
-    m_flightstick.button(8).onTrue(new AutoAimCommand(m_turretSubsystem, m_driveSubsystem, m_fireSubsystem, m_loaderSubsystem));
+    m_flightstick
+        .button(8)
+        .onTrue(
+            new AutoAimCommand(
+                m_turretSubsystem, m_driveSubsystem, m_fireSubsystem, m_loaderSubsystem));
 
     // Intake System
     // Bind fuzzy slider (Flightstick Throttle axis) to automatically control the Intake.

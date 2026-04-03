@@ -26,7 +26,10 @@ public class AutoAimCommand extends Command {
   }
 
   public AutoAimCommand(
-      TurretSubsystem turret, DriveSubsystem d_subsystem, FireControlSubsystem f_subsystem, LoaderSubsystem l_subsystem) {
+      TurretSubsystem turret,
+      DriveSubsystem d_subsystem,
+      FireControlSubsystem f_subsystem,
+      LoaderSubsystem l_subsystem) {
     m_turret = turret;
     m_driveSubsystem = d_subsystem;
     m_fireSubsystem = f_subsystem;

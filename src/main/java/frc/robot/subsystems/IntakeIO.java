@@ -17,7 +17,6 @@ public interface IntakeIO {
   public void setVoltage(double volts);
 
   /**
-   *
    * @param position in motor rotations
    */
   public void setSecondaryPosition(double position);

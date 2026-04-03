@@ -21,8 +21,7 @@ public class IntakeSubsystemTest {
   @BeforeAll
   static void initAll() {
     assert HAL.initialize(500, 0);
-    m_intake =
-        new IntakeSubsystem(new IntakeIOSparkMax());
+    m_intake = new IntakeSubsystem(new IntakeIOSparkMax());
   }
 
   // ─── setIntakeSpeed ───────────────────────────────────────────────
