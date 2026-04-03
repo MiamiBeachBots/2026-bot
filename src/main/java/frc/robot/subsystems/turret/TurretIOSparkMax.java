@@ -36,11 +36,11 @@ public class TurretIOSparkMax implements TurretIO {
         TurretConstants.kpI,
         TurretConstants.kpD,
         DriveConstants.kDrivetrainPositionPIDSlot);
-      m_config.closedLoop.pid(
-          TurretConstants.kvP,
-          TurretConstants.kvI,
-          TurretConstants.kvD,
-          DriveConstants.kDrivetrainVelocityPIDSlot);
+    m_config.closedLoop.pid(
+        TurretConstants.kvP,
+        TurretConstants.kvI,
+        TurretConstants.kvD,
+        DriveConstants.kDrivetrainVelocityPIDSlot);
 
     m_config.closedLoop.outputRange(TurretConstants.kMin, TurretConstants.kMax);
 

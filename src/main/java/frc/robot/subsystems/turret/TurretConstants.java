@@ -11,14 +11,14 @@ public class TurretConstants {
   public static final boolean IS_SYSID_TUNING = false;
   // PID values
   // TODO: Tune
-    //Position PID values
+  // Position PID values
   public static final double kpP = 0.05;
   public static final double kpI = 0.001;
   public static final double kpD = 0.01;
   // Velocity PID values
   public static final double kvP = 0.05;
-    public static final double kvI = 0.001;
-    public static final double kvD = 0.01;
+  public static final double kvI = 0.001;
+  public static final double kvD = 0.01;
 
   // TODO Implement live tuning for PID values using advantagekit LoggedNetworkNumbers
   // FeedForward Values
@@ -53,7 +53,7 @@ public class TurretConstants {
   // PID
   public static final LoggedNetworkBoolean tuningSlot =
       new LoggedNetworkBoolean("Turret/slot", true); // true for position, false for velocity
-  public static final LoggedNetworkNumber kPLogged = new LoggedNetworkNumber("Turret/kP", kpP); //P
+  public static final LoggedNetworkNumber kPLogged = new LoggedNetworkNumber("Turret/kP", kpP); // P
   public static final LoggedNetworkNumber kILogged = new LoggedNetworkNumber("Turret/kI", kpI);
   public static final LoggedNetworkNumber kDLogged = new LoggedNetworkNumber("Turret/kD", kpD);
 
