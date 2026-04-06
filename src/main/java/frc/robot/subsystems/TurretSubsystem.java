@@ -4,8 +4,6 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotTelemetry;
 import frc.robot.constants.Constants;
-import frc.robot.constants.SpeedConstants;
-import frc.robot.constants.TweakConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class TurretSubsystem extends SubsystemBase {
@@ -32,15 +30,6 @@ public class TurretSubsystem extends SubsystemBase {
     if (Math.abs(speed) < 0.1) {
       speed = 0;
     }
-    double adjustedSpeed =
-        m_speedLimiter.calculate(
-            SpeedConstants.adjustSpeed(
-                speed, SpeedConstants.TURRET_MAX_SPEED, SpeedConstants.TURRET_SENSITIVITY));
-
-    if (TweakConstants.REVERSE_TURRET_DIRECTION) {
-      adjustedSpeed = -adjustedSpeed;
-    }
-
     m_io.setVoltage(adjustedSpeed * 12.0);
   }
 
