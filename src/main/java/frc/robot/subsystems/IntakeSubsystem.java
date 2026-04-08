@@ -46,6 +46,11 @@ public class IntakeSubsystem extends SubsystemBase {
     m_io.setPivotVoltage(adjustedSpeed * 12.0);
   }
 
+  public void setPivotPos(double theta) {
+    m_io.setPivotTargetPos(theta);
+
+  }
+
   /** Stops the intake. */
   public void stop() {
     m_io.stop();
