@@ -4,7 +4,6 @@
 
 package frc.robot.constants;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -19,23 +18,25 @@ public final class Constants {
   public static final class CANConstants {
     // CAN Bus Devices
     /// Drive Train Motors
-    public static final int MOTOR_FRONT_RIGHT_ID = 1;
-    public static final int MOTOR_BACK_RIGHT_ID = 2;
-    public static final int MOTOR_FRONT_LEFT_ID = 3;
-    public static final int MOTOR_BACK_LEFT_ID = 4;
+    public static final int MOTOR_FRONT_RIGHT_ID = 11;
+    public static final int MOTOR_BACK_RIGHT_ID = 12;
+    public static final int MOTOR_FRONT_LEFT_ID = 13;
+    public static final int MOTOR_BACK_LEFT_ID = 14;
 
     /// Intake Subsystem
-    public static final int MOTOR_INTAKE_MAIN_ID = 5;
-    public static final int MOTOR_INTAKE_SECONDARY_ID = 6;
+    public static final int MOTOR_INTAKE_DRIVE_ID = 21;
+    public static final int MOTOR_INTAKE_PIVOT_A_ID = 22;
+    public static final int MOTOR_INTAKE_PIVOT_B_ID =
+        23; // Change to actual PID (currently assuming it's going to be 23)
 
     /// Loader Subsystem
-    public static final int MOTOR_LOADER_1_ID = 7;
-    public static final int MOTOR_LOADER_2_ID = 8;
-    public static final int MOTOR_LOADER_3_ID = 9;
+    public static final int MOTOR_TURRET_CHANNEL_ID = 31;
+    public static final int MOTOR_SPINDEXER_ID = 32;
+    public static final int MOTOR_LOADER_ID = 33;
 
     /// Turret and Fire Subsystems
-    public static final int MOTOR_TURRET_ID = 10;
-    public static final int MOTOR_FIRE_ID = 11;
+    public static final int MOTOR_TURRET_ID = 41;
+    public static final int MOTOR_FIRE_ID = 42;
   }
 
   // Is simulation
@@ -69,12 +70,6 @@ public final class Constants {
   // Turret Subsystem
   public static final double TURRET_GEAR_RATIO = 10.0;
 
-  // AutoAiming constants
-  public static final double AUTOAIM_GRAVITY = 9.81;
-  public static final double SHOOTER_RADIUS = 5.08;
-  public static final double SHOOTER_HEIGHT = 0.5318252;
-  public static final double SHOOTER_ANGLE = Math.PI / 4;
-  public static final double HUB_HEIGHT = 1.8288;
-  public static final double BALL_DIAMETER = 0.15;
-  public static final Translation2d HUB_POSITION = new Translation2d(4.625594, 4.034663);
+  // Intake Subsystem
+  public static final double INTAKE_PIVOT_GEAR_RATIO = 16.0;
 }

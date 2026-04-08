@@ -142,7 +142,7 @@ public class RobotContainer {
         new RunCommand(
             () -> {
               m_intakeSubsystem.setRunSpeed(0.0);
-              m_intakeSubsystem.setPivotSpeed(0.0);
+              m_intakeSubsystem.setPivotPos(0.1);
             },
             m_intakeSubsystem));
 
@@ -179,13 +179,26 @@ public class RobotContainer {
         .toggleOnTrue(
             new RunCommand(() -> m_loaderSubsystem.setLoaderSpeed(1.0), m_loaderSubsystem));
 
+    // !TESTING PURPOSES
     // Intake Pivot Manual Control (Buttons 9 and 10)
     m_flightstick
         .button(9)
-        .whileTrue(new RunCommand(() -> m_intakeSubsystem.setPivotSpeed(-1.0), m_intakeSubsystem));
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  m_intakeSubsystem.setPivotPos(-0.2);
+                  System.out.println("BUTTON 9 PRESSED, PIVOT POS: -0.2");
+                },
+                m_intakeSubsystem));
     m_flightstick
         .button(10)
-        .whileTrue(new RunCommand(() -> m_intakeSubsystem.setPivotSpeed(1.0), m_intakeSubsystem));
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  m_intakeSubsystem.setPivotPos(0.2);
+                  System.out.println("BUTTON 10 PRESSED, PIVOT POS: 0.2");
+                },
+                m_intakeSubsystem));
 
     // Intake System operates on buttons now. Default command is removed to avoid slider conflicts.
 
