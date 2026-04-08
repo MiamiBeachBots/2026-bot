@@ -10,7 +10,10 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.*;
+import frc.robot.commands.AimCommand;
+import frc.robot.commands.DefaultDrive;
+import frc.robot.commands.FireCommand;
+import frc.robot.commands.UnjamIntakeCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -93,6 +96,9 @@ public class RobotContainer {
     } else {
       bindCommands();
     }
+
+    frc.robot.utils.CompetitionDashboard.setup(
+        autoDashboardChooser.getSendableChooser(), m_driveSubsystem);
   }
 
   private void bindCommands() {
@@ -104,19 +110,12 @@ public class RobotContainer {
     // Intake
     m_controller1
         .a()
-        .and(
-            () ->
-                !frc.robot.constants.TweakConstants.DISABLE_INTAKE_DURING_FIRE
-                    || !m_flightstick.button(Constants.JOYSTICK_DEFAULT_BUTTON).getAsBoolean())
-        .toggleOnTrue(
-            new RunCommand(() -> m_intakeSubsystem.setIntakeSpeed(1.0), m_intakeSubsystem));
+        .and(() -> !m_flightstick.button(Constants.JOYSTICK_DEFAULT_BUTTON).getAsBoolean())
+        .toggleOnTrue(new RunCommand(() -> m_intakeSubsystem.setRunSpeed(1.0), m_intakeSubsystem));
     m_controller1
         .leftTrigger()
-        .and(
-            () ->
-                !frc.robot.constants.TweakConstants.DISABLE_INTAKE_DURING_FIRE
-                    || !m_flightstick.button(Constants.JOYSTICK_DEFAULT_BUTTON).getAsBoolean())
-        .whileTrue(new RunCommand(() -> m_intakeSubsystem.setIntakeSpeed(-1.0), m_intakeSubsystem));
+        .and(() -> !m_flightstick.button(Constants.JOYSTICK_DEFAULT_BUTTON).getAsBoolean())
+        .whileTrue(new RunCommand(() -> m_intakeSubsystem.setRunSpeed(-1.0), m_intakeSubsystem));
 
     // Fire Override
     m_controller1
@@ -133,55 +132,78 @@ public class RobotContainer {
     // Joystick Bindings
     // (Removed queued shooter mode override)
 
-    // Turret Default Command (Bind to X-axis of flight stick)
+    // Turret Default Command (Bind to X-axis of flight stick, capped at 80% speed)
     m_turretSubsystem.setDefaultCommand(
         new RunCommand(
-            () -> m_turretSubsystem.setTurretSpeed(m_flightstick.getX()), m_turretSubsystem));
+            () -> m_turretSubsystem.setTurretSpeed(m_flightstick.getX() * 0.8), m_turretSubsystem));
 
-    // Loader Default Command (Bind to Y-axis of flight stick)
-    m_loaderSubsystem.setDefaultCommand(
+    // Intake Default Command
+    m_intakeSubsystem.setDefaultCommand(
         new RunCommand(
-            () -> m_loaderSubsystem.setLoaderSpeed(m_flightstick.getY()), m_loaderSubsystem));
+            () -> {
+              m_intakeSubsystem.setRunSpeed(0.0);
+              m_intakeSubsystem.setPivotSpeed(0.0);
+            },
+            m_intakeSubsystem));
+
+    // Loader Default Command
+    m_loaderSubsystem.setDefaultCommand(
+        new RunCommand(() -> m_loaderSubsystem.setLoaderSpeed(0.0), m_loaderSubsystem));
 
     // Fire Control Command (Bind to Trigger / Button 1 of flight stick)
-    // Run at full speed (1.0) while trigger is held, rather than mapped to Y axis.
+    // Run at Y-axis speed or SmartDashboard override while trigger is held. Loader feeds at 100%.
+    SmartDashboard.putNumber("Regression Test Firing Speed Override", -1.0);
     m_flightstick
         .button(Constants.JOYSTICK_DEFAULT_BUTTON)
         .and(() -> !m_turretSubsystem.isUnwinding())
-        .and(
-            () ->
-                frc.robot.constants.TweakConstants.ALLOW_FIRE_WHILE_MOVING
-                    || Math.abs(m_driveSubsystem.getSpeeds().vxMetersPerSecond) < 0.1)
+        .and(() -> Math.abs(m_driveSubsystem.getSpeeds().vxMetersPerSecond) < 0.1)
         .whileTrue(
             new FireCommand(
                 m_fireSubsystem,
                 m_loaderSubsystem,
-                () -> 1.0,
+                () -> {
+                  double override =
+                      SmartDashboard.getNumber("Regression Test Firing Speed Override", -1.0);
+                  return override != -1.0 ? override : 1.0;
+                },
                 m_flightstick.button(Constants.JOYSTICK_DEFAULT_BUTTON)));
 
-    // Turret Preset Orientations (Buttons 6 - 11)
-    // Values are placeholders for raw motor rotations until gear ratio is determined.
-    m_flightstick.button(6).onTrue(new SetTurretPositionCommand(m_turretSubsystem, -90.0));
-    m_flightstick.button(7).onTrue(new SetTurretPositionCommand(m_turretSubsystem, -45.0));
-    m_flightstick.button(8).onTrue(new SetTurretPositionCommand(m_turretSubsystem, 0.0));
-    m_flightstick.button(9).onTrue(new SetTurretPositionCommand(m_turretSubsystem, 45.0));
-    m_flightstick.button(10).onTrue(new SetTurretPositionCommand(m_turretSubsystem, 90.0));
-    m_flightstick.button(11).onTrue(new SetTurretPositionCommand(m_turretSubsystem, 180.0));
+    // Intake on Flight Stick (Button 6) - Toggle
+    m_flightstick
+        .button(6)
+        .toggleOnTrue(new RunCommand(() -> m_intakeSubsystem.setRunSpeed(1.0), m_intakeSubsystem));
 
-    // Intake System
-    // Bind fuzzy slider (Flightstick Throttle axis) to automatically control the Intake.
-    m_intakeSubsystem.setDefaultCommand(
-        new IntakeSliderCommand(m_intakeSubsystem, () -> m_flightstick.getThrottle()));
+    // Loader 1 & 2 on Flight Stick (Button 7) - Toggle
+    m_flightstick
+        .button(7)
+        .toggleOnTrue(
+            new RunCommand(() -> m_loaderSubsystem.setLoaderSpeed(1.0), m_loaderSubsystem));
+
+    // Intake Pivot Manual Control (Buttons 9 and 10)
+    m_flightstick
+        .button(9)
+        .whileTrue(new RunCommand(() -> m_intakeSubsystem.setPivotSpeed(-1.0), m_intakeSubsystem));
+    m_flightstick
+        .button(10)
+        .whileTrue(new RunCommand(() -> m_intakeSubsystem.setPivotSpeed(1.0), m_intakeSubsystem));
+
+    // Intake System operates on buttons now. Default command is removed to avoid slider conflicts.
 
     // Emergency Unjam (Button 12)
     m_flightstick.button(12).onTrue(new UnjamIntakeCommand(m_intakeSubsystem));
-
-    // AutoAim
-    m_flightstick.button(13).onTrue(new AutoAimCommand(m_turretSubsystem, m_driveSubsystem, m_fireSubsystem, m_loaderSubsystem));
   }
 
   public void disabledInit() {
-    m_turretSubsystem.setTargetAngle(0.0);
+    stopAll();
+  }
+
+  public void stopAll() {
+    m_driveSubsystem.stop();
+    m_intakeSubsystem.stop();
+    m_intakeSubsystem.stopPivot();
+    m_fireSubsystem.stop();
+    m_loaderSubsystem.stop();
+    m_turretSubsystem.stop();
   }
 
   public edu.wpi.first.wpilibj2.command.Command getPitHealthCheckCommand() {
@@ -222,12 +244,12 @@ public class RobotContainer {
 
   public double getControllerRightY() {
     double y = -m_controller1.getRightY();
-    return frc.robot.constants.TweakConstants.INVERT_DRIVE_CONTROLS ? -y : y;
+    return y;
   }
 
   public double getControllerLeftY() {
     double y = -m_controller1.getLeftY();
-    return frc.robot.constants.TweakConstants.INVERT_DRIVE_CONTROLS ? -y : y;
+    return y;
   }
 
   public double GetFlightStickY() {

@@ -14,9 +14,9 @@ public class LoaderIOSparkMax implements LoaderIO {
 
   @SuppressWarnings("removal")
   public LoaderIOSparkMax() {
-    m_loaderMotor1 = new SparkMax(CANConstants.MOTOR_LOADER_1_ID, MotorType.kBrushless);
-    m_loaderMotor2 = new SparkMax(CANConstants.MOTOR_LOADER_2_ID, MotorType.kBrushless);
-    m_loaderMotor3 = new SparkMax(CANConstants.MOTOR_LOADER_3_ID, MotorType.kBrushless);
+    m_loaderMotor1 = new SparkMax(CANConstants.MOTOR_TURRET_CHANNEL_ID, MotorType.kBrushless);
+    m_loaderMotor2 = new SparkMax(CANConstants.MOTOR_SPINDEXER_ID, MotorType.kBrushless);
+    m_loaderMotor3 = new SparkMax(CANConstants.MOTOR_LOADER_ID, MotorType.kBrushless);
 
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(SparkMaxConfig.IdleMode.kBrake);
@@ -28,6 +28,7 @@ public class LoaderIOSparkMax implements LoaderIO {
     config.follow(m_loaderMotor1);
     m_loaderMotor2.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     m_loaderMotor3.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }

@@ -25,17 +25,25 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /**
-   * Sets the speed of the intake motor.
+   * Sets the speed of the intake run motor.
    *
    * @param speed Speed from -1.0 to 1.0. positive spins intake inward.
    */
-  public void setIntakeSpeed(double speed) {
+  public void setRunSpeed(double speed) {
     if (m_isStalled) return; // Prevent normal operation if clearing a jam
 
     double adjustedSpeed =
         SpeedConstants.adjustSpeed(
-            speed, SpeedConstants.INTAKE_MAIN_MAX_SPEED, SpeedConstants.INTAKE_MAIN_SENSITIVITY);
-    m_io.setVoltage(adjustedSpeed * 12.0);
+            speed, SpeedConstants.INTAKE_RUN_MAX_SPEED, SpeedConstants.INTAKE_RUN_SENSITIVITY);
+    m_io.setRunVoltage(adjustedSpeed * 12.0);
+  }
+
+  /** Sets the speed of the pivot motor. */
+  public void setPivotSpeed(double speed) {
+    double adjustedSpeed =
+        SpeedConstants.adjustSpeed(
+            speed, SpeedConstants.INTAKE_PIVOT_MAX_SPEED, SpeedConstants.INTAKE_PIVOT_SENSITIVITY);
+    m_io.setPivotVoltage(adjustedSpeed * 12.0);
   }
 
   /** Stops the intake. */
@@ -43,13 +51,19 @@ public class IntakeSubsystem extends SubsystemBase {
     m_io.stop();
   }
 
+  /** Stops the pivot motor. */
+  public void stopPivot() {
+    m_io.stopPivot();
+  }
+
   @Override
   public void periodic() {
     m_io.updateInputs(m_inputs);
     Logger.processInputs("Intake", m_inputs);
 
-    double current = m_inputs.mainMotorCurrentAmps;
-    RobotTelemetry.putNumber("Intake Current (A)", current);
+    double current = m_inputs.runMotorCurrentAmps;
+    RobotTelemetry.putNumber("Intake Run Current (A)", current);
+    RobotTelemetry.putNumber("Intake Pivot Angle", m_inputs.pivotPositionDeg);
 
     if (m_isStalled) {
       if (m_stallTimer.hasElapsed(REVERSE_TIME)) {
@@ -57,13 +71,11 @@ public class IntakeSubsystem extends SubsystemBase {
         stop();
       } else {
         // Reverse motor to clear jam
-        m_io.setVoltage(-6.0);
+        m_io.setRunVoltage(-6.0);
       }
     } else {
-      boolean active = Math.abs(m_inputs.mainMotorAppliedVolts) > 1.2;
-      if (frc.robot.constants.TweakConstants.ENABLE_STALL_DETECTION
-          && current > STALL_CURRENT_THRESHOLD
-          && active) {
+      boolean active = Math.abs(m_inputs.runMotorAppliedVolts) > 1.2;
+      if (current > STALL_CURRENT_THRESHOLD && active) {
         if (m_stallTimer.hasElapsed(STALL_TIME_THRESHOLD)) {
           // Jam detected!
           m_isStalled = true;

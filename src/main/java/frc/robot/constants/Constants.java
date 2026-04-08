@@ -65,7 +65,6 @@ public final class Constants {
   // Joystick buttons
   public static final int JOYSTICK_DEFAULT_BUTTON = 1;
   public static final int JOYSTICK_TRIGGER = 1;
-  public static final int BUTTON_1 = 1;
 
   // Turret Subsystem
   public static final double TURRET_GEAR_RATIO = 10.0;

@@ -1,25 +1,23 @@
 package frc.robot.constants;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 /**
  * The SpeedConstants class provides configurable max speed (1-100) and sensitivity (1-100) for
  * every motor setup. Back motors are excluded as they are linked to the front motors.
  */
 public final class SpeedConstants {
   // Drive Train (Back motors linked to front)
-  public static double FRONT_RIGHT_MAX_SPEED = 85.0; // Reduced from 100 to 75
+  public static double FRONT_RIGHT_MAX_SPEED = 90.0; // Reduced from 100 to 75
   public static double FRONT_RIGHT_SENSITIVITY = 100.0;
 
-  public static double FRONT_LEFT_MAX_SPEED = 85.0; // Reduced from 100 to 75
+  public static double FRONT_LEFT_MAX_SPEED = 90.0; // Reduced from 100 to 75
   public static double FRONT_LEFT_SENSITIVITY = 100.0;
 
   // Intake Subsystem
-  public static double INTAKE_MAIN_MAX_SPEED = 100.0;
-  public static double INTAKE_MAIN_SENSITIVITY = 100.0;
+  public static double INTAKE_RUN_MAX_SPEED = 100.0;
+  public static double INTAKE_RUN_SENSITIVITY = 100.0;
 
-  public static double INTAKE_SECONDARY_MAX_SPEED = 20.0;
-  public static double INTAKE_SECONDARY_SENSITIVITY = 100.0;
+  public static double INTAKE_PIVOT_MAX_SPEED = 20.0;
+  public static double INTAKE_PIVOT_SENSITIVITY = 100.0;
 
   // Loader Subsystem
   public static double LOADER_1_MAX_SPEED = 100.0;
@@ -36,66 +34,8 @@ public final class SpeedConstants {
   public static double TURRET_SENSITIVITY = 30.0;
 
   // Fire Subsystem
-  public static double FIRE_MAX_SPEED = 100.0;
+  public static double FIRE_MAX_SPEED = 5000.0;
   public static double FIRE_SENSITIVITY = 100.0;
-
-  public static boolean TUNING_MODE = false;
-  private static boolean initialized = false;
-
-  public static void syncNetworkTables() {
-    if (!initialized) {
-      SmartDashboard.putNumber("Speed/FRONT_RIGHT_MAX_SPEED", FRONT_RIGHT_MAX_SPEED);
-      SmartDashboard.putNumber("Speed/FRONT_RIGHT_SENSITIVITY", FRONT_RIGHT_SENSITIVITY);
-      SmartDashboard.putNumber("Speed/FRONT_LEFT_MAX_SPEED", FRONT_LEFT_MAX_SPEED);
-      SmartDashboard.putNumber("Speed/FRONT_LEFT_SENSITIVITY", FRONT_LEFT_SENSITIVITY);
-      SmartDashboard.putNumber("Speed/INTAKE_MAIN_MAX_SPEED", INTAKE_MAIN_MAX_SPEED);
-      SmartDashboard.putNumber("Speed/INTAKE_MAIN_SENSITIVITY", INTAKE_MAIN_SENSITIVITY);
-      SmartDashboard.putNumber("Speed/INTAKE_SECONDARY_MAX_SPEED", INTAKE_SECONDARY_MAX_SPEED);
-      SmartDashboard.putNumber("Speed/INTAKE_SECONDARY_SENSITIVITY", INTAKE_SECONDARY_SENSITIVITY);
-      SmartDashboard.putNumber("Speed/LOADER_1_MAX_SPEED", LOADER_1_MAX_SPEED);
-      SmartDashboard.putNumber("Speed/LOADER_1_SENSITIVITY", LOADER_1_SENSITIVITY);
-      SmartDashboard.putNumber("Speed/LOADER_2_MAX_SPEED", LOADER_2_MAX_SPEED);
-      SmartDashboard.putNumber("Speed/LOADER_2_SENSITIVITY", LOADER_2_SENSITIVITY);
-      SmartDashboard.putNumber("Speed/LOADER_3_MAX_SPEED", LOADER_3_MAX_SPEED);
-      SmartDashboard.putNumber("Speed/LOADER_3_SENSITIVITY", LOADER_3_SENSITIVITY);
-      SmartDashboard.putNumber("Speed/TURRET_MAX_SPEED", TURRET_MAX_SPEED);
-      SmartDashboard.putNumber("Speed/TURRET_SENSITIVITY", TURRET_SENSITIVITY);
-      SmartDashboard.putNumber("Speed/FIRE_MAX_SPEED", FIRE_MAX_SPEED);
-      SmartDashboard.putNumber("Speed/FIRE_SENSITIVITY", FIRE_SENSITIVITY);
-      initialized = true;
-    } else if (TUNING_MODE) {
-      FRONT_RIGHT_MAX_SPEED =
-          SmartDashboard.getNumber("Speed/FRONT_RIGHT_MAX_SPEED", FRONT_RIGHT_MAX_SPEED);
-      FRONT_RIGHT_SENSITIVITY =
-          SmartDashboard.getNumber("Speed/FRONT_RIGHT_SENSITIVITY", FRONT_RIGHT_SENSITIVITY);
-      FRONT_LEFT_MAX_SPEED =
-          SmartDashboard.getNumber("Speed/FRONT_LEFT_MAX_SPEED", FRONT_LEFT_MAX_SPEED);
-      FRONT_LEFT_SENSITIVITY =
-          SmartDashboard.getNumber("Speed/FRONT_LEFT_SENSITIVITY", FRONT_LEFT_SENSITIVITY);
-      INTAKE_MAIN_MAX_SPEED =
-          SmartDashboard.getNumber("Speed/INTAKE_MAIN_MAX_SPEED", INTAKE_MAIN_MAX_SPEED);
-      INTAKE_MAIN_SENSITIVITY =
-          SmartDashboard.getNumber("Speed/INTAKE_MAIN_SENSITIVITY", INTAKE_MAIN_SENSITIVITY);
-      INTAKE_SECONDARY_MAX_SPEED =
-          SmartDashboard.getNumber("Speed/INTAKE_SECONDARY_MAX_SPEED", INTAKE_SECONDARY_MAX_SPEED);
-      INTAKE_SECONDARY_SENSITIVITY =
-          SmartDashboard.getNumber(
-              "Speed/INTAKE_SECONDARY_SENSITIVITY", INTAKE_SECONDARY_SENSITIVITY);
-      LOADER_1_MAX_SPEED = SmartDashboard.getNumber("Speed/LOADER_1_MAX_SPEED", LOADER_1_MAX_SPEED);
-      LOADER_1_SENSITIVITY =
-          SmartDashboard.getNumber("Speed/LOADER_1_SENSITIVITY", LOADER_1_SENSITIVITY);
-      LOADER_2_MAX_SPEED = SmartDashboard.getNumber("Speed/LOADER_2_MAX_SPEED", LOADER_2_MAX_SPEED);
-      LOADER_2_SENSITIVITY =
-          SmartDashboard.getNumber("Speed/LOADER_2_SENSITIVITY", LOADER_2_SENSITIVITY);
-      LOADER_3_MAX_SPEED = SmartDashboard.getNumber("Speed/LOADER_3_MAX_SPEED", LOADER_3_MAX_SPEED);
-      LOADER_3_SENSITIVITY =
-          SmartDashboard.getNumber("Speed/LOADER_3_SENSITIVITY", LOADER_3_SENSITIVITY);
-      TURRET_MAX_SPEED = SmartDashboard.getNumber("Speed/TURRET_MAX_SPEED", TURRET_MAX_SPEED);
-      TURRET_SENSITIVITY = SmartDashboard.getNumber("Speed/TURRET_SENSITIVITY", TURRET_SENSITIVITY);
-      FIRE_MAX_SPEED = SmartDashboard.getNumber("Speed/FIRE_MAX_SPEED", FIRE_MAX_SPEED);
-      FIRE_SENSITIVITY = SmartDashboard.getNumber("Speed/FIRE_SENSITIVITY", FIRE_SENSITIVITY);
-    }
-  }
 
   /**
    * Applies sensitivity and max speed limits to a motor speed input.
