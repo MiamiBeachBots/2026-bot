@@ -38,7 +38,7 @@ public class IntakeIOSparkMax implements IntakeIO {
     pivotConfig.encoder.positionConversionFactor(360.0 / Constants.INTAKE_PIVOT_GEAR_RATIO);
 
     m_intakeMotorPivotA.configure(
-            pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_intakeMotorPivotA.getEncoder().setPosition(0.0); // Assume starting position is 0
 
@@ -46,7 +46,7 @@ public class IntakeIOSparkMax implements IntakeIO {
 
     config.follow(m_intakeMotorPivotA);
     m_intakeMotorPivotB.configure(
-            pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_intakeMotorPivotB.getEncoder().setPosition(0.0); // Assume starting position is 0
 
@@ -81,7 +81,6 @@ public class IntakeIOSparkMax implements IntakeIO {
   public void setPivotTargetPos(double theta) {
     m_intakePivotControllerA.setSetpoint(theta, SparkBase.ControlType.kPosition);
     m_intakePivotControllerB.setSetpoint(theta, SparkBase.ControlType.kPosition);
-
   }
 
   @Override
