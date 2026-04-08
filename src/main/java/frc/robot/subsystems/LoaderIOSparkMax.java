@@ -43,10 +43,14 @@ public class LoaderIOSparkMax implements LoaderIO {
   @Override
   public void setVoltage(double volts) {
     m_loaderMotor1.setVoltage(volts);
+    m_loaderMotor2.setVoltage(volts);
+    m_loaderMotor3.setVoltage(volts);
   }
 
   @Override
   public void stop() {
     m_loaderMotor1.stopMotor();
+    m_loaderMotor2.stopMotor();
+    m_loaderMotor3.stopMotor();
   }
 }

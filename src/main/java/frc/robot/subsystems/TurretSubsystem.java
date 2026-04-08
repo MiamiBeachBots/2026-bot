@@ -30,7 +30,7 @@ public class TurretSubsystem extends SubsystemBase {
     if (Math.abs(speed) < 0.1) {
       speed = 0;
     }
-    m_io.setVoltage(adjustedSpeed * 12.0);
+    m_io.setVoltage(speed * 12.0);
   }
 
   /**

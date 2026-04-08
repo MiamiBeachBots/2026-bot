@@ -24,7 +24,8 @@ public interface IntakeIO {
   public default void setPivotVoltage(double volts) {}
 
   /** Sets the pivot's target position in motor rotations. */
-  public void setPivotTargetPos(double theta);
+  public default void setPivotTargetPos(double theta) {}
+  ;
 
   /** Stop the motors. */
   public default void stop() {}

@@ -10,10 +10,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.AimCommand;
-import frc.robot.commands.DefaultDrive;
-import frc.robot.commands.FireCommand;
-import frc.robot.commands.UnjamIntakeCommand;
+import frc.robot.commands.*;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -199,6 +196,12 @@ public class RobotContainer {
                   System.out.println("BUTTON 10 PRESSED, PIVOT POS: 0.2");
                 },
                 m_intakeSubsystem));
+
+    m_flightstick
+        .button(11)
+        .whileTrue(
+            new AutoAimCommand(
+                m_turretSubsystem, m_driveSubsystem, m_fireSubsystem, m_loaderSubsystem));
 
     // Intake System operates on buttons now. Default command is removed to avoid slider conflicts.
 

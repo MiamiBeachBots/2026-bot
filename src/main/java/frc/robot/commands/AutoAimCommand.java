@@ -26,13 +26,16 @@ public class AutoAimCommand extends Command {
   }
 
   public AutoAimCommand(
-      TurretSubsystem turret, DriveSubsystem d_subsystem, FireControlSubsystem f_subsystem, LoaderSubsystem l_subsystem) {
+      TurretSubsystem turret,
+      DriveSubsystem d_subsystem,
+      FireControlSubsystem f_subsystem,
+      LoaderSubsystem l_subsystem) {
     m_turret = turret;
     m_driveSubsystem = d_subsystem;
     m_fireSubsystem = f_subsystem;
     m_loaderSubsystem = l_subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(turret);
+    addRequirements(turret, d_subsystem, f_subsystem, l_subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -49,7 +52,7 @@ public class AutoAimCommand extends Command {
     // * 60 for RPM (60s each min)
     double shooterRPM = linearToRotationalVelocity(shotData.force, Constants.SHOOTER_RADIUS) * 60;
     m_turret.setTargetRadians(shotData.angle - m_turret.getTurretAngleRadians());
-    m_fireSubsystem.setShooterRPM(shooterRPM);
+    //    m_fireSubsystem.setShooterRPM(shooterRPM);
     m_loaderSubsystem.setLoaderSpeed(1);
   }
 
