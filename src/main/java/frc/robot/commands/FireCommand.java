@@ -42,6 +42,7 @@ public class FireCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println("Firing");
     // Math.abs to ensure positive velocity based on Y-axis
     double rawSpeed = Math.abs(m_speedSupplier.getAsDouble());
     // Apply a deadband to ignore slightly noisy inputs, then clamp between 0 and 1
