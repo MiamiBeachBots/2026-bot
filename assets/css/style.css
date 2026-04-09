@@ -1,0 +1,258 @@
+/* ============================================================
+   TEAM 2026 — ROBO-CORE THEME v3
+   Colors: Neon Pink #ff2d9c | Electric Cyan #00f0ff | Lab Grey #1a1a24
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --neon-pink:  #ff2d9c;
+  --neon-cyan:  #00f0ff;
+  --lab-grey:   #0d0d12;
+  --surface:    #16161e;
+  --surface-hi: #1f1f29;
+  --text:       #e0e0e6;
+  --text-dim:   #a0a0b0;
+  --text-code:  #00f0ff;
+  --border:     rgba(255, 255, 255, 0.08);
+  --border-hi:  rgba(0, 240, 255, 0.3);
+  --radius:     4px; /* Harder corners for engineering feel */
+  --font-head:  'Outfit', sans-serif;
+  --font-body:  'Space+Grotesk', sans-serif;
+  --font-mono:  'JetBrains Mono', monospace;
+  --max-width:  900px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; background: var(--lab-grey); }
+body {
+  font-family: var(--font-body);
+  background: 
+    radial-gradient(at 0% 0%, rgba(255, 45, 156, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(0, 240, 255, 0.05) 0px, transparent 50%),
+    var(--lab-grey);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Base Mesh Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ── HEADER / HERO ── */
+.site-header {
+  padding: 80px 24px 60px;
+  text-align: left;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  border-bottom: 2px solid var(--surface);
+}
+
+.header-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--surface-hi);
+  border: 1px solid var(--border-hi);
+  color: var(--neon-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+  box-shadow: 4px 4px 0px var(--neon-pink);
+}
+
+.header-title {
+  font-family: var(--font-head);
+  font-size: clamp(3rem, 10vw, 6rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+  margin-bottom: 24px;
+  color: #fff;
+}
+
+.header-subtitle {
+  font-size: 1.25rem;
+  font-weight: 300;
+  color: var(--text-dim);
+  max-width: 600px;
+}
+
+.header-subtitle em { color: var(--neon-pink); font-style: normal; font-weight: 500; }
+
+.header-actions { margin-top: 40px; display: flex; gap: 16px; }
+
+.btn {
+  padding: 12px 24px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--neon-cyan);
+  background: transparent;
+  color: var(--neon-cyan);
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  background: var(--neon-cyan);
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+}
+
+.btn-primary {
+  background: var(--neon-pink);
+  border-color: var(--neon-pink);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: transparent;
+  color: var(--neon-pink);
+  box-shadow: 0 0 20px rgba(255, 45, 156, 0.4);
+}
+
+/* ── NAVIGATION ── */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13, 13, 18, 0.95);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+
+.nav-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+}
+
+.nav-inner a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+}
+
+.nav-inner a:hover { color: var(--neon-cyan); }
+
+/* ── MAIN CONTENT ── */
+.main-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 60px 24px 100px;
+}
+
+h2 {
+  font-family: var(--font-head);
+  font-size: 2rem;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--neon-pink);
+  padding-bottom: 12px;
+  margin: 80px 0 32px;
+}
+
+h3 {
+  font-family: var(--font-head);
+  font-size: 1.25rem;
+  color: var(--neon-cyan);
+  margin-top: 48px;
+  margin-bottom: 16px;
+}
+
+p { margin-bottom: 24px; color: var(--text-dim); }
+
+a { color: var(--neon-cyan); text-decoration: none; border-bottom: 1px solid transparent; }
+a:hover { border-bottom-color: var(--neon-cyan); }
+
+/* ── CODE ── */
+code {
+  font-family: var(--font-mono);
+  background: var(--surface);
+  color: var(--neon-pink);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+pre {
+  background: #000;
+  padding: 24px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+  margin: 32px 0;
+  border-left: 4px solid var(--neon-cyan);
+}
+
+pre code { color: #fff; background: transparent; padding: 0; }
+
+/* ── TABLES ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 32px 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+th {
+  text-align: left;
+  padding: 12px;
+  background: var(--surface-hi);
+  color: var(--neon-cyan);
+  border: 1px solid var(--border);
+  text-transform: uppercase;
+}
+
+td {
+  padding: 12px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+tr:hover td { background: rgba(0, 240, 255, 0.02); color: #fff; }
+
+/* ── ALERTS ── */
+blockquote {
+  margin: 32px 0;
+  padding: 24px;
+  background: var(--surface);
+  border-left: 4px solid var(--neon-pink);
+}
+
+blockquote p { margin-bottom: 0; }
+
+/* ── FOOTER ── */
+.site-footer {
+  padding: 60px 24px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.footer-brand { color: var(--neon-pink); text-transform: uppercase; margin-bottom: 8px; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--lab-grey); }
+::-webkit-scrollbar-thumb { background: var(--surface-hi); }
+::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }

@@ -1,22 +1,24 @@
-# Project Cerberus Deployment Guide
+---
+layout: default
+title: "Deploy Guide | 2026-bot"
+---
 
-## 1. Automated Environment Bootstrap
-To ensure absolute parity across every developer workstation, automated setup scripts have been written for macOS, Windows, and Linux.
+# Deployment
 
-### Windows (Winget)
-Execute `setup.bat` as an Administrator. This will identically provision:
-- The WPILib Java 17 toolchain
-- Python 3.11 with `numpy` arrays
-- Rustup (`cargo` and `rustc`) via native Microsoft Winget protocols.
+## 1. Setup Your Machine
+We use setup scripts to keep everyone on the same page.
 
-### macOS & Linux (Bash)
-Execute `./setup.sh` in the repository root.
-- **macOS:** Installs core compilers via Homebrew.
-- **Linux / WPILib Pi System:** Installs equivalents via APT.
+- **Windows:** Run `setup.bat` as Admin.
+- **Mac / Linux:** Run `./setup.sh`.
 
-## 2. Deploying to the Robot
-Once the environment is successfully cloned and provisioned, execute the WPILib build cycle:
-1. Turn on the robot and connect to the local radio.
-2. Ensure you are deeply connected (check ping to `10.TE.AM.2`).
-3. Run the deployment wrapper: `./gradlew deploy` (or `gradlew.bat deploy` on Windows).
-4. Run `./thalia_tweaks_gui` natively via Rust (`cd thalia-tweaks && cargo run`) to synchronize tuning parameters in real-time.
+Both will install the 2026 WPILib toolchain, Python, and Rust.
+
+## 2. Deploying
+1. Turn on the robot and connect to the radio.
+2. Check your ping: `10.20.26.2`.
+3. Run `./gradlew deploy`.
+4. If it fails, check your laptop's firewall.
+
+---
+
+*If you're tuning, use `cd thalia-tweaks && cargo run` to launch the GUI.*

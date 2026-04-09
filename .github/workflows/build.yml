@@ -30,13 +30,30 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
+  setup_matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Matrix
+      id: set-matrix
+      run: |
+        chmod +x utilities/generate_test_matrix.py
+        python3 utilities/generate_test_matrix.py
+
   test:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, setup_matrix]
     permissions:
       contents: read
       checks: write
       pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        test_group: ${{ fromJson(needs.setup_matrix.outputs.matrix) }}
+    name: Test Group ${{ matrix.test_group.group }}
 
     steps:
     - uses: actions/checkout@v4
@@ -54,11 +71,12 @@ jobs:
       run: chmod +x gradlew
 
     - name: Run Tests
-      run: ./gradlew test
+      run: ./gradlew test ${{ matrix.test_group.args }}
 
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
+        check_name: "Unit Test Results (Group ${{ matrix.test_group.group }})"
         files: |
           build/test-results/**/*.xml

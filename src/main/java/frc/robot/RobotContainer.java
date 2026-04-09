@@ -10,10 +10,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.AimCommand;
-import frc.robot.commands.DefaultDrive;
-import frc.robot.commands.FireCommand;
-import frc.robot.commands.UnjamIntakeCommand;
+import frc.robot.commands.*;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -156,6 +153,7 @@ public class RobotContainer {
     m_flightstick
         .button(Constants.JOYSTICK_DEFAULT_BUTTON)
         .and(() -> !m_turretSubsystem.isUnwinding())
+        .and(() -> Math.abs(m_driveSubsystem.getSpeeds().vxMetersPerSecond) < 0.1)
         .whileTrue(
             new FireCommand(
                 m_fireSubsystem,
@@ -182,10 +180,28 @@ public class RobotContainer {
     // Intake Pivot Manual Control (Buttons 9 and 10)
     m_flightstick
         .button(9)
-        .whileTrue(new RunCommand(() -> m_intakeSubsystem.setPivotSpeed(-1), m_intakeSubsystem));
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  m_intakeSubsystem.setPivotPos(-0.2);
+                  System.out.println("BUTTON 9 PRESSED, PIVOT POS: -0.2");
+                },
+                m_intakeSubsystem));
     m_flightstick
         .button(10)
-        .whileTrue(new RunCommand(() -> m_intakeSubsystem.setPivotSpeed(1), m_intakeSubsystem));
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  m_intakeSubsystem.setPivotPos(0.2);
+                  System.out.println("BUTTON 10 PRESSED, PIVOT POS: 0.2");
+                },
+                m_intakeSubsystem));
+
+    m_flightstick
+        .button(11)
+        .whileTrue(
+            new AutoAimCommand(
+                m_turretSubsystem, m_driveSubsystem, m_fireSubsystem, m_loaderSubsystem));
 
     // Intake System operates on buttons now. Default command is removed to avoid slider conflicts.
 

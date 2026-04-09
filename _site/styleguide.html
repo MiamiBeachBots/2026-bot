@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Style Guide | 2026-bot</title>
+  <meta name="description" content="Miami Beach Bots (FRC Team 2026) — Aut viam inveniam aut faciam. Robot code for the 2025–2026 FIRST Robotics Competition season." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+
+  <!-- ╔══════════════ HEADER ══════════════╗ -->
+  <header class="site-header">
+    <div class="header-badge">AUTO_MODE_ACTIVE // FRC_2026</div>
+    <h1 class="header-title">Miami Beach Bots</h1>
+    <p class="header-subtitle">Building 2026-bot &mdash; <em>Aut viam inveniam aut faciam.</em></p>
+    
+    <div class="header-actions">
+      <a href="https://github.com/MiamiBeachBots/2026-bot" class="btn btn-primary" target="_blank" rel="noopener">
+        SOURCE_CODE
+      </a>
+      <a href="https://github.com/MiamiBeachBots/2026-bot/releases" class="btn" target="_blank" rel="noopener">RELEASES</a>
+    </div>
+  </header>
+
+  <!-- ╔══════════════ NAVIGATION ══════════════╗ -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="/">HUB</a>
+      <a href="/Contribguide">CONTRIBUTING</a>
+      <a href="/styleguide">STYLE_GUIDE</a>
+      <a href="/commitguide">COMMITS</a>
+      <a href="/Controls">CONTROLS</a>
+      <a href="/deploy-guide">DEPLOY</a>
+      <a href="/Assist">SUPPORT</a>
+    </div>
+  </nav>
+
+  <!-- ╔══════════════ MAIN CONTENT ══════════════╗ -->
+  <main class="main-content">
+    <article class="page-body">
+      <h1 id="style-guide">Style Guide</h1>
+<p><strong>Miami Beach Bots — FRC Team 2026</strong></p>
+
+<p>Clean code &gt; fast code. Matching the team style makes it easier for everyone to fix bugs during a competition.</p>
+
+<blockquote>
+  <p>[!IMPORTANT]
+If you’re using VS Code, use the WPILib formatter. It’ll handle most of this for you.</p>
+</blockquote>
+
+<h2 id="quick-reference">Quick Reference</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Rule</th>
+      <th style="text-align: left">Standard</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Indent</td>
+      <td style="text-align: left">2 spaces</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Brackets</td>
+      <td style="text-align: left">K&amp;R style (opening on same line)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Width</td>
+      <td style="text-align: left">Max 120 chars</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Classes</td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">PascalCase</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Methods</td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">camelCase</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Constants</td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">SCREAMING_SNAKE_CASE</code> in <code class="language-plaintext highlighter-rouge">Constants.java</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Javadocs</td>
+      <td style="text-align: left">All public classes/methods</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="1-naming">1. Naming</h2>
+
+<ul>
+  <li><strong>Classes:</strong> <code class="language-plaintext highlighter-rouge">SwerveDrive</code>, <code class="language-plaintext highlighter-rouge">RobotContainer</code></li>
+  <li><strong>Methods:</strong> <code class="language-plaintext highlighter-rouge">drive()</code>, <code class="language-plaintext highlighter-rouge">getPose()</code></li>
+  <li><strong>Variables:</strong> <code class="language-plaintext highlighter-rouge">sensorValue</code>, <code class="language-plaintext highlighter-rouge">targetSpeed</code></li>
+  <li><strong>Constants:</strong> <code class="language-plaintext highlighter-rouge">kMaxVelocity</code>, <code class="language-plaintext highlighter-rouge">kEncoderOffset</code> (nested in <code class="language-plaintext highlighter-rouge">Constants.java</code>)</li>
+</ul>
+
+<hr />
+
+<h2 id="2-brackets--spacing">2. Brackets &amp; Spacing</h2>
+
+<p>Always use brackets, even for one-liners. It prevents stupid bugs.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Good</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">targetAcquired</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">fire</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="c1">// Bad</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">targetAcquired</span><span class="o">)</span> <span class="n">fire</span><span class="o">();</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="3-comments">3. Comments</h2>
+
+<p>Explain <strong>why</strong> you’re doing something, not <strong>what</strong> you’re doing. The code should tell us what happened.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Stop motors before init to prevent brownouts</span>
+<span class="n">motor</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> 
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="4-best-practices">4. Best Practices</h2>
+
+<ul>
+  <li><strong>No Magic Numbers:</strong> If it’s a number, it belongs in <code class="language-plaintext highlighter-rouge">Constants.java</code>.</li>
+  <li><strong>Imports:</strong> No wildcards (<code class="language-plaintext highlighter-rouge">*</code>). Only import what you need.</li>
+  <li><strong>Dead Code:</strong> Delete it. Don’t comment it out “just in case.”</li>
+</ul>
+
+<hr />
+
+<p><em>Clean code is a team effort. If you see something messy, fix it.</em></p>
+
+    </article>
+  </main>
+
+  <!-- ╔══════════════ FOOTER ══════════════╗ -->
+  <footer class="site-footer">
+    <div class="footer-brand">Team 2026 // Miami Beach, FL</div>
+    <p>we put the pal in palintier. <a href="https://github.com/MiamiBeachBots/2026-bot" target="_blank" rel="noopener">GITHUB_REPO</a></p>
+  </footer>
+
+  <!-- ╔══════════════ MERMAID ══════════════╗ -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Find all Jekyll-style mermaid blocks (Kramdown puts class on code, not pre)
+      var codeBlocks = document.querySelectorAll('code.language-mermaid');
+      codeBlocks.forEach(function(codeElement) {
+        var container = document.createElement('div');
+        container.className = 'mermaid';
+        container.textContent = codeElement.innerText;
+        
+        // Kramdown structure: <pre><code class="language-mermaid">
+        var pre = codeElement.parentElement;
+        if (pre && pre.tagName === 'PRE') {
+          pre.parentNode.replaceChild(container, pre);
+        } else {
+          codeElement.parentNode.replaceChild(container, codeElement);
+        }
+      });
+
+      // Initialize mermaid with custom theme
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+          'background': '#0d0d12',
+          'primaryColor': '#16161e',
+          'primaryBorderColor': '#ff2d9c',
+          'primaryTextColor': '#e0e0e6',
+          'lineColor': '#00f0ff',
+          'secondaryColor': '#1f1f29',
+          'tertiaryColor': '#16161e'
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

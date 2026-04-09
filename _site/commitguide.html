@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commit Guide | 2026-bot</title>
+  <meta name="description" content="Miami Beach Bots (FRC Team 2026) — Aut viam inveniam aut faciam. Robot code for the 2025–2026 FIRST Robotics Competition season." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+
+  <!-- ╔══════════════ HEADER ══════════════╗ -->
+  <header class="site-header">
+    <div class="header-badge">AUTO_MODE_ACTIVE // FRC_2026</div>
+    <h1 class="header-title">Miami Beach Bots</h1>
+    <p class="header-subtitle">Building 2026-bot &mdash; <em>Aut viam inveniam aut faciam.</em></p>
+    
+    <div class="header-actions">
+      <a href="https://github.com/MiamiBeachBots/2026-bot" class="btn btn-primary" target="_blank" rel="noopener">
+        SOURCE_CODE
+      </a>
+      <a href="https://github.com/MiamiBeachBots/2026-bot/releases" class="btn" target="_blank" rel="noopener">RELEASES</a>
+    </div>
+  </header>
+
+  <!-- ╔══════════════ NAVIGATION ══════════════╗ -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="/">HUB</a>
+      <a href="/Contribguide">CONTRIBUTING</a>
+      <a href="/styleguide">STYLE_GUIDE</a>
+      <a href="/commitguide">COMMITS</a>
+      <a href="/Controls">CONTROLS</a>
+      <a href="/deploy-guide">DEPLOY</a>
+      <a href="/Assist">SUPPORT</a>
+    </div>
+  </nav>
+
+  <!-- ╔══════════════ MAIN CONTENT ══════════════╗ -->
+  <main class="main-content">
+    <article class="page-body">
+      <h1 id="git-commits">Git Commits</h1>
+
+<p>Keep them atomic. One change, one commit.</p>
+
+<h2 id="format">Format</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Tag] Short description
+</code></pre></div></div>
+
+<h3 id="tags">Tags</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>When to Use</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">[Feat]</code></td>
+      <td>New feature or capability</td>
+      <td><code class="language-plaintext highlighter-rouge">[Feat] Add field-oriented drive</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">[Fix]</code></td>
+      <td>Bug fix or correction</td>
+      <td><code class="language-plaintext highlighter-rouge">[Fix] Correct module 3 encoder offset</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">[Refactor]</code></td>
+      <td>Clean up code without changing how it works</td>
+      <td><code class="language-plaintext highlighter-rouge">[Refactor] Simplify PID controller logic</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">[Docs]</code></td>
+      <td>Documentation changes only</td>
+      <td><code class="language-plaintext highlighter-rouge">[Docs] Update wiring diagram</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">[Chore]</code></td>
+      <td>Build, dependency, or tool updates</td>
+      <td><code class="language-plaintext highlighter-rouge">[Chore] Update Phoenix6 to v25.0.0</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">[Test]</code></td>
+      <td>Adding or fixing tests</td>
+      <td><code class="language-plaintext highlighter-rouge">[Test] Add unit tests for shooter</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">[Perf]</code></td>
+      <td>Performance improvements</td>
+      <td><code class="language-plaintext highlighter-rouge">[Perf] Optimize path planning algorithm</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">[Style]</code></td>
+      <td>Formatting, whitespace, naming</td>
+      <td><code class="language-plaintext highlighter-rouge">[Style] Format DriveSubsystem.java</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">[Build]</code></td>
+      <td>Build system or dependency changes</td>
+      <td><code class="language-plaintext highlighter-rouge">[Build] Update Gradle to 8.5</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">[CI]</code></td>
+      <td>CI/CD configuration changes</td>
+      <td><code class="language-plaintext highlighter-rouge">[CI] Add automated testing workflow</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">[Revert]</code></td>
+      <td>Reverting a previous commit</td>
+      <td><code class="language-plaintext highlighter-rouge">[Revert] Undo turret control changes</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">[Config]</code></td>
+      <td>Robot or YAGSL configuration files</td>
+      <td><code class="language-plaintext highlighter-rouge">[Config] Update swerve module offsets</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="writing-the-description">Writing the Description</h2>
+
+<h3 id="use-imperative-mood">Use Imperative Mood</h3>
+
+<p>✅ <strong>Good:</strong></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">[Feat] Add vision processing</code></li>
+  <li><code class="language-plaintext highlighter-rouge">[Fix] Invert left drive motors</code></li>
+  <li><code class="language-plaintext highlighter-rouge">[Refactor] Extract constants to Constants.java</code></li>
+</ul>
+
+<p>❌ <strong>Bad:</strong></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">[Feat] Added vision processing</code> (past tense)</li>
+  <li><code class="language-plaintext highlighter-rouge">[Feat] Adds vision processing</code> (present tense)</li>
+  <li><code class="language-plaintext highlighter-rouge">[Fix] fixing motors</code> (gerund, lowercase)</li>
+</ul>
+
+<h3 id="be-specific-but-concise">Be Specific But Concise</h3>
+
+<ul>
+  <li><strong>Keep it under 50 characters</strong> when possible</li>
+  <li>Say <em>what</em> changed, not <em>how</em> you changed it</li>
+  <li>Name the component if it’s not obvious</li>
+</ul>
+
+<p>✅ <strong>Good:</strong></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">[Fix] Correct inverted shooter motor direction</code></li>
+  <li><code class="language-plaintext highlighter-rouge">[Feat] Implement auto-balance command</code></li>
+</ul>
+
+<p>❌ <strong>Bad:</strong></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">[Fix] Fix bug</code> (too vague)</li>
+  <li><code class="language-plaintext highlighter-rouge">[Feat] Add code that makes the robot auto-balance by using gyro pitch data to drive backwards or forwards</code> (way too long)</li>
+</ul>
+
+<h3 id="add-context-when-needed">Add Context When Needed</h3>
+
+<p>For complex changes, add a blank line after the subject and write a body paragraph:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Feat] Implement vision-based targeting
+
+Added AprilTag detection using PhotonVision. The turret now
+auto-aims at detected tags within 4 meters. Falls back to
+manual control if no tags are visible.
+</code></pre></div></div>
+
+<h2 id="examples">Examples</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Feat] Add swerve drive kinematics
+[Feat] Implement intake subsystem
+[Feat] Create 3-piece auto routine
+[Fix] Correct module angle offsets
+[Fix] Resolve brownout during arm extension
+[Refactor] Move magic numbers to Constants.java
+[Refactor] Consolidate PID tuning methods
+[Docs] Add CAN bus wiring diagram
+[Docs] Update build instructions for 2025 season
+[Chore] Update YAGSL to latest version
+[Chore] Add REVLib vendor dependency
+[Test] Add trajectory following unit tests
+[Perf] Reduce loop cycle time in autonomous
+[Style] Apply standard formatting to all subsystems
+[Build] Migrate to Gradle 8.5
+[CI] Add deploy-on-push workflow
+[Revert] Undo experimental arm kinematics
+[Config] Update Phoenix tuner CAN IDs
+</code></pre></div></div>
+
+<h2 id="atomic-commits">Atomic Commits</h2>
+
+<p>Do not bundle multiple unrelated changes into one commit. Each commit should represent one logical change.</p>
+
+<p>❌ <strong>Bad:</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Feat] Add shooter subsystem and fix drive motor inversions
+</code></pre></div></div>
+<p>This is two unrelated changes. Split them up.</p>
+
+<p>✅ <strong>Good:</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Fix] Invert left-side drive motors
+[Feat] Add shooter subsystem
+</code></pre></div></div>
+
+<p>If the shooter code has bugs, you can revert it without losing the motor fix.</p>
+
+<p>“History is a set of lies agreed upon just like this commit history” — Napoleon Bonaparte</p>
+
+    </article>
+  </main>
+
+  <!-- ╔══════════════ FOOTER ══════════════╗ -->
+  <footer class="site-footer">
+    <div class="footer-brand">Team 2026 // Miami Beach, FL</div>
+    <p>we put the pal in palintier. <a href="https://github.com/MiamiBeachBots/2026-bot" target="_blank" rel="noopener">GITHUB_REPO</a></p>
+  </footer>
+
+  <!-- ╔══════════════ MERMAID ══════════════╗ -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Find all Jekyll-style mermaid blocks (Kramdown puts class on code, not pre)
+      var codeBlocks = document.querySelectorAll('code.language-mermaid');
+      codeBlocks.forEach(function(codeElement) {
+        var container = document.createElement('div');
+        container.className = 'mermaid';
+        container.textContent = codeElement.innerText;
+        
+        // Kramdown structure: <pre><code class="language-mermaid">
+        var pre = codeElement.parentElement;
+        if (pre && pre.tagName === 'PRE') {
+          pre.parentNode.replaceChild(container, pre);
+        } else {
+          codeElement.parentNode.replaceChild(container, codeElement);
+        }
+      });
+
+      // Initialize mermaid with custom theme
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+          'background': '#0d0d12',
+          'primaryColor': '#16161e',
+          'primaryBorderColor': '#ff2d9c',
+          'primaryTextColor': '#e0e0e6',
+          'lineColor': '#00f0ff',
+          'secondaryColor': '#1f1f29',
+          'tertiaryColor': '#16161e'
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
