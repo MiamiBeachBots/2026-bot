@@ -26,7 +26,8 @@ public final class Constants {
     /// Intake Subsystem
     public static final int MOTOR_INTAKE_DRIVE_ID = 21;
     public static final int MOTOR_INTAKE_PIVOT_A_ID = 22;
-    public static final int MOTOR_INTAKE_PIVOT_B_ID = 23; // Change to actual PID (currently assuming it's going to be 23)
+    public static final int MOTOR_INTAKE_PIVOT_B_ID =
+        23; // Change to actual PID (currently assuming it's going to be 23)
 
     /// Loader Subsystem
     public static final int MOTOR_TURRET_CHANNEL_ID = 31;
