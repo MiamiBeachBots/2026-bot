@@ -41,8 +41,8 @@ public final class DriveConstants {
   public static double kvDriveVoltSecondsPerMeterAngular = 1.2;
   public static double kaDriveVoltSecondsSquaredPerMeterAngular = 0.2;
   // Max speed Constants
-  public static double kMaxOutputDrive = 0.8;
-  public static double kMinOutputDrive = -0.8;
+  public static double kMaxOutputDrive = 0.9;
+  public static double kMinOutputDrive = -0.9;
   // Feed Back / PID Constants
   public static double kPDriveVel = 0.0025097;
   public static double kIDriveVel = 0.0;

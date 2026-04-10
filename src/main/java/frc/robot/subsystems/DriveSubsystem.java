@@ -111,7 +111,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_driveFeedforwardKv =
         tuningTab.addDouble("Drive Feedforward kV", DriveConstants.kvDriveVoltSecondsPerMeter);
     m_driveFeedforwardKa =
-        tuningTab.addDouble("Drive Feedforward kA", DriveConstants.kaDriveVoltSecondsSquaredPerMeter);
+        tuningTab.addDouble(
+            "Drive Feedforward kA", DriveConstants.kaDriveVoltSecondsSquaredPerMeter);
 
     // Init gyro
     m_Gyro = new AHRS(NavXComType.kMXP_SPI);
