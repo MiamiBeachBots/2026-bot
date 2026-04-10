@@ -183,8 +183,8 @@ public class RobotContainer {
         .whileTrue(
             new RunCommand(
                 () -> {
-                  m_intakeSubsystem.setPivotPos(-1);
-                  System.out.println("BUTTON 9 PRESSED, PIVOT POS: -0.2");
+                  m_intakeSubsystem.addPivotPos(-Math.PI / 16);
+                  System.out.println("BUTTON 9 PRESSED, PIVOT POS: " + m_intakeSubsystem.pivotAngle);
                 },
                 m_intakeSubsystem));
     m_flightstick
@@ -192,8 +192,8 @@ public class RobotContainer {
         .whileTrue(
             new RunCommand(
                 () -> {
-                  m_intakeSubsystem.setPivotPos(1);
-                  System.out.println("BUTTON 10 PRESSED, PIVOT POS: 0.2");
+                  m_intakeSubsystem.addPivotPos(Math.PI / 16);
+                  System.out.println("BUTTON 10 PRESSED, PIVOT POS: " + m_intakeSubsystem.pivotAngle);
                 },
                 m_intakeSubsystem));
 

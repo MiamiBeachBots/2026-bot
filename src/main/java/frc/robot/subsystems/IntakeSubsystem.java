@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotTelemetry;
+import frc.robot.constants.Constants;
 import frc.robot.constants.SpeedConstants;
 import org.littletonrobotics.junction.Logger;
 
@@ -17,6 +18,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private static final double STALL_CURRENT_THRESHOLD = 30.0; // Amps
   private static final double STALL_TIME_THRESHOLD = 0.5; // Seconds to consider perfectly stalled
   private static final double REVERSE_TIME = 1.0; // Seconds to reverse after a stall
+
+  public double pivotAngle = 0.0;
 
   @SuppressWarnings("removal")
   public IntakeSubsystem(IntakeIO io) {
@@ -47,7 +50,12 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setPivotPos(double theta) {
-    m_io.setPivotTargetPos(theta);
+    m_io.setPivotTargetPos(theta * Constants.INTAKE_PIVOT_GEAR_RATIO);
+  }
+
+  public void addPivotPos(double theta) {
+    pivotAngle += theta;
+    m_io.setPivotTargetPos(pivotAngle * Constants.INTAKE_PIVOT_GEAR_RATIO);
   }
 
   /** Stops the intake. */
