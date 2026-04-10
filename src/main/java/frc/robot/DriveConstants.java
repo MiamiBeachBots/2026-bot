@@ -65,8 +65,10 @@ public final class DriveConstants {
     try {
       autoConfig = RobotConfig.fromGUISettings();
     } catch (Exception e) {
-      // Handle exception as needed
-      e.printStackTrace();
+      autoConfig = null;
+      System.err.println(
+          "WARNING: pathplanner/settings.json is missing required 2026 robot config fields."
+              + " AutoBuilder will stay disabled until the file is regenerated.");
     }
   }
 

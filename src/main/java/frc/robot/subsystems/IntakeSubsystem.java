@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotTelemetry;
 import frc.robot.constants.SpeedConstants;
+import frc.robot.utils.SubsystemTuningTab;
+import frc.robot.utils.SubsystemTuningTab.TunableDouble;
 import org.littletonrobotics.junction.Logger;
 
 /** Subsystem handling the intake/loading system. */
@@ -14,13 +16,19 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private boolean m_isStalled = false;
   private final Timer m_stallTimer = new Timer();
-  private static final double STALL_CURRENT_THRESHOLD = 30.0; // Amps
-  private static final double STALL_TIME_THRESHOLD = 0.5; // Seconds to consider perfectly stalled
-  private static final double REVERSE_TIME = 1.0; // Seconds to reverse after a stall
+  private final TunableDouble m_stallCurrentThreshold;
+  private final TunableDouble m_stallTimeThreshold;
+  private final TunableDouble m_reverseTime;
+  private final TunableDouble m_reverseVoltage;
 
   @SuppressWarnings("removal")
   public IntakeSubsystem(IntakeIO io) {
     m_io = io;
+    SubsystemTuningTab tuningTab = new SubsystemTuningTab("Intake");
+    m_stallCurrentThreshold = tuningTab.addDouble("Stall Current Threshold Amps", 30.0);
+    m_stallTimeThreshold = tuningTab.addDouble("Stall Time Threshold Sec", 0.5);
+    m_reverseTime = tuningTab.addDouble("Jam Reverse Time Sec", 1.0);
+    m_reverseVoltage = tuningTab.addDouble("Jam Reverse Voltage", -6.0);
     m_stallTimer.start();
   }
 
@@ -70,17 +78,17 @@ public class IntakeSubsystem extends SubsystemBase {
     RobotTelemetry.putNumber("Intake Pivot Angle", m_inputs.pivotPositionDeg);
 
     if (m_isStalled) {
-      if (m_stallTimer.hasElapsed(REVERSE_TIME)) {
+      if (m_stallTimer.hasElapsed(m_reverseTime.get())) {
         m_isStalled = false;
         stop();
       } else {
         // Reverse motor to clear jam
-        m_io.setRunVoltage(-6.0);
+        m_io.setRunVoltage(m_reverseVoltage.get());
       }
     } else {
       boolean active = Math.abs(m_inputs.runMotorAppliedVolts) > 1.2;
-      if (current > STALL_CURRENT_THRESHOLD && active) {
-        if (m_stallTimer.hasElapsed(STALL_TIME_THRESHOLD)) {
+      if (current > m_stallCurrentThreshold.get() && active) {
+        if (m_stallTimer.hasElapsed(m_stallTimeThreshold.get())) {
           // Jam detected!
           m_isStalled = true;
           m_stallTimer.restart();

@@ -24,7 +24,7 @@ public class SetTurretPositionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // The SparkMax built in PID will handle the movement automatically.
+    // The sparkMax built in PID will handle the movement automatically.
     // We optionally can continuously set the reference here just in case.
     m_turret.setTargetAngle(m_targetAngleDegrees);
   }

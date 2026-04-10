@@ -3,22 +3,29 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotTelemetry;
+import frc.robot.utils.SubsystemTuningTab;
+import frc.robot.utils.SubsystemTuningTab.TunableDouble;
 import org.littletonrobotics.junction.Logger;
 
 public class FireControlSubsystem extends SubsystemBase {
   private final FireControlIO m_io;
   private final FireControlIOInputsAutoLogged m_inputs = new FireControlIOInputsAutoLogged();
-  private final SimpleMotorFeedforward m_feedforward;
-  private final edu.wpi.first.math.filter.SlewRateLimiter m_spinDownLimiter;
+  private edu.wpi.first.math.filter.SlewRateLimiter m_spinDownLimiter;
+  private double m_spinDownRateRpmPerSecond = 5000.0;
+  private final TunableDouble m_feedforwardKs;
+  private final TunableDouble m_feedforwardKv;
+  private final TunableDouble m_feedforwardKa;
+  private final TunableDouble m_spinDownRateEntry;
 
   public FireControlSubsystem(FireControlIO io) {
     m_io = io;
+    SubsystemTuningTab tuningTab = new SubsystemTuningTab("Fire Control");
+    m_feedforwardKs = tuningTab.addDouble("Shooter Feedforward kS", 0.1);
+    m_feedforwardKv = tuningTab.addDouble("Shooter Feedforward kV", 0.12);
+    m_feedforwardKa = tuningTab.addDouble("Shooter Feedforward kA", 0.01);
+    m_spinDownRateEntry = tuningTab.addDouble("Spin Down Rate RPM Per Sec", 5000.0);
 
-    // Approximate feedforward constants for a NEO flywheel (Volts, V*s/rad, V*s^2/rad)
-    m_feedforward = new SimpleMotorFeedforward(0.1, 0.12, 0.01);
-
-    // Limits deceleration to 5000 RPM per second
-    m_spinDownLimiter = new edu.wpi.first.math.filter.SlewRateLimiter(5000.0);
+    m_spinDownLimiter = new edu.wpi.first.math.filter.SlewRateLimiter(m_spinDownRateRpmPerSecond);
   }
 
   /**
@@ -27,6 +34,7 @@ public class FireControlSubsystem extends SubsystemBase {
    * @param targetRPM The target RPM for the flywheel.
    */
   public void setShooterRPM(double targetRPM) {
+    syncTuning();
     if (targetRPM <= 0) {
       targetRPM = m_spinDownLimiter.calculate(0);
       if (targetRPM < 50) {
@@ -37,7 +45,10 @@ public class FireControlSubsystem extends SubsystemBase {
       m_spinDownLimiter.reset(targetRPM);
     }
     // Convert target RPM to target revs/second for Feedforward
-    double feedforwardVoltage = m_feedforward.calculate(targetRPM / 60.0);
+    double feedforwardVoltage =
+        new SimpleMotorFeedforward(
+                m_feedforwardKs.get(), m_feedforwardKv.get(), m_feedforwardKa.get())
+            .calculate(targetRPM / 60.0);
 
     m_io.setVelocity(targetRPM, feedforwardVoltage);
   }
@@ -60,8 +71,18 @@ public class FireControlSubsystem extends SubsystemBase {
     m_io.stop();
   }
 
+  private void syncTuning() {
+    double desiredSpinDownRate = m_spinDownRateEntry.get();
+    if (Math.abs(desiredSpinDownRate - m_spinDownRateRpmPerSecond) > 1e-9) {
+      m_spinDownRateRpmPerSecond = desiredSpinDownRate;
+      m_spinDownLimiter = new edu.wpi.first.math.filter.SlewRateLimiter(m_spinDownRateRpmPerSecond);
+      m_spinDownLimiter.reset(m_inputs.velocityRPM);
+    }
+  }
+
   @Override
   public void periodic() {
+    syncTuning();
     m_io.updateInputs(m_inputs);
     Logger.processInputs("FireControl", m_inputs);
 

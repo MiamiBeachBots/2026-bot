@@ -88,7 +88,7 @@ def print_dashboard(connected, table):
     print(f"NavX Gyroscope       : {get_boolean_color(navx_connected)}")
     
     print(f"\n{BOLD}--- Turret & Fire Control ---{RESET}")
-    print(f"Turret SparkMax      : {get_boolean_color(turret_ok)}  (Temp: {turret_temp:.1f}°C)")
+    print(f"Turret sparkMax      : {get_boolean_color(turret_ok)}  (Temp: {turret_temp:.1f}°C)")
     print(f"Fire NEO (Left)      : {get_boolean_color(fire_left_ok)}")
     print(f"Fire NEO (Right)     : {get_boolean_color(fire_right_ok)}")
 

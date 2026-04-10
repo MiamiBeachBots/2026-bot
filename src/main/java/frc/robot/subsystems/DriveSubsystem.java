@@ -39,6 +39,9 @@ import frc.robot.DriveConstants;
 import frc.robot.RobotTelemetry;
 import frc.robot.constants.Constants.CANConstants;
 import frc.robot.constants.SpeedConstants;
+import frc.robot.utils.SubsystemTuningTab;
+import frc.robot.utils.SubsystemTuningTab.TunableBoolean;
+import frc.robot.utils.SubsystemTuningTab.TunableDouble;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,16 +79,14 @@ public class DriveSubsystem extends SubsystemBase {
 
   // Pathing Constraints
   private boolean reduceOnTheFlySpeed;
+  private final TunableBoolean m_reduceOnTheFlySpeedEntry;
 
   // Current Idle mode
   private boolean isBrakeMode;
-
-  // motor feedforward
-  SimpleMotorFeedforward m_driveFeedForward =
-      new SimpleMotorFeedforward(
-          DriveConstants.ksDriveVolts,
-          DriveConstants.kvDriveVoltSecondsPerMeter,
-          DriveConstants.kaDriveVoltSecondsSquaredPerMeter);
+  private final TunableBoolean m_brakeModeEntry;
+  private final TunableDouble m_driveFeedforwardKs;
+  private final TunableDouble m_driveFeedforwardKv;
+  private final TunableDouble m_driveFeedforwardKa;
 
   // ex:
   // https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Read%20Encoder%20Values/src/main/java/frc/robot/Robot.java
@@ -103,6 +104,15 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    SubsystemTuningTab tuningTab = new SubsystemTuningTab("Drive");
+    m_reduceOnTheFlySpeedEntry = tuningTab.addBoolean("Reduce Path Speed", false);
+    m_brakeModeEntry = tuningTab.addBoolean("Brake Mode", true);
+    m_driveFeedforwardKs = tuningTab.addDouble("Drive Feedforward kS", DriveConstants.ksDriveVolts);
+    m_driveFeedforwardKv =
+        tuningTab.addDouble("Drive Feedforward kV", DriveConstants.kvDriveVoltSecondsPerMeter);
+    m_driveFeedforwardKa =
+        tuningTab.addDouble("Drive Feedforward kA", DriveConstants.kaDriveVoltSecondsSquaredPerMeter);
+
     // Init gyro
     m_Gyro = new AHRS(NavXComType.kMXP_SPI);
     // init motors
@@ -228,6 +238,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Set on the fly pathing constraints
     reduceOnTheFlySpeed = false;
+    m_reduceOnTheFlySpeedEntry.set(false);
+    m_brakeModeEntry.set(true);
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -390,6 +402,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void setReducedSpeed(boolean reduceOnTheFlySpeed) {
     this.reduceOnTheFlySpeed = reduceOnTheFlySpeed;
+    m_reduceOnTheFlySpeedEntry.set(reduceOnTheFlySpeed);
   }
 
   /**
@@ -430,12 +443,18 @@ public class DriveSubsystem extends SubsystemBase {
         leftSpeed,
         SparkBase.ControlType.kVelocity,
         DriveConstants.kDrivetrainVelocityPIDSlot,
-        m_driveFeedForward.calculate(leftSpeed));
+        calculateDriveFeedforward(leftSpeed));
     m_backRightPIDController.setSetpoint(
         rightSpeed,
         SparkBase.ControlType.kVelocity,
         DriveConstants.kDrivetrainVelocityPIDSlot,
-        m_driveFeedForward.calculate(rightSpeed));
+        calculateDriveFeedforward(rightSpeed));
+  }
+
+  private double calculateDriveFeedforward(double speedMetersPerSecond) {
+    return new SimpleMotorFeedforward(
+            m_driveFeedforwardKs.get(), m_driveFeedforwardKv.get(), m_driveFeedforwardKa.get())
+        .calculate(speedMetersPerSecond);
   }
 
   // in meters, use averageDistance() to get average distance traveled, as an offset to set this
@@ -485,6 +504,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.configure(
         m_frontRightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     isBrakeMode = true;
+    m_brakeModeEntry.set(true);
   }
 
   public void SetCoastmode() {
@@ -502,6 +522,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.configure(
         m_frontRightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     isBrakeMode = false;
+    m_brakeModeEntry.set(false);
   }
 
   public void SwitchBrakemode() {
@@ -548,6 +569,18 @@ public class DriveSubsystem extends SubsystemBase {
     m_Gyro.reset();
   }
 
+  private void syncTuning() {
+    reduceOnTheFlySpeed = m_reduceOnTheFlySpeedEntry.get();
+    boolean desiredBrakeMode = m_brakeModeEntry.get();
+    if (desiredBrakeMode != isBrakeMode) {
+      if (desiredBrakeMode) {
+        SetBrakemode();
+      } else {
+        SetCoastmode();
+      }
+    }
+  }
+
   public double getVelocityLeft() {
     return m_encoderBackLeft.getVelocity();
   }
@@ -566,6 +599,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    syncTuning();
     if (gyroZeroPending && !m_Gyro.isCalibrating()) {
       resetGyro();
       gyroZeroPending = false;

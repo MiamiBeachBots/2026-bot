@@ -5,19 +5,31 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotTelemetry;
 import frc.robot.constants.Constants;
 import frc.robot.constants.SpeedConstants;
+import frc.robot.utils.SubsystemTuningTab;
+import frc.robot.utils.SubsystemTuningTab.TunableDouble;
 import org.littletonrobotics.junction.Logger;
 
 public class TurretSubsystem extends SubsystemBase {
   private final TurretIO m_io;
   private final TurretIOInputsAutoLogged m_inputs = new TurretIOInputsAutoLogged();
-  private final SlewRateLimiter m_speedLimiter;
+  private SlewRateLimiter m_speedLimiter;
+  private double m_manualSlewRateLimit = 2.0;
+  private final TunableDouble m_manualSlewRateLimitEntry;
+  private final TunableDouble m_manualDeadbandEntry;
+  private final TunableDouble m_unwindTriggerAngleEntry;
+  private final TunableDouble m_unwindResetToleranceEntry;
 
   private boolean m_isUnwinding = false;
 
   public TurretSubsystem(TurretIO io) {
     m_io = io;
+    SubsystemTuningTab tuningTab = new SubsystemTuningTab("Turret");
+    m_manualSlewRateLimitEntry = tuningTab.addDouble("Manual Slew Rate", 2.0);
+    m_manualDeadbandEntry = tuningTab.addDouble("Manual Deadband", 0.1);
+    m_unwindTriggerAngleEntry = tuningTab.addDouble("Unwind Trigger Angle Deg", 360.0);
+    m_unwindResetToleranceEntry = tuningTab.addDouble("Unwind Reset Tolerance Deg", 5.0);
     // Software Slew Rate Limiter for manual inputs (acceleration cap: full speed in 0.5s)
-    m_speedLimiter = new SlewRateLimiter(2.0);
+    m_speedLimiter = new SlewRateLimiter(m_manualSlewRateLimit);
   }
 
   /**
@@ -26,9 +38,10 @@ public class TurretSubsystem extends SubsystemBase {
    * @param speed The target speed (-1 to 1) (bool).
    */
   public void setTurretSpeed(double speed) {
+    syncTuning();
     if (m_isUnwinding) return;
     // Add simple range just in case controller has drift
-    if (Math.abs(speed) < 0.1) {
+    if (Math.abs(speed) < m_manualDeadbandEntry.get()) {
       speed = 0;
     }
     double adjustedSpeed =
@@ -105,15 +118,25 @@ public class TurretSubsystem extends SubsystemBase {
     return m_isUnwinding;
   }
 
+  private void syncTuning() {
+    double desiredSlewRate = m_manualSlewRateLimitEntry.get();
+    if (Math.abs(desiredSlewRate - m_manualSlewRateLimit) > 1e-9) {
+      m_manualSlewRateLimit = desiredSlewRate;
+      m_speedLimiter = new SlewRateLimiter(m_manualSlewRateLimit);
+      m_speedLimiter.reset(m_inputs.appliedVolts / 12.0);
+    }
+  }
+
   @Override
   public void periodic() {
+    syncTuning();
     m_io.updateInputs(m_inputs);
     Logger.processInputs("Turret", m_inputs);
 
     double currentAngle = getTurretAngleDegrees();
 
     // Check if we exceeded bounds and enter unwinding state
-    if (Math.abs(currentAngle) >= 360.0 && !m_isUnwinding) {
+    if (Math.abs(currentAngle) >= m_unwindTriggerAngleEntry.get() && !m_isUnwinding) {
       m_isUnwinding = true;
     }
 
@@ -124,7 +147,7 @@ public class TurretSubsystem extends SubsystemBase {
 
       // Check if we're back near 0 center
       // Narrowed tolerance to 5.0 degrees for better precision before returning control
-      if (Math.abs(currentAngle) <= 5.0) {
+      if (Math.abs(currentAngle) <= m_unwindResetToleranceEntry.get()) {
         m_isUnwinding = false;
         // Reset our rate limiter so the driver can cleanly regain control
         m_speedLimiter.reset(0);

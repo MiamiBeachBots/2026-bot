@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotTelemetry;
 import frc.robot.constants.CameraConstants;
+import frc.robot.utils.SubsystemTuningTab;
+import frc.robot.utils.SubsystemTuningTab.TunableBoolean;
+import frc.robot.utils.SubsystemTuningTab.TunableDouble;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -60,11 +63,15 @@ public class CameraSubsystem extends SubsystemBase {
   private PhotonCameraSim targetingCamera1Sim;
 
   private boolean multiModeUsed = false;
-  private static final boolean cameraPoseEnabled = false;
+  private final TunableBoolean m_cameraPoseEnabled;
+  private final TunableDouble m_poseAmbiguityCutoff;
 
   /** Creates a new CameraSubsystem. */
   public CameraSubsystem(DriveSubsystem d_subsystem) {
     m_driveSubsystem = d_subsystem;
+    SubsystemTuningTab tuningTab = new SubsystemTuningTab("Camera");
+    m_cameraPoseEnabled = tuningTab.addBoolean("Enable Pose Updates", false);
+    m_poseAmbiguityCutoff = tuningTab.addDouble("Pose Ambiguity Cutoff", 0.025);
     aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
     poseCamera1 = new PhotonCamera(CameraConstants.POSE_CAMERA1.NAME);
@@ -148,7 +155,8 @@ public class CameraSubsystem extends SubsystemBase {
   private void updateGlobalPose(
       PhotonCamera camera, PhotonPoseEstimator poseEstimator, String cameraName) {
     for (PhotonPipelineResult result : camera.getAllUnreadResults()) {
-      if (result.hasTargets() && result.getBestTarget().getPoseAmbiguity() < 0.025) {
+      if (result.hasTargets()
+          && result.getBestTarget().getPoseAmbiguity() < m_poseAmbiguityCutoff.get()) {
         Optional<EstimatedRobotPose> curPose = poseEstimator.estimateCoprocMultiTagPose(result);
         if (curPose.isEmpty())
           curPose =
@@ -168,7 +176,7 @@ public class CameraSubsystem extends SubsystemBase {
                 estimatedPose.toPose2d(),
                 curPose.get().timestampSeconds,
                 cameraName,
-                cameraPoseEnabled);
+                m_cameraPoseEnabled.get());
 
             if (curPose.get().strategy == PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR) {
               multiModeUsed = true;
@@ -195,6 +203,7 @@ public class CameraSubsystem extends SubsystemBase {
     RobotTelemetry.putBoolean("poseCamera1Connected", poseCamera1.isConnected());
     RobotTelemetry.putBoolean("poseCamera2Connected", poseCamera2.isConnected());
     RobotTelemetry.putBoolean("TargetingCamera1Connnected", targetingCamera1.isConnected());
+    RobotTelemetry.putBoolean("Camera Pose Updates Enabled", m_cameraPoseEnabled.get());
   }
 
   private void updateState() {}

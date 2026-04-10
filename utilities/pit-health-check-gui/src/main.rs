@@ -125,7 +125,7 @@ impl eframe::App for PitHealthApp {
                 ui.label(egui::RichText::new("Turret & Fire Control").strong());
                 ui.separator();
                 
-                Self::check_ui(ui, "Turret SparkMax", data.turret_ok);
+                Self::check_ui(ui, "Turret sparkMax", data.turret_ok);
                 ui.horizontal(|ui| {
                     ui.label("  ↳ Temperature:");
                     ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
