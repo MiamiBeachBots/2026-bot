@@ -165,9 +165,9 @@ public class RobotContainer {
                 },
                 m_flightstick.button(Constants.JOYSTICK_DEFAULT_BUTTON)));
 
-    // Intake on Flight Stick (Button 6) - Toggle
+    // Intake on Flight Stick (Button 4) - Toggle
     m_flightstick
-        .button(6)
+        .button(4)
         .toggleOnTrue(new RunCommand(() -> m_intakeSubsystem.setRunSpeed(1.0), m_intakeSubsystem));
 
     // Loader 1 & 2 on Flight Stick (Button 7) - Toggle
@@ -183,7 +183,7 @@ public class RobotContainer {
         .whileTrue(
             new RunCommand(
                 () -> {
-                  m_intakeSubsystem.setPivotPos(-0.2);
+                  m_intakeSubsystem.setPivotPos(-1);
                   System.out.println("BUTTON 9 PRESSED, PIVOT POS: -0.2");
                 },
                 m_intakeSubsystem));
@@ -192,7 +192,7 @@ public class RobotContainer {
         .whileTrue(
             new RunCommand(
                 () -> {
-                  m_intakeSubsystem.setPivotPos(0.2);
+                  m_intakeSubsystem.setPivotPos(1);
                   System.out.println("BUTTON 10 PRESSED, PIVOT POS: 0.2");
                 },
                 m_intakeSubsystem));
@@ -259,13 +259,11 @@ public class RobotContainer {
   }
 
   public double getControllerRightY() {
-    double y = -m_controller1.getRightY();
-    return y;
+    return -m_controller1.getRightY();
   }
 
   public double getControllerLeftY() {
-    double y = -m_controller1.getLeftY();
-    return y;
+    return -m_controller1.getLeftY();
   }
 
   public double GetFlightStickY() {

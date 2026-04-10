@@ -1,12 +1,13 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import frc.robot.DriveConstants;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.CANConstants;
 
@@ -17,7 +18,6 @@ public class IntakeIOSparkMax implements IntakeIO {
   public final SparkClosedLoopController m_intakePivotControllerA;
   public final SparkClosedLoopController m_intakePivotControllerB;
 
-  @SuppressWarnings("removal")
   public IntakeIOSparkMax() {
     m_intakeMotorRun = new SparkMax(CANConstants.MOTOR_INTAKE_DRIVE_ID, MotorType.kBrushless);
     m_intakeMotorPivotA = new SparkMax(CANConstants.MOTOR_INTAKE_PIVOT_A_ID, MotorType.kBrushless);
@@ -28,14 +28,17 @@ public class IntakeIOSparkMax implements IntakeIO {
     config.openLoopRampRate(0.25);
     config.smartCurrentLimit(40);
 
+    config.closedLoop.pid(0.0, 0.0, 0.0);
+    config.closedLoop.outputRange(-1.0, 1.0);
+
     m_intakeMotorRun.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     SparkMaxConfig pivotConfig = new SparkMaxConfig();
     pivotConfig.idleMode(SparkMaxConfig.IdleMode.kBrake);
-    pivotConfig.smartCurrentLimit(30);
+    pivotConfig.smartCurrentLimit(40);
     // Configure encoder to output in degrees based on the gear ratio
-    pivotConfig.encoder.positionConversionFactor(360.0 / Constants.INTAKE_PIVOT_GEAR_RATIO);
+    pivotConfig.encoder.positionConversionFactor(Constants.kIntakePositionConversionRatio);
 
     m_intakeMotorPivotA.configure(
         pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -79,8 +82,8 @@ public class IntakeIOSparkMax implements IntakeIO {
 
   @Override
   public void setPivotTargetPos(double theta) {
-    m_intakePivotControllerA.setSetpoint(theta, SparkBase.ControlType.kPosition);
-    m_intakePivotControllerB.setSetpoint(theta, SparkBase.ControlType.kPosition);
+    m_intakePivotControllerA.setSetpoint(
+        theta, SparkBase.ControlType.kPosition, DriveConstants.kDrivetrainPositionPIDSlot);
   }
 
   @Override

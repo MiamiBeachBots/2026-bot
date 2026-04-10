@@ -51,7 +51,7 @@ public class AutoAimCommand extends Command {
     ShotData shotData = calculateShot(Constants.HUB_POSITION, Constants.HUB_HEIGHT);
     // * 60 for RPM (60s each min)
     double shooterRPM = linearToRotationalVelocity(shotData.force, Constants.SHOOTER_RADIUS) * 60;
-    m_turret.setTargetAngle(shotData.angle - m_turret.getTurretAngleRadians());
+    m_turret.setTargetRadians(shotData.angle - m_turret.getTurretAngleRadians());
     m_fireSubsystem.setShooterRPM(shooterRPM);
     m_loaderSubsystem.setLoaderSpeed(1);
   }

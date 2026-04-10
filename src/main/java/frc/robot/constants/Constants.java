@@ -56,7 +56,7 @@ public final class Constants {
   }
 
   // Max speeds
-  public static final double MAX_SPEED = 0.75;
+  public static final double MAX_SPEED = 1.0;
 
   // USB Devices
   public static final int CONTROLLER_USB_INDEX = 0;
@@ -73,6 +73,12 @@ public final class Constants {
 
   // Intake Subsystem
   public static final double INTAKE_PIVOT_GEAR_RATIO = 16.0;
+
+  // basically converted from rotations to to radians to then meters using the wheel diameter.
+  // the diameter is already *2 so we don't need to multiply by 2 again.
+  public static final double kIntakePositionConversionRatio =
+      (Math.PI * 2) / INTAKE_PIVOT_GEAR_RATIO;
+  public static final double kIntakeVelocityConversionRatio = kIntakePositionConversionRatio / 60;
 
   // AutoAiming constants
   public static final double AUTOAIM_GRAVITY = 9.81;
