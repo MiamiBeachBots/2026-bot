@@ -55,7 +55,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void addPivotPos(double theta) {
     pivotAngle += theta;
-    m_io.setPivotTargetPos(pivotAngle * Constants.INTAKE_PIVOT_GEAR_RATIO);
+    m_io.setPivotTargetPos(pivotAngle / Constants.INTAKE_PIVOT_GEAR_RATIO);
   }
 
   /** Stops the intake. */
