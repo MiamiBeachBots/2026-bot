@@ -8,9 +8,9 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.constants.Constants.CANConstants;
 
 public class LoaderIOSparkMax implements LoaderIO {
-  private final SparkMax m_loaderMotor1;
-  private final SparkMax m_loaderMotor2;
-  private final SparkMax m_loaderMotor3;
+  private SparkMax m_loaderMotor1;
+  private SparkMax m_loaderMotor2;
+  private SparkMax m_loaderMotor3;
 
   @SuppressWarnings("removal")
   public LoaderIOSparkMax() {

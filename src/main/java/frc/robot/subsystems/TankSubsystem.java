@@ -16,10 +16,10 @@ public class TankSubsystem extends SubsystemBase {
 
   private final Field2d m_field = new Field2d();
 
-  private final SparkMax leftFront = new SparkMax(1, MotorType.kBrushless);
-  private final SparkMax leftRear = new SparkMax(2, MotorType.kBrushless);
-  private final SparkMax rightFront = new SparkMax(3, MotorType.kBrushless);
-  private final SparkMax rightRear = new SparkMax(4, MotorType.kBrushless);
+  private SparkMax leftFront = new SparkMax(1, MotorType.kBrushless);
+  private SparkMax leftRear = new SparkMax(2, MotorType.kBrushless);
+  private SparkMax rightFront = new SparkMax(3, MotorType.kBrushless);
+  private SparkMax rightRear = new SparkMax(4, MotorType.kBrushless);
 
   private final DifferentialDrive drive;
 

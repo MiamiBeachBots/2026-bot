@@ -53,7 +53,7 @@ public class FireCommand extends Command {
 
     // Only feed if target RPM is > 0 and the flywheels have reached the target
     if (targetRPM > 100 && m_fireSubsystem.isAtRPM(targetRPM, 150.0)) {
-      m_loaderSubsystem.setLoaderSpeed(1.0); // Full speed feed
+      m_loaderSubsystem.setLoaderSpeed(0.75); // Full speed feed
     } else {
       m_loaderSubsystem.stop();
     }

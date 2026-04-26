@@ -69,7 +69,7 @@ public class CameraSubsystem extends SubsystemBase {
 
     poseCamera1 = new PhotonCamera(CameraConstants.POSE_CAMERA1.NAME);
     poseCamera2 = new PhotonCamera(CameraConstants.POSE_CAMERA2.NAME);
-    targetingCamera1 = new PhotonCamera(CameraConstants.TARGETING_CAMERA1.NAME);
+    targetingCamera1 = new PhotonCamera(CameraConstants.TARGETING_CAMERA.NAME);
 
     poseCamera1PoseEstimator =
         new PhotonPoseEstimator(aprilTagFieldLayout, CameraConstants.POSE_CAMERA1.LOCATION);
@@ -115,7 +115,7 @@ public class CameraSubsystem extends SubsystemBase {
     // Set Camera locations and add them to the vision simulation
     poseVisionSim.addCamera(poseCamera1Sim, CameraConstants.POSE_CAMERA1.LOCATION);
     poseVisionSim.addCamera(poseCamera2Sim, CameraConstants.POSE_CAMERA2.LOCATION);
-    targetingVisionSim.addCamera(targetingCamera1Sim, CameraConstants.TARGETING_CAMERA1.LOCATION);
+    targetingVisionSim.addCamera(targetingCamera1Sim, CameraConstants.TARGETING_CAMERA.LOCATION);
   }
 
   /**

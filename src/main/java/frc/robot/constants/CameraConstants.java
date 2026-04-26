@@ -11,7 +11,7 @@ public class CameraConstants {
     public final Transform3d LOCATION;
 
     /**
-     * @param Name Name of the camera
+     * @param name Name of the camera
      * @param X_Location X Location in meters
      * @param Y_Location Y Location in meters
      * @param Z_Location Z Location in meters
@@ -55,16 +55,13 @@ public class CameraConstants {
           Units.degreesToRadians(0.0), // Pitch
           Units.degreesToRadians(0.0)); // Yaw
 
-  public static final CameraState TARGETING_CAMERA1 =
+  public static final CameraState TARGETING_CAMERA =
       new CameraState(
-          "Targeting1",
+          "Targeting",
           Units.inchesToMeters(-1), // X Locatio: front/back
           Units.inchesToMeters(-1), // Y Location: left/right
           Units.inchesToMeters(12.5), // Z Location: up/down
           Units.degreesToRadians(0),
           Units.degreesToRadians(0.0),
           Units.degreesToRadians(0));
-
-  public static final int HUB_FIDUCIUAL_ID =
-      7; // Change 7 for actual hub april tag id, change to range later
 }

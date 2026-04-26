@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathConstraints;
 import com.revrobotics.spark.ClosedLoopSlot;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -58,18 +57,6 @@ public final class DriveConstants {
   public static final DifferentialDriveKinematics kDriveKinematics =
       new DifferentialDriveKinematics(kTrackwidthMeters);
 
-  // Default path config from path planning app
-  public static RobotConfig autoConfig;
-
-  static {
-    try {
-      autoConfig = RobotConfig.fromGUISettings();
-    } catch (Exception e) {
-      // Handle exception as needed
-      e.printStackTrace();
-    }
-  }
-
   // Motor Controller PID Slots
   public static final ClosedLoopSlot kDrivetrainVelocityPIDSlot = ClosedLoopSlot.kSlot0;
   public static final ClosedLoopSlot kDrivetrainPositionPIDSlot = ClosedLoopSlot.kSlot1;
@@ -92,6 +79,7 @@ public final class DriveConstants {
 
   public final class OnTheFlyReduced {
     // On the fly path planning constants
+
     public static double kMaxVelocity = 1; // m/s
     public static double kMaxAcceleration = 0.5; // m/s^2
     public static double kMaxAngularVelocity = 360; // deg/s

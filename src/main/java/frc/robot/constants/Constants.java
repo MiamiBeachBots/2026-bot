@@ -56,7 +56,7 @@ public final class Constants {
   }
 
   // Max speeds
-  public static final double MAX_SPEED = 1.0;
+  public static final double MAX_SPEED = 0.85;
 
   // USB Devices
   public static final int CONTROLLER_USB_INDEX = 0;

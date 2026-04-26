@@ -28,7 +28,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -47,10 +46,10 @@ public class DriveSubsystem extends SubsystemBase {
   // Gyro
   private final AHRS m_Gyro;
 
-  private final SparkMax m_backLeft; // Main / Master Motor for Left
-  private final SparkMax m_frontLeft; // Slave Motor for Left (Follow Master)
-  private final SparkMax m_backRight; // Main / Master Motor for Right
-  private final SparkMax m_frontRight; // Slave Motor for Right (Follow Master)
+  private SparkMax m_backLeft; // Main / Master Motor for Left
+  private SparkMax m_frontLeft; // Slave Motor for Left (Follow Master)
+  private SparkMax m_backRight; // Main / Master Motor for Right
+  private SparkMax m_frontRight; // Slave Motor for Right (Follow Master)
 
   // Drive Simulation wrapper
   private DriveSim m_driveSim;
@@ -71,8 +70,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final RelativeEncoder m_encoderFrontRight;
 
   // Motor PID Controllers
-  private final SparkClosedLoopController m_backLeftPIDController;
-  private final SparkClosedLoopController m_backRightPIDController;
+  private SparkClosedLoopController m_backLeftPIDController;
+  private SparkClosedLoopController m_backRightPIDController;
 
   // Pathing Constraints
   private boolean reduceOnTheFlySpeed;
@@ -174,32 +173,6 @@ public class DriveSubsystem extends SubsystemBase {
             new Pose2d());
 
     final PPLTVController m_driveController = new PPLTVController(0.02);
-    // Setup Base AutoBuilder (Autonomous)
-    if (DriveConstants.autoConfig != null) {
-      AutoBuilder.configure(
-          this::getPose, // Pose2d supplier
-          this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
-          this::getSpeeds, // A method for getting the chassis' current speed and direction
-          this::setSpeeds, // A consumer that takes the desired chassis speed and direction
-          m_driveController, // PPLTVController is the built in path following controller for
-          // differential drive trains
-          DriveConstants.autoConfig, // AutoConfig
-          () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-          },
-          this // Reference to this subsystem to set requirements
-          );
-    } else {
-      System.err.println(
-          "WARNING: PathPlanner autoConfig is null! AutoBuilder was NOT configured.");
-    }
 
     RobotTelemetry.putData("Field", field); // add field to dashboard
 

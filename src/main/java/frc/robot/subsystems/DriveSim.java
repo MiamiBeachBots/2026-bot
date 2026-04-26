@@ -15,14 +15,14 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.DriveConstants;
 
 public class DriveSim {
-  private final SimDouble SimGyroAngleHandler;
-  private final DCMotor m_leftGearbox;
-  private final DCMotor m_rightGearbox;
-  private final SparkMaxSim m_leftSim;
-  private final SparkMaxSim m_rightSim;
-  private final DifferentialDrivetrainSim m_driveTrainSim;
-  private final SparkRelativeEncoderSim m_leftEncoderSim;
-  private final SparkRelativeEncoderSim m_rightEncoderSim;
+  private SimDouble SimGyroAngleHandler;
+  private DCMotor m_leftGearbox;
+  private DCMotor m_rightGearbox;
+  private SparkMaxSim m_leftSim;
+  private SparkMaxSim m_rightSim;
+  private DifferentialDrivetrainSim m_driveTrainSim;
+  private SparkRelativeEncoderSim m_leftEncoderSim;
+  private SparkRelativeEncoderSim m_rightEncoderSim;
 
   public DriveSim(SparkMax leftMotor, SparkMax rightMotor) {
     m_leftGearbox = DCMotor.getNEO(2);

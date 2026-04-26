@@ -1,7 +1,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -75,9 +74,9 @@ public class RobotContainer {
   /**
    * Constructs a new RobotContainer.
    *
-   * <p>This constructor initializes the robot's subsystems and configures controller bindings by
-   * calling {@link #configureBindings()}. This setup ensures that the drivebase subsystem and
-   * controller commands are properly initialized before the robot starts operating.
+   * <p>This constructor initializes the robot's subsystems and configures controller bindings. This
+   * setup ensures that the drivebase subsystem and controller commands are properly initialized
+   * before the robot starts operating.
    */
   public RobotContainer() {
 
@@ -293,8 +292,9 @@ public class RobotContainer {
    * @return the autonomous command to execute
    */
   public Command getAutonomousCommand() {
-    String autoName = autoDashboardChooser.get();
-    return new PathPlannerAuto(autoName);
+    //    String autoName = autoDashboardChooser.get();
+    //    return new PathPlannerAuto(autoName);
+    return null;
   }
 
   public void periodic() {

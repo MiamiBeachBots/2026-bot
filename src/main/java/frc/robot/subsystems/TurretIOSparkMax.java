@@ -10,8 +10,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.constants.Constants.CANConstants;
 
 public class TurretIOSparkMax implements TurretIO {
-  private final SparkMax m_turretMotor;
-  private final SparkClosedLoopController m_pidController;
+  private SparkMax m_turretMotor;
+  private SparkClosedLoopController m_pidController;
 
   @SuppressWarnings("removal")
   public TurretIOSparkMax() {

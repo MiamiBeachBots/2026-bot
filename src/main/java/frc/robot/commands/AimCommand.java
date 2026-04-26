@@ -43,7 +43,7 @@ public class AimCommand extends SequentialCommandGroup {
     // Add requirements for the entire sequence (it will occupy the drivetrain)
     addRequirements(d_subsystem, c_subsystem);
 
-    Transform3d camOffset = CameraConstants.TARGETING_CAMERA1.LOCATION;
+    Transform3d camOffset = CameraConstants.TARGETING_CAMERA.LOCATION;
     // this offset takes the center of robot and tells it to move back so that we dont just run over
     // the target
     Transform3d targetingOffset = camOffset.plus(new Transform3d());

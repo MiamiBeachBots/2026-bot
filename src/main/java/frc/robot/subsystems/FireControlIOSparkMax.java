@@ -10,8 +10,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.constants.Constants.CANConstants;
 
 public class FireControlIOSparkMax implements FireControlIO {
-  private final SparkMax m_fireMotor;
-  private final SparkClosedLoopController m_pidController;
+  private SparkMax m_fireMotor;
+  private SparkClosedLoopController m_pidController;
 
   @SuppressWarnings("removal")
   public FireControlIOSparkMax() {

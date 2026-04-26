@@ -1,22 +1,26 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.DriveConstants;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.CANConstants;
 
 public class IntakeIOSparkMax implements IntakeIO {
-  private final SparkMax m_intakeMotorRun;
-  private final SparkMax m_intakeMotorPivotA;
-  private final SparkMax m_intakeMotorPivotB;
-  public final SparkClosedLoopController m_intakePivotControllerA;
-  public final SparkClosedLoopController m_intakePivotControllerB;
+  private SparkMax m_intakeMotorRun;
+  private SparkMax m_intakeMotorPivotA;
+  private SparkMax m_intakeMotorPivotB;
+  public SparkClosedLoopController m_intakePivotControllerA;
+  public SparkClosedLoopController m_intakePivotControllerB;
+  public RelativeEncoder m_intakePivotEncoderA;
+  public SimpleMotorFeedforward m_feedForward;
 
   public IntakeIOSparkMax() {
     m_intakeMotorRun = new SparkMax(CANConstants.MOTOR_INTAKE_DRIVE_ID, MotorType.kBrushless);
@@ -28,7 +32,9 @@ public class IntakeIOSparkMax implements IntakeIO {
     config.openLoopRampRate(0.25);
     config.smartCurrentLimit(40);
 
-    config.closedLoop.pid(0.0, 0.0, 0.0);
+    m_intakePivotEncoderA = m_intakeMotorPivotA.getEncoder();
+
+    config.closedLoop.pid(0.5, 0.0, 0.1);
     config.closedLoop.outputRange(-1.0, 1.0);
 
     m_intakeMotorRun.configure(
@@ -43,11 +49,12 @@ public class IntakeIOSparkMax implements IntakeIO {
     m_intakeMotorPivotA.configure(
         pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    m_intakeMotorPivotA.getEncoder().setPosition(0.0); // Assume starting position is 0
+    m_intakePivotEncoderA.setPosition(0.0); // Assume starting position is 0
 
     m_intakePivotControllerA = m_intakeMotorPivotA.getClosedLoopController();
 
     config.follow(m_intakeMotorPivotA);
+    config.inverted(true);
     m_intakeMotorPivotB.configure(
         pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
